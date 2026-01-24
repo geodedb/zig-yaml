@@ -32,11 +32,8 @@ stages:
 
 # Template for Zig jobs
 .zig:
-  image: alpine:latest
+  image: registry.gitlab.com/devnw/ci-catalog/zig:${ZIG_VERSION}
   before_script:
-    - apk add --no-cache curl xz git
-    - curl -L "https://ziglang.org/download/${ZIG_VERSION}/zig-linux-x86_64-${ZIG_VERSION}.tar.xz" | tar -xJ
-    - export PATH="$PWD/zig-linux-x86_64-${ZIG_VERSION}:$PATH"
     - zig version
 
 # Build job - verify compilation
@@ -44,7 +41,6 @@ build:
   extends: .zig
   stage: build
   script:
-    - export PATH="$PWD/zig-linux-x86_64-${ZIG_VERSION}:$PATH"
     - zig build check
 
 # Unit tests
@@ -52,7 +48,6 @@ test-unit:
   extends: .zig
   stage: test
   script:
-    - export PATH="$PWD/zig-linux-x86_64-${ZIG_VERSION}:$PATH"
     - zig build test-unit
     - zig build test-accept
     - zig build test-scanner
@@ -64,7 +59,6 @@ test-suite:
   extends: .zig
   stage: test
   script:
-    - export PATH="$PWD/zig-linux-x86_64-${ZIG_VERSION}:$PATH"
     # Clone the official YAML test suite
     - git clone --depth 1 https://github.com/yaml/yaml-test-suite.git testdata/yaml-test-suite
     # Run the test suite
