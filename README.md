@@ -27,8 +27,8 @@ Add to your `build.zig.zon`:
 ```zig
 .dependencies = .{
     .yaml = .{
-        .url = "https://gitlab.com/devnw/zig/yaml/-/archive/v0.1.0/yaml-v0.1.0.tar.gz",
-        .hash = "yaml-0.1.0-lcW-hEyJBADykIsXaGfxkGNM5ar4THHK3aty492DoKnj",
+        .url = "https://gitlab.com/devnw/zig/yaml/-/archive/v0.1.1/yaml-v0.1.1.tar.gz",
+        .hash = "yaml-0.1.1-lcW-hBqKBADGkeBKGWHbUCuOt6YOX_RCgK7hB0hw5jx0",
     },
 },
 ```

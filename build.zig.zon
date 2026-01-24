@@ -3,12 +3,7 @@
     .version = "0.1.1",
     .fingerprint = 0xea31a98484bec595,
     .minimum_zig_version = "0.15.1",
-    .dependencies = .{
-        .yaml = .{
-            .url = "https://gitlab.com/devnw/zig/yaml/-/archive/v0.1.0/yaml-v0.1.0.tar.gz",
-            .hash = "yaml-0.1.0-lcW-hEyJBADykIsXaGfxkGNM5ar4THHK3aty492DoKnj",
-        },
-    },
+    .dependencies = .{},
     .paths = .{
         "build.zig",
         "build.zig.zon",
