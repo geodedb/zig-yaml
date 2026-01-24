@@ -25,7 +25,7 @@ include:
       allow_failure: true
 
   # Zig package release (creates GitLab release with dependency hash)
-  - component: gitlab.com/devnw/ci-catalog/zig-package@v1.7.4
+  - component: gitlab.com/devnw/ci-catalog/zig-package@v1.7.5
     inputs:
       stage: release
       zig_version: "0.15.1"
