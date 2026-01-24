@@ -2,6 +2,14 @@
 
 A complete YAML 1.2.2 parser and emitter library for Zig 0.15.2.
 
+## Status
+
+| Aspect | Info |
+|--------|------|
+| API Stability | Beta |
+| Zig Version | 0.15.2+ |
+| Platforms | Linux, macOS, Windows |
+
 ## Features
 
 - Full YAML 1.2.2 specification support

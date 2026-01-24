@@ -11,12 +11,17 @@
 - [ ] Documentation update
 - [ ] Refactoring (no functional changes)
 
+## Impact Assessment
+- [ ] **Security-impacting change** (authentication, authorization, cryptography, input validation, data handling)
+- [ ] **Public API change** (new/modified/removed public functions, types, or interfaces)
+
 ## Checklist
 - [ ] My code follows the project's coding style
 - [ ] I have added tests that prove my fix/feature works
 - [ ] All new and existing tests pass locally
 - [ ] I have updated the documentation accordingly
-- [ ] I have read the CONTRIBUTING guidelines (if applicable)
+- [ ] I have updated CHANGELOG.md (if applicable)
+- [ ] I have read the CONTRIBUTING guidelines
 
 ## Testing
 <!-- Describe how you tested your changes -->
