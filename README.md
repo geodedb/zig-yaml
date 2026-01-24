@@ -28,14 +28,9 @@ Add to your `build.zig.zon`:
 .dependencies = .{
     .yaml = .{
         .url = "https://gitlab.com/devnw/zig/yaml/-/archive/v0.1.0/yaml-v0.1.0.tar.gz",
-        .hash = "<run: zig fetch URL>",
+        .hash = "yaml-0.1.0-lcW-hEyJBADykIsXaGfxkGNM5ar4THHK3aty492DoKnj",
     },
 },
-```
-
-To get the hash, run:
-```bash
-zig fetch https://gitlab.com/devnw/zig/yaml/-/archive/v0.1.0/yaml-v0.1.0.tar.gz
 ```
 
 Then in your `build.zig`:
