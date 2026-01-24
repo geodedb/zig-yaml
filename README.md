@@ -1,13 +1,13 @@
 # yaml
 
-A complete YAML 1.2.2 parser and emitter library for Zig 0.15.2.
+A complete YAML 1.2.2 parser and emitter library for Zig.
 
 ## Status
 
 | Aspect | Info |
 |--------|------|
 | API Stability | Beta |
-| Zig Version | 0.15.2+ |
+| Zig Version | 0.15.1+ |
 | Platforms | Linux, macOS, Windows |
 
 ## Features
@@ -27,10 +27,15 @@ Add to your `build.zig.zon`:
 ```zig
 .dependencies = .{
     .yaml = .{
-        .url = "https://gitlab.com/devnw/zig/yaml/-/archive/main/yaml-main.tar.gz",
-        // .hash = "...",  // Add after first fetch
+        .url = "https://gitlab.com/devnw/zig/yaml/-/archive/v0.1.0/yaml-v0.1.0.tar.gz",
+        .hash = "<run: zig fetch URL>",
     },
 },
+```
+
+To get the hash, run:
+```bash
+zig fetch https://gitlab.com/devnw/zig/yaml/-/archive/v0.1.0/yaml-v0.1.0.tar.gz
 ```
 
 Then in your `build.zig`:

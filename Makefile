@@ -6,7 +6,7 @@
 #   make clean        - Clean build artifacts
 #   make help         - Show this help message
 
-.PHONY: all build test clean check fmt help ci
+.PHONY: all build test clean check fmt help ci release
 
 # Default target - build and run all tests
 all: build test
@@ -74,6 +74,27 @@ docs:
 	@zig build docs
 	@echo "Documentation generated in zig-out/docs/"
 
+# Release - create and push a new version tag
+# Usage: make release VERSION=0.1.0
+release:
+ifndef VERSION
+	$(error VERSION is required. Usage: make release VERSION=x.y.z)
+endif
+	@echo "Creating release v$(VERSION)..."
+	@# Update version in build.zig.zon
+	@sed -i 's/\.version = "[^"]*"/.version = "$(VERSION)"/' build.zig.zon
+	@echo "Updated build.zig.zon to version $(VERSION)"
+	@# Commit the version change
+	@git add build.zig.zon
+	@git commit -m "Release v$(VERSION)" || echo "No changes to commit"
+	@# Create and push the tag
+	@git tag -a "v$(VERSION)" -m "Release v$(VERSION)"
+	@git push origin main
+	@git push origin "v$(VERSION)"
+	@echo ""
+	@echo "Release v$(VERSION) created and pushed!"
+	@echo "CI/CD will create the GitLab release with package hash."
+
 # Show help message
 help:
 	@echo "zig-yaml - YAML Parser Library for Zig"
@@ -102,7 +123,10 @@ help:
 	@echo "CI/CD:"
 	@echo "  ci               - Full CI pipeline (clean + build + all tests)"
 	@echo ""
-	@echo "Requirements:"
+	@echo "Release:"
+	@echo "  release VERSION=x.y.z - Create and push a new release tag"
+	@echo ""
+	@echo "Requirements:
 	@echo "  - Zig 0.15.1 or compatible"
 	@echo ""
 	@echo "For more information, see README.md"

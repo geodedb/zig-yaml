@@ -24,11 +24,18 @@ include:
     inputs:
       allow_failure: true
 
+  # Zig package release (creates GitLab release with dependency hash)
+  - component: gitlab.com/devnw/ci-catalog/zig-package@v1.7.2
+    inputs:
+      stage: release
+      zig_version: "0.15.1"
+
 stages:
   - build
   - test
   - security
   - sbom
+  - release
 
 # Template for Zig jobs
 .zig:
