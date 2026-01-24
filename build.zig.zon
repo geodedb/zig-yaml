@@ -1,7 +1,7 @@
 .{
     .name = .yaml,
     .version = "0.1.0",
-    .fingerprint = 0x225b4a672a4a0972,
+    .fingerprint = 0xea31a98484bec595,
     .minimum_zig_version = "0.15.1",
     .dependencies = .{},
     .paths = .{
