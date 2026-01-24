@@ -1,9 +1,9 @@
 # GitLab CI/CD Configuration
 # SPDX-License-Identifier: Apache-2.0
 # Copyright (c) 2024-2025 CodePros
-#
-# NOTE: Build/test skipped - requires Zig 0.15.x which is not yet released.
-# Security scanning is enabled.
+
+variables:
+  ZIG_VERSION: "0.15.1"
 
 include:
   # Security scanning (Advanced SAST enabled by default)
@@ -25,6 +25,48 @@ include:
       allow_failure: true
 
 stages:
+  - build
+  - test
   - security
   - sbom
+
+# Template for Zig jobs
+.zig:
+  image: alpine:latest
+  before_script:
+    - apk add --no-cache curl xz git
+    - curl -L "https://ziglang.org/download/${ZIG_VERSION}/zig-linux-x86_64-${ZIG_VERSION}.tar.xz" | tar -xJ
+    - export PATH="$PWD/zig-linux-x86_64-${ZIG_VERSION}:$PATH"
+    - zig version
+
+# Build job - verify compilation
+build:
+  extends: .zig
+  stage: build
+  script:
+    - export PATH="$PWD/zig-linux-x86_64-${ZIG_VERSION}:$PATH"
+    - zig build check
+
+# Unit tests
+test-unit:
+  extends: .zig
+  stage: test
+  script:
+    - export PATH="$PWD/zig-linux-x86_64-${ZIG_VERSION}:$PATH"
+    - zig build test-unit
+    - zig build test-accept
+    - zig build test-scanner
+    - zig build test-emitter
+    - zig build test-roundtrip
+
+# YAML Test Suite - runs against official yaml-test-suite
+test-suite:
+  extends: .zig
+  stage: test
+  script:
+    - export PATH="$PWD/zig-linux-x86_64-${ZIG_VERSION}:$PATH"
+    # Clone the official YAML test suite
+    - git clone --depth 1 https://github.com/yaml/yaml-test-suite.git testdata/yaml-test-suite
+    # Run the test suite
+    - zig build test-suite
 
