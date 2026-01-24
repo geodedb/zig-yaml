@@ -1,0 +1,31 @@
+# Gitleaks Configuration
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2024-2025 CodePros
+
+title = "Gitleaks Configuration"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Global allowlist"
+paths = [
+  '''testdata''',
+  '''\.zig-cache''',
+  '''zig-out''',
+  '''vendor''',
+]
+
+# Additional rules for Zig-specific patterns
+[[rules]]
+id = "zig-hardcoded-secret"
+description = "Hardcoded secret in Zig code"
+regex = '''(?i)(password|secret|api_key|apikey|token)\s*=\s*"[^"]{8,}"'''
+tags = ["secret", "zig"]
+
+[[rules]]
+id = "private-key-file"
+description = "Private key file reference"
+regex = '''(?i)(private_key|privkey|id_rsa|id_ed25519)'''
+path = '''\.zig$'''
+tags = ["key", "zig"]

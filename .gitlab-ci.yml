@@ -1,0 +1,30 @@
+# GitLab CI/CD Configuration
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2024-2025 CodePros
+#
+# NOTE: Build/test skipped - requires Zig 0.15.x which is not yet released.
+# Security scanning is enabled.
+
+include:
+  # Security scanning (Advanced SAST enabled by default)
+  - component: gitlab.com/devnw/ci-catalog/security-sast@v1.7.1
+    inputs:
+      stage: security
+  - component: gitlab.com/devnw/ci-catalog/security-dependency-scanning@v1.7.1
+    inputs:
+      stage: security
+  - component: gitlab.com/devnw/ci-catalog/security-secrets@v1.7.1
+    inputs:
+      stage: security
+  - component: gitlab.com/devnw/ci-catalog/security-gitleaks@v1.7.1
+
+  # SBOM generation and scanning
+  - component: gitlab.com/devnw/ci-catalog/sbom-generate@v1.7.1
+  - component: gitlab.com/devnw/ci-catalog/sbom-scan@v1.7.1
+    inputs:
+      allow_failure: true
+
+stages:
+  - security
+  - sbom
+

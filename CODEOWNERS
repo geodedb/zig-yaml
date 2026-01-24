@@ -1,0 +1,15 @@
+# CODEOWNERS - Require review for security-sensitive changes
+# SPDX-License-Identifier: Apache-2.0
+# Copyright (c) 2024-2025 CodePros
+
+# Default owners for everything
+*       @maintainers
+
+# Security-sensitive files require security team review
+SECURITY.md         @security-team @maintainers
+.gitlab-ci.yml      @security-team @maintainers
+.gitleaks.toml      @security-team @maintainers
+
+# Build configuration
+build.zig           @maintainers
+build.zig.zon       @maintainers
