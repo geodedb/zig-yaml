@@ -1,0 +1,154 @@
+# Pre-commit configuration for Zig project
+# https://pre-commit.com/
+#
+# Install: pip install pre-commit && pre-commit install
+# Run manually: pre-commit run --all-files
+# Update hooks: pre-commit autoupdate
+
+default_stages: [pre-commit]
+fail_fast: false
+
+repos:
+  # =============================================================================
+  # Standard pre-commit hooks (best practices)
+  # =============================================================================
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v5.0.0
+  hooks:
+      # Formatting
+  - id: trailing-whitespace
+    args: [--markdown-linebreak-ext=md]
+    exclude: ^(vendor/|dist/|zig-out/|\.zig-cache/)
+  - id: end-of-file-fixer
+    exclude: ^(vendor/|dist/|zig-out/|\.zig-cache/|.*\.bin$|.*\.der$|.*\.pem$)
+  - id: mixed-line-ending
+    args: [--fix=lf]
+    exclude: ^(vendor/|dist/|zig-out/)
+
+      # Syntax validation
+  - id: check-yaml
+    args: [--unsafe]      # Allow custom tags
+    exclude: ^(vendor/|dist/)
+  - id: check-json
+    exclude: ^(vendor/|dist/|zig-out/)
+  - id: check-toml
+
+      # Security
+  - id: detect-private-key
+    exclude: ^(certs/test_.*\.pem$|tests/fixtures/.*\.(pem|key)$|tests/data/mock_.*\.pem$|\.gitleaks\.toml$)
+  - id: check-added-large-files
+    args: [--maxkb=1024]
+    exclude: ^(vendor/|dist/)
+
+      # Git hygiene
+  - id: check-merge-conflict
+  - id: check-case-conflict
+  - id: check-symlinks
+  - id: destroyed-symlinks
+
+      # Code quality
+  - id: check-executables-have-shebangs
+    exclude: ^(vendor/|dist/|zig-out/)
+  - id: check-shebang-scripts-are-executable
+    exclude: ^(vendor/|dist/|\.envrc)
+
+  # =============================================================================
+  # Shell script linting
+  # =============================================================================
+- repo: https://github.com/shellcheck-py/shellcheck-py
+  rev: v0.10.0.1
+  hooks:
+  - id: shellcheck
+    args: [--severity=error, --shell=bash]
+    exclude: ^(vendor/|dist/|tests/)
+
+  # =============================================================================
+  # Markdown linting
+  # =============================================================================
+- repo: https://github.com/igorshubovych/markdownlint-cli
+  rev: v0.43.0
+  hooks:
+  - id: markdownlint
+    args: [--fix, --disable, MD013, MD033, MD041, MD024, --]
+    exclude: ^(vendor/|dist/|CHANGELOG\.md|specs/)
+
+  # =============================================================================
+  # YAML formatting
+  # =============================================================================
+- repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+  rev: v2.14.0
+  hooks:
+  - id: pretty-format-yaml
+    args: [--autofix, --indent, '2']
+    exclude: ^(vendor/|dist/|\.gitlab-ci\.yml)
+
+  # =============================================================================
+  # Commit message validation (Conventional Commits)
+  # =============================================================================
+- repo: https://github.com/commitizen-tools/commitizen
+  rev: v4.1.0
+  hooks:
+  - id: commitizen
+    stages: [commit-msg]
+
+  # =============================================================================
+  # Local/Custom hooks for Zig
+  # =============================================================================
+- repo: local
+  hooks:
+      # Zig formatting check
+  - id: zig-fmt
+    name: zig fmt (check)
+    entry: zig fmt --check
+    language: system
+    files: \.zig$
+    exclude: ^(vendor/|dist/|zig-out/|\.zig-cache/)
+    pass_filenames: false
+    args: [src/, build.zig]
+
+      # Zig build check (compilation)
+  - id: zig-build
+    name: zig build (compilation check)
+    entry: zig build
+    language: system
+    files: \.(zig|zon)$
+    exclude: ^(vendor/|dist/|zig-out/|\.zig-cache/)
+    pass_filenames: false
+    stages: [pre-commit]
+
+      # Quick unit tests
+  - id: zig-test
+    name: zig build test
+    entry: zig build test
+    language: system
+    files: \.(zig|zon)$
+    exclude: ^(vendor/|dist/|zig-out/|\.zig-cache/)
+    pass_filenames: false
+    stages: [pre-push]      # Only on push, may be slow
+
+      # Check for TODO/FIXME in committed code (warning only)
+  - id: check-todos
+    name: check for TODOs/FIXMEs
+    entry: bash
+    args:
+    - -c
+    - |
+      git diff --cached --name-only | xargs grep -l -E "(TODO|FIXME|XXX|HACK)" 2>/dev/null && echo "Warning: Found TODO/FIXME markers in staged files" && exit 0 || exit 0
+    language: system
+    pass_filenames: false
+    verbose: true
+
+# =============================================================================
+# CI configuration
+# =============================================================================
+ci:
+  autofix_prs: true
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit hooks
+
+    For more info see https://pre-commit.ci
+  autoupdate_branch: ''
+  autoupdate_commit_msg: '[pre-commit.ci] pre-commit autoupdate'
+  autoupdate_schedule: weekly
+  skip: [zig-fmt, zig-build, zig-test]
+  submodules: false
