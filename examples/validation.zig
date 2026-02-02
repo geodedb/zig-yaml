@@ -49,13 +49,13 @@ fn simpleValidation(allocator: std.mem.Allocator) !void {
         },
         .{
             .input = "true",
-            .schema = yaml.schema.@"bool",
+            .schema = yaml.schema.bool,
             .expected = true,
             .name = "true is bool",
         },
         .{
             .input = "null",
-            .schema = yaml.schema.@"null",
+            .schema = yaml.schema.null,
             .expected = true,
             .name = "null is null",
         },

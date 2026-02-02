@@ -656,7 +656,7 @@ pub fn debugJsonGraph(a: std.mem.Allocator, docs: []const Document) ![]u8 {
 /// Format a parse error into an allocator-owned string.
 /// Caller must free the returned slice.
 pub fn formatError(a: std.mem.Allocator, err: ParseError) ![]u8 {
-    var buf: [512]u8 = undefined;
+    var buf = std.mem.zeroes([512]u8);
     const msg = err.formatBuf(&buf);
     return try a.dupe(u8, msg);
 }
@@ -914,7 +914,7 @@ test "yaml: error message formatting" {
     try std.testing.expectEqualStrings("invalid escape sequence in string", err.message());
 
     // Test ParseError.formatBuf()
-    var buf: [256]u8 = undefined;
+    var buf = std.mem.zeroes([256]u8);
     const formatted = err.formatBuf(&buf);
     try std.testing.expectEqualStrings("invalid escape sequence in string at line 5, column 10", formatted);
 

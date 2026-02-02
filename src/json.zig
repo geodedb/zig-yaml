@@ -106,13 +106,13 @@ const JsonWriter = struct {
     }
 
     fn writeInt(self: *JsonWriter, i: i64) !void {
-        var buf: [32]u8 = undefined;
+        var buf = std.mem.zeroes([32]u8);
         const formatted = std.fmt.bufPrint(&buf, "{d}", .{i}) catch return error.OutOfMemory;
         try self.output.appendSlice(self.allocator, formatted);
     }
 
     fn writeFloat(self: *JsonWriter, f: f64) !void {
-        var buf: [32]u8 = undefined;
+        var buf = std.mem.zeroes([32]u8);
         const formatted = std.fmt.bufPrint(&buf, "{d}", .{f}) catch return error.OutOfMemory;
         try self.output.appendSlice(self.allocator, formatted);
     }
@@ -131,7 +131,7 @@ const JsonWriter = struct {
                 else => {
                     if (c < 0x20) {
                         // Control character - escape as \u00XX
-                        var buf: [6]u8 = undefined;
+                        var buf = std.mem.zeroes([6]u8);
                         _ = std.fmt.bufPrint(&buf, "\\u{x:0>4}", .{c}) catch unreachable;
                         try self.output.appendSlice(self.allocator, &buf);
                     } else {

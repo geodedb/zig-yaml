@@ -161,7 +161,7 @@ const Parser = struct {
     }
 
     fn parseSequence(self: *Parser, seq_indent: usize) Value {
-        var items: [256]Value = undefined;
+        var items = std.mem.zeroes([256]Value);
         var count: usize = 0;
 
         while (!self.isAtEnd()) {
@@ -198,7 +198,7 @@ const Parser = struct {
     }
 
     fn parseMapping(self: *Parser, map_indent: usize) Value {
-        var items: [128]Value.KVPair = undefined;
+        var items: [128]Value.KVPair = std.mem.zeroes(Value.KVPair);
         var count: usize = 0;
 
         while (!self.isAtEnd()) {
@@ -220,7 +220,7 @@ const Parser = struct {
             self.skipSpaces();
 
             // Parse value
-            var value: Value = undefined;
+            var value: Value = std.mem.zeroes(Value);
             if (self.peek() == '\n' or self.isAtEnd()) {
                 // Value on next line (nested structure)
                 self.skipToNextLine();
@@ -329,7 +329,7 @@ const Parser = struct {
     fn parseFlowSequence(self: *Parser) Value {
         self.advance(1); // Skip [
 
-        var items: [64]Value = undefined;
+        var items = std.mem.zeroes([64]Value);
         var count: usize = 0;
 
         while (!self.isAtEnd() and self.peek() != ']') {
@@ -362,7 +362,7 @@ const Parser = struct {
     fn parseFlowMapping(self: *Parser) Value {
         self.advance(1); // Skip {
 
-        var items: [64]Value.KVPair = undefined;
+        var items: [64]Value.KVPair = std.mem.zeroes(Value.KVPair);
         var count: usize = 0;
 
         while (!self.isAtEnd() and self.peek() != '}') {

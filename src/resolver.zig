@@ -514,7 +514,7 @@ fn parseInt11(value: []const u8) ?i64 {
     }
 
     // Decimal (may contain underscores for readability in YAML 1.1)
-    var buf: [64]u8 = undefined;
+    var buf = std.mem.zeroes([64]u8);
     var buf_len: usize = 0;
     for (s) |c| {
         if (c == '_') continue; // Skip underscores
@@ -559,7 +559,7 @@ fn parseSexagesimalFloat(value: []const u8) ?f64 {
     // Find the decimal point if present
     const dot_pos = std.mem.indexOfScalar(u8, value, '.');
 
-    var int_part: []const u8 = undefined;
+    var int_part: []const u8 = &.{};
     var frac_part: ?[]const u8 = null;
 
     if (dot_pos) |dp| {

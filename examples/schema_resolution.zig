@@ -151,7 +151,7 @@ fn demonstrateDifferences(allocator: std.mem.Allocator) !void {
                 const value = try yaml.resolveToValue(allocator, &docs[0], .{ .schema = schema_info.s });
                 defer yaml.freeValue(allocator, &value);
 
-                var buf: [32]u8 = undefined;
+                var buf = std.mem.zeroes([32]u8);
                 const type_str = try formatValueType(&buf, value);
                 try writer.print(" {s: <14} |", .{type_str});
             }

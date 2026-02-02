@@ -202,7 +202,7 @@ fn extractSingleTestCase(allocator: std.mem.Allocator, value: yaml.Value, file_i
 
             if (yaml_input) |yi| {
                 // Generate ID
-                var id_buf: [32]u8 = undefined;
+                var id_buf = std.mem.zeroes([32]u8);
                 const id = std.fmt.bufPrint(&id_buf, "{s}:{d}", .{ file_id, idx }) catch file_id;
 
                 return TestCase{

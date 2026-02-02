@@ -105,13 +105,13 @@ const Emitter = struct {
             .null => try self.write("null"),
             .bool => |b| try self.write(if (b) "true" else "false"),
             .int => |i| {
-                var buf: [32]u8 = undefined;
+                var buf = std.mem.zeroes([32]u8);
                 const str = std.fmt.bufPrint(&buf, "{d}", .{i}) catch unreachable;
                 try self.write(str);
             },
             .big_int => |s| try self.write(s),
             .float => |f| {
-                var buf: [64]u8 = undefined;
+                var buf = std.mem.zeroes([64]u8);
                 const str = std.fmt.bufPrint(&buf, "{d}", .{f}) catch unreachable;
                 try self.write(str);
             },
@@ -161,7 +161,7 @@ const Emitter = struct {
                 '\r' => try self.write("\\r"),
                 '\t' => try self.write("\\t"),
                 0x00...0x08, 0x0B, 0x0C, 0x0E...0x1F, 0x7F => {
-                    var buf: [4]u8 = undefined;
+                    var buf = std.mem.zeroes([4]u8);
                     const hex = std.fmt.bufPrint(&buf, "\\x{X:0>2}", .{c}) catch unreachable;
                     try self.write(hex);
                 },

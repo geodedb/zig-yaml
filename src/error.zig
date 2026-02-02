@@ -98,7 +98,7 @@ pub const ParseError = struct {
     /// overwritten on subsequent calls.
     pub fn format(self: ParseError) []const u8 {
         const S = struct {
-            var buf: [256]u8 = undefined;
+            var buf = std.mem.zeroes([256]u8);
         };
         return self.formatBuf(&S.buf);
     }

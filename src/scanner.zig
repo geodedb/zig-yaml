@@ -1194,7 +1194,7 @@ pub const Scanner = struct {
                         const hex = self.input[self.pos .. self.pos + 2];
                         const cp: u21 = std.fmt.parseInt(u8, hex, 16) catch return error.InvalidEscapeSequence;
                         // Encode as UTF-8 (YAML spec: \xNN is equivalent to \u00NN)
-                        var buf: [4]u8 = undefined;
+                        var buf = std.mem.zeroes([4]u8);
                         const len = std.unicode.utf8Encode(cp, &buf) catch return error.InvalidEscapeSequence;
                         try result.appendSlice(self.allocator, buf[0..len]);
                         self.pos += 2;
@@ -1205,7 +1205,7 @@ pub const Scanner = struct {
                         if (self.pos + 4 > self.input.len) return error.InvalidEscapeSequence;
                         const hex = self.input[self.pos .. self.pos + 4];
                         const cp = std.fmt.parseInt(u21, hex, 16) catch return error.InvalidEscapeSequence;
-                        var buf: [4]u8 = undefined;
+                        var buf = std.mem.zeroes([4]u8);
                         const len = std.unicode.utf8Encode(cp, &buf) catch return error.InvalidEscapeSequence;
                         try result.appendSlice(self.allocator, buf[0..len]);
                         self.pos += 4;
@@ -1216,7 +1216,7 @@ pub const Scanner = struct {
                         if (self.pos + 8 > self.input.len) return error.InvalidEscapeSequence;
                         const hex = self.input[self.pos .. self.pos + 8];
                         const cp = std.fmt.parseInt(u21, hex, 16) catch return error.InvalidEscapeSequence;
-                        var buf: [4]u8 = undefined;
+                        var buf = std.mem.zeroes([4]u8);
                         const len = std.unicode.utf8Encode(cp, &buf) catch return error.InvalidEscapeSequence;
                         try result.appendSlice(self.allocator, buf[0..len]);
                         self.pos += 8;

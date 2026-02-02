@@ -52,7 +52,7 @@ fn writeValue(allocator: std.mem.Allocator, buffer: *std.ArrayList(u8), val: res
         .null => try buffer.appendSlice(allocator, "null"),
         .bool => |b| try buffer.appendSlice(allocator, if (b) "true" else "false"),
         .int => |n| {
-            var buf: [32]u8 = undefined;
+            var buf = std.mem.zeroes([32]u8);
             const str = std.fmt.bufPrint(&buf, "{d}", .{n}) catch unreachable;
             try buffer.appendSlice(allocator, str);
         },
@@ -62,7 +62,7 @@ fn writeValue(allocator: std.mem.Allocator, buffer: *std.ArrayList(u8), val: res
             try buffer.append(allocator, '"');
         },
         .float => |f| {
-            var buf: [64]u8 = undefined;
+            var buf = std.mem.zeroes([64]u8);
             const str = std.fmt.bufPrint(&buf, "{d}", .{f}) catch unreachable;
             try buffer.appendSlice(allocator, str);
         },
@@ -164,7 +164,7 @@ fn writeJsonString(allocator: std.mem.Allocator, buffer: *std.ArrayList(u8), s: 
             '\r' => try buffer.appendSlice(allocator, "\\r"),
             '\t' => try buffer.appendSlice(allocator, "\\t"),
             0x00...0x08, 0x0B, 0x0C, 0x0E...0x1F => {
-                var buf: [6]u8 = undefined;
+                var buf = std.mem.zeroes([6]u8);
                 const hex = std.fmt.bufPrint(&buf, "\\u{X:0>4}", .{c}) catch unreachable;
                 try buffer.appendSlice(allocator, hex);
             },

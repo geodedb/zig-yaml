@@ -298,7 +298,7 @@ test "corpus: binary data" {
     var prng = std.Random.DefaultPrng.init(0x12345678);
     const random = prng.random();
 
-    var buf: [256]u8 = undefined;
+    var buf = std.mem.zeroes([256]u8);
 
     // Test with various lengths of random data
     const lengths = [_]usize{ 1, 2, 4, 8, 16, 32, 64, 128, 256 };
@@ -327,7 +327,7 @@ test "corpus: repeated patterns" {
 
     for (patterns) |pattern| {
         // Build up repeated patterns
-        var buf: [1024]u8 = undefined;
+        var buf = std.mem.zeroes([1024]u8);
         var len: usize = 0;
 
         while (len + pattern.len <= buf.len) {
@@ -346,7 +346,7 @@ test "corpus: stress large nesting" {
     const allocator = std.testing.allocator;
 
     // Test deep nesting within limits
-    var buf: [512]u8 = undefined;
+    var buf = std.mem.zeroes([512]u8);
 
     // Deep sequence nesting: - - - - - value
     for (0..20) |depth| {
