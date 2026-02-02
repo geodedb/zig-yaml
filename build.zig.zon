@@ -5,8 +5,8 @@
     .minimum_zig_version = "0.15.1",
     .dependencies = .{
         .spice = .{
-            // Local copy of spice with Zig 0.15.x compatible build.zig
-            .path = "../spice-local",
+            .url = "https://gitlab.com/devnw/zig/spice/-/archive/main/spice-main.tar.gz",
+            .hash = "spice-0.0.0-HnDb57y0AABlp7AaQKAkMShWpww-Tl_8QM7T-1Lx3auu",
         },
     },
     .paths = .{
