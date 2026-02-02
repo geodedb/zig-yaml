@@ -7,6 +7,10 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
+    // Spice disabled by default due to Zig 0.15.2 compatibility issues
+    const enable_spice = b.option(bool, "spice", "Enable spice-based parallelism") orelse false;
+    _ = enable_spice; // Reserved for future use when spice compatibility is fixed
+
     // Library module (for use as dependency)
     const yaml_mod = b.addModule("yaml", .{
         .root_source_file = b.path("src/yaml.zig"),
