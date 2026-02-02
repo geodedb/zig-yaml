@@ -215,4 +215,20 @@ pub fn build(b: *std.Build) void {
     const run_fuzz_tests = b.addRunArtifact(fuzz_tests);
     const fuzz_test_step = b.step("test-fuzz", "Run fuzz tests (use --fuzz for continuous fuzzing)");
     fuzz_test_step.dependOn(&run_fuzz_tests.step);
+
+    // Parallel benchmark
+    const parallel_bench_step = b.step("bench-parallel", "Run parallel operations benchmark");
+    const parallel_bench_exe = b.addExecutable(.{
+        .name = "parallel_bench",
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("bench/parallel_bench.zig"),
+            .target = target,
+            .optimize = .ReleaseFast,
+            .imports = &.{
+                .{ .name = "parallel", .module = parallel_mod },
+            },
+        }),
+    });
+    const run_parallel_bench = b.addRunArtifact(parallel_bench_exe);
+    parallel_bench_step.dependOn(&run_parallel_bench.step);
 }

@@ -115,7 +115,7 @@ pub fn parallelReduce(
     }
 
     const pool = getPool();
-    const Ctx = struct { data: []const T, initial: T };
+    const Ctx = ReduceContext(T);
     return pool.call(T, ParallelReduceTask(T, reduceFn).task, Ctx{ .data = data, .initial = initial });
 }
 
