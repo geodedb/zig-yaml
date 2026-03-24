@@ -1,74 +1,181 @@
-# GitLab CI/CD Configuration
+---
+# GitLab CI/CD Pipeline for yaml
 # SPDX-License-Identifier: Apache-2.0
-# Copyright (c) 2024-2025 CodePros
-
-variables:
-  ZIG_VERSION: "0.15.1"
 
 include:
-  # Security scanning (Advanced SAST enabled by default)
+  # Security scanning
   - component: gitlab.com/devnw/ci-catalog/security-sast@v1.7.1
-    inputs:
-      stage: security
   - component: gitlab.com/devnw/ci-catalog/security-dependency-scanning@v1.7.1
-    inputs:
-      stage: security
   - component: gitlab.com/devnw/ci-catalog/security-secrets@v1.7.1
-    inputs:
-      stage: security
   - component: gitlab.com/devnw/ci-catalog/security-gitleaks@v1.7.1
 
-  # SBOM generation and scanning
+  # Code quality
+  - component: gitlab.com/devnw/ci-catalog/zig-format@v1.2.1
+
+  # SBOM
   - component: gitlab.com/devnw/ci-catalog/sbom-generate@v1.7.1
   - component: gitlab.com/devnw/ci-catalog/sbom-scan@v1.7.1
-    inputs:
-      allow_failure: true
 
-  # Zig package release (creates GitLab release with dependency hash)
-  - component: gitlab.com/devnw/ci-catalog/zig-package@v1.7.6
-    inputs:
-      stage: release
-      zig_version: "0.15.1"
-      update_readme: "true"
+  # Release
+  - component: gitlab.com/devnw/ci-catalog/release-semantic@v1.7.1
+
+variables:
+  ZIG_VERSION: "0.15.2"
 
 stages:
+  - lint
   - build
   - test
+  - fuzz
   - security
   - sbom
   - release
 
-# Template for Zig jobs
-.zig:
-  image: registry.gitlab.com/devnw/ci-catalog/zig:${ZIG_VERSION}
-  before_script:
-    - zig version
+# Zig installation template (SEC-R6-02: SHA-256 verified via ziglang.org index)
+.install-zig: &install-zig
+  - apt-get update && apt-get install -y curl xz-utils python3
+  - |
+    if [ ! -f "zig-${ZIG_VERSION}/zig" ]; then
+      ARCH=$(uname -m)
+      case "$ARCH" in
+        x86_64)  ZIG_ARCH="x86_64" ;;
+        aarch64) ZIG_ARCH="aarch64" ;;
+        arm64)   ZIG_ARCH="aarch64" ;;
+        *)       echo "Unsupported architecture: $ARCH"; exit 1 ;;
+      esac
+      MAJOR=$(echo "$ZIG_VERSION" | cut -d. -f1)
+      MINOR=$(echo "$ZIG_VERSION" | cut -d. -f2)
+      if [ "$MAJOR" -eq 0 ] && [ "$MINOR" -lt 15 ]; then
+        ARCHIVE_NAME="zig-linux-${ZIG_ARCH}-${ZIG_VERSION}"
+      else
+        ARCHIVE_NAME="zig-${ZIG_ARCH}-linux-${ZIG_VERSION}"
+      fi
+      TARBALL="${ARCHIVE_NAME}.tar.xz"
+      INDEX_FILE=$(mktemp)
+      curl -fsSL "https://ziglang.org/download/index.json" -o "${INDEX_FILE}"
+      EXPECTED_HASH=$(ZIG_VER="${ZIG_VERSION}" ZIG_ARCH_KEY="${ZIG_ARCH}-linux" ZIG_IDX="${INDEX_FILE}" \
+        python3 -c "
+    import json, os, sys
+    idx = json.load(open(os.environ['ZIG_IDX']))
+    pkg = idx.get(os.environ['ZIG_VER'], {}).get(os.environ['ZIG_ARCH_KEY'], {})
+    h = pkg.get('shasum', '')
+    if not h: sys.exit('SHA-256 not found for ' + os.environ['ZIG_VER'] + '/' + os.environ['ZIG_ARCH_KEY'])
+    print(h)
+    ")
+      rm -f "${INDEX_FILE}"
+      curl -fsSL "https://ziglang.org/download/${ZIG_VERSION}/${TARBALL}" -o "${TARBALL}"
+      echo "${EXPECTED_HASH}  ${TARBALL}" | sha256sum --check --strict
+      tar -xJf "${TARBALL}"
+      mv "${ARCHIVE_NAME}" "zig-${ZIG_VERSION}"
+      rm -f "${TARBALL}"
+    fi
+  - export PATH="$PWD/zig-${ZIG_VERSION}:$PATH"
+  - zig version
 
-# Build job - verify compilation
+# Override zig-format component to use the project's ZIG_VERSION.
+# The v1.2.1 component defaults to 0.14.0 and does not accept a version input.
+zig-format:
+  before_script:
+    - *install-zig
+
+# Build job
 build:
-  extends: .zig
   stage: build
+  image: debian:bookworm-slim
+  before_script:
+    - *install-zig
   script:
     - zig build check
 
 # Unit tests
-test-unit:
-  extends: .zig
+test:
   stage: test
+  image: debian:bookworm-slim
+  before_script:
+    - *install-zig
   script:
-    - zig build test-unit
-    - zig build test-accept
-    - zig build test-scanner
-    - zig build test-emitter
-    - zig build test-roundtrip
+    - zig build test --summary all
+  needs:
+    - build
 
-# YAML Test Suite - runs against official yaml-test-suite
-test-suite:
-  extends: .zig
+# Release optimization tests
+test-release-safe:
   stage: test
+  image: debian:bookworm-slim
+  before_script:
+    - *install-zig
   script:
-    # Clone the official YAML test suite
-    - git clone --depth 1 https://github.com/yaml/yaml-test-suite.git testdata/yaml-test-suite
-    # Run the test suite
-    - zig build test-suite
+    - zig build test -Doptimize=ReleaseSafe --summary all
+  needs:
+    - build
+
+# ReleaseFast tests
+test-release-fast:
+  stage: test
+  image: debian:bookworm-slim
+  before_script:
+    - *install-zig
+  script:
+    - zig build test -Doptimize=ReleaseFast --summary all
+  needs:
+    - build
+
+# ReleaseSmall tests
+test-release-small:
+  stage: test
+  image: debian:bookworm-slim
+  before_script:
+    - *install-zig
+  script:
+    - zig build test -Doptimize=ReleaseSmall --summary all
+  needs:
+    - build
+
+# Coverage-guided fuzz testing.
+# Runs with a 60-second timeout so the job always terminates.
+#
+# Exit-code semantics:
+#   rc=0  : fuzzer stopped cleanly before timeout (no crash)
+#   rc=124: timeout reached (expected in CI) - pass
+#   other : fuzzer found a crash - fail the job
+fuzz:
+  stage: fuzz
+  image: debian:bookworm-slim
+  before_script:
+    - *install-zig
+  script:
+    - timeout 60 zig build test --fuzz; rc=$?; if [ $rc -ne 0 ] && [ $rc -ne 124 ]; then exit $rc; fi
+  artifacts:
+    when: on_failure
+    paths:
+      - zig-out/fuzz/
+    expire_in: 1 week
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - if: '$CI_PIPELINE_SOURCE == "web"'
+      when: manual
+      allow_failure: true
+  allow_failure: true
+  needs:
+    - build
+
+# Benchmark regression detection.
+# Results are stored as artifacts for trend analysis.
+bench-regression:
+  stage: fuzz
+  image: debian:bookworm-slim
+  before_script:
+    - *install-zig
+  script:
+    - zig build bench -Doptimize=ReleaseFast 2>&1 | tee bench-results.txt
+  artifacts:
+    paths:
+      - bench-results.txt
+    expire_in: 90 days
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+  allow_failure: true
+  needs:
+    - build
 
