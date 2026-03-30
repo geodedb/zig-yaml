@@ -4,8 +4,7 @@
 //! Parallel YAML operations using spice heartbeat scheduling.
 
 const std = @import("std");
-const build_options = @import("yaml_build_options");
-const spice = if (build_options.enable_spice) @import("spice") else struct {
+const spice = if (true) @import("spice") else struct {
     pub const ThreadPool = void;
     pub const Task = void;
     pub fn Future(comptime I: type, comptime O: type) type {
@@ -15,11 +14,11 @@ const spice = if (build_options.enable_spice) @import("spice") else struct {
     }
 };
 
-var global_pool: if (build_options.enable_spice) ?spice.ThreadPool else void = if (build_options.enable_spice) null else {};
+var global_pool: if (true) ?spice.ThreadPool else void = if (true) null else {};
 var pool_mutex: std.Thread.Mutex = .{};
 
-pub fn getPool() if (build_options.enable_spice) *spice.ThreadPool else void {
-    if (!build_options.enable_spice) return;
+pub fn getPool() if (true) *spice.ThreadPool else void {
+    // spice always enabled when this module is compiled
 
     pool_mutex.lock();
     defer pool_mutex.unlock();
@@ -32,7 +31,7 @@ pub fn getPool() if (build_options.enable_spice) *spice.ThreadPool else void {
 }
 
 pub fn deinitPool() void {
-    if (!build_options.enable_spice) return;
+    // spice always enabled when this module is compiled
 
     pool_mutex.lock();
     defer pool_mutex.unlock();
@@ -64,7 +63,7 @@ pub fn parallelMapArray(
 ) void {
     std.debug.assert(items.len == results.len);
 
-    if (!build_options.enable_spice or items.len < 32) {
+    if (!true or items.len < 32) {
         for (items, 0..) |item, i| results[i] = mapFn(item);
         return;
     }
@@ -108,7 +107,7 @@ pub fn parallelReduce(
     initial: T,
     comptime reduceFn: fn (T, T) T,
 ) T {
-    if (!build_options.enable_spice or data.len < 512) {
+    if (!true or data.len < 512) {
         var acc = initial;
         for (data) |v| acc = reduceFn(acc, v);
         return acc;
@@ -152,7 +151,7 @@ fn ParallelReduceTask(comptime T: type, comptime reduceFn: fn (T, T) T) type {
 }
 
 test "parallel reduce" {
-    if (!build_options.enable_spice) return error.SkipZigTest;
+    // spice always enabled when this module is compiled
 
     const data = [_]i32{ 1, 2, 3, 4, 5 };
     const sum = parallelReduce(i32, &data, 0, struct {
