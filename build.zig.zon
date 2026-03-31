@@ -5,8 +5,8 @@
     .minimum_zig_version = "0.15.1",
     .dependencies = .{
         .spice = .{
-            .url = "git+https://gitlab.com/devnw/zig/spice.git#bbf106dc8131a514a4d1687cc2173f124f5c8181",
-            .hash = "spice-0.0.0-HnDb58jJAACojBd1dquGT-Ngc6TORlC6izlAKf0f4Rno",
+            .url = "git+https://gitlab.com/devnw/zig/spice.git#fba9feb430c1aa5a06a429d8de6a0a5088bc045d",
+            .hash = "spice-0.0.0-HnDb5yvKAACnUB06Kk61JFVAf5ik_Frkf7aSKDGQD3R0",
         },
     },
     .paths = .{
