@@ -1,38 +1,25 @@
 // SPDX-License-Identifier: Apache-2.0
 // Copyright (c) 2024-2025 CodePros
 
-//! Parallel YAML operations using spice heartbeat scheduling.
+//! Parallel YAML operations using thread-pool scheduling.
 
 const std = @import("std");
-const spice = if (true) @import("spice") else struct {
-    pub const ThreadPool = void;
-    pub const Task = void;
-    pub fn Future(comptime I: type, comptime O: type) type {
-        _ = I;
-        _ = O;
-        return void;
-    }
-};
+const tp = @import("thread_pool");
 
-var global_pool: if (true) ?spice.ThreadPool else void = if (true) null else {};
+var global_pool: ?tp.ThreadPool = null;
 var pool_mutex: std.Thread.Mutex = .{};
 
-pub fn getPool() if (true) *spice.ThreadPool else void {
-    // spice always enabled when this module is compiled
-
+pub fn getPool() *tp.ThreadPool {
     pool_mutex.lock();
     defer pool_mutex.unlock();
 
     if (global_pool == null) {
-        global_pool = spice.ThreadPool.init(std.heap.page_allocator);
-        global_pool.?.start(.{});
+        global_pool = tp.ThreadPool.init(std.heap.page_allocator, .{}) catch @panic("thread-pool: init failed");
     }
     return &global_pool.?;
 }
 
 pub fn deinitPool() void {
-    // spice always enabled when this module is compiled
-
     pool_mutex.lock();
     defer pool_mutex.unlock();
 
@@ -46,12 +33,7 @@ pub fn deinitPool() void {
 // Parallel Array/Sequence Processing
 // ============================================================================
 
-pub fn ArrayContext(comptime T: type, comptime R: type) type {
-    return struct {
-        items: []const T,
-        results: []R,
-    };
-}
+const MAX_CHUNKS = 64;
 
 /// Process array items in parallel
 pub fn parallelMapArray(
@@ -63,41 +45,42 @@ pub fn parallelMapArray(
 ) void {
     std.debug.assert(items.len == results.len);
 
-    if (!true or items.len < 32) {
+    const THRESHOLD = 32;
+    if (items.len < THRESHOLD) {
         for (items, 0..) |item, i| results[i] = mapFn(item);
         return;
     }
 
-    const pool = getPool();
-    const Ctx = ArrayContext(T, R);
-    _ = pool.call(void, ParallelMapArrayTask(T, R, mapFn).task, Ctx{ .items = items, .results = results });
-}
+    const Chunk = struct {
+        items: []const T,
+        results: []R,
 
-fn ParallelMapArrayTask(comptime T: type, comptime R: type, comptime mapFn: fn (T) R) type {
-    const Ctx = ArrayContext(T, R);
-    return struct {
-        pub fn task(t: *spice.Task, ctx: Ctx) void {
-            const items = ctx.items;
-            const results = ctx.results;
-
-            if (items.len < 16) {
-                for (items, 0..) |item, i| results[i] = mapFn(item);
-                return;
-            }
-
-            const mid = items.len / 2;
-            const left_ctx = Ctx{ .items = items[0..mid], .results = results[0..mid] };
-            const right_ctx = Ctx{ .items = items[mid..], .results = results[mid..] };
-
-            var fut = spice.Future(Ctx, void).init();
-            fut.fork(t, task, right_ctx);
-
-            t.call(void, task, left_ctx);
-            if (fut.join(t) == null) {
-                t.call(void, task, right_ctx);
-            }
+        fn run(ctx_ptr: *anyopaque, _: *tp.TaskContext) void {
+            const self: *@This() = @ptrCast(@alignCast(ctx_ptr));
+            for (self.items, 0..) |item, i| self.results[i] = mapFn(item);
         }
     };
+
+    const pool = getPool();
+    const chunk_size = @max(THRESHOLD, items.len / MAX_CHUNKS);
+    var chunks: [MAX_CHUNKS]Chunk = undefined;
+    var batch: [MAX_CHUNKS]tp.BatchTask = undefined;
+    var n: usize = 0;
+    var idx: usize = 0;
+    while (idx < items.len and n < MAX_CHUNKS) {
+        const end = @min(idx + chunk_size, items.len);
+        chunks[n] = .{ .items = items[idx..end], .results = results[idx..end] };
+        batch[n] = .{ .task_fn = &Chunk.run, .ctx = @ptrCast(&chunks[n]) };
+        n += 1;
+        idx = end;
+    }
+
+    var wg = pool.waitGroup();
+    _ = pool.submitBatch(batch[0..n], .{ .wait_group = &wg }) catch {
+        for (items, 0..) |item, i| results[i] = mapFn(item);
+        return;
+    };
+    wg.wait();
 }
 
 /// Parallel reduce
@@ -107,52 +90,54 @@ pub fn parallelReduce(
     initial: T,
     comptime reduceFn: fn (T, T) T,
 ) T {
-    if (!true or data.len < 512) {
+    const THRESHOLD = 512;
+    if (data.len < THRESHOLD) {
         var acc = initial;
         for (data) |v| acc = reduceFn(acc, v);
         return acc;
     }
 
-    const pool = getPool();
-    const Ctx = ReduceContext(T);
-    return pool.call(T, ParallelReduceTask(T, reduceFn).task, Ctx{ .data = data, .initial = initial });
-}
+    const ReduceChunk = struct {
+        data: []const T,
+        initial: T,
+        result: T,
 
-fn ReduceContext(comptime T: type) type {
-    return struct { data: []const T, initial: T };
-}
-
-fn ParallelReduceTask(comptime T: type, comptime reduceFn: fn (T, T) T) type {
-    const Ctx = ReduceContext(T);
-    return struct {
-        pub fn task(t: *spice.Task, ctx: Ctx) T {
-            const data = ctx.data;
-            const initial = ctx.initial;
-
-            if (data.len < 256) {
-                var acc = initial;
-                for (data) |v| acc = reduceFn(acc, v);
-                return acc;
-            }
-
-            const mid = data.len / 2;
-            const left_ctx = Ctx{ .data = data[0..mid], .initial = initial };
-            const right_ctx = Ctx{ .data = data[mid..], .initial = initial };
-
-            var fut = spice.Future(Ctx, T).init();
-            fut.fork(t, task, right_ctx);
-
-            const left_result = t.call(T, task, left_ctx);
-            const right_result = if (fut.join(t)) |val| val else t.call(T, task, right_ctx);
-
-            return reduceFn(left_result, right_result);
+        fn run(ctx_ptr: *anyopaque, _: *tp.TaskContext) void {
+            const self: *@This() = @ptrCast(@alignCast(ctx_ptr));
+            var acc = self.initial;
+            for (self.data) |v| acc = reduceFn(acc, v);
+            self.result = acc;
         }
     };
+
+    const pool = getPool();
+    const chunk_size = @max(THRESHOLD, data.len / MAX_CHUNKS);
+    var chunks: [MAX_CHUNKS]ReduceChunk = undefined;
+    var batch: [MAX_CHUNKS]tp.BatchTask = undefined;
+    var n: usize = 0;
+    var idx: usize = 0;
+    while (idx < data.len and n < MAX_CHUNKS) {
+        const end = @min(idx + chunk_size, data.len);
+        chunks[n] = .{ .data = data[idx..end], .initial = initial, .result = initial };
+        batch[n] = .{ .task_fn = &ReduceChunk.run, .ctx = @ptrCast(&chunks[n]) };
+        n += 1;
+        idx = end;
+    }
+
+    var wg = pool.waitGroup();
+    _ = pool.submitBatch(batch[0..n], .{ .wait_group = &wg }) catch {
+        var acc = initial;
+        for (data) |v| acc = reduceFn(acc, v);
+        return acc;
+    };
+    wg.wait();
+
+    var acc = initial;
+    for (chunks[0..n]) |chunk| acc = reduceFn(acc, chunk.result);
+    return acc;
 }
 
 test "parallel reduce" {
-    // spice always enabled when this module is compiled
-
     const data = [_]i32{ 1, 2, 3, 4, 5 };
     const sum = parallelReduce(i32, &data, 0, struct {
         fn add(a: i32, b: i32) i32 {
