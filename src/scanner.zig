@@ -119,23 +119,23 @@ pub const Scanner = struct {
             .line = 1,
             .col = 1,
             .limit_checker = checker,
-            .indent_stack = .{},
-            .block_type_stack = .{},
+            .indent_stack = .empty,
+            .block_type_stack = .empty,
             .indent = -1,
             .is_sequence = false,
             .flow_level = 0,
-            .token_queue = .{},
+            .token_queue = .empty,
             .stream_started = false,
             .stream_ended = false,
             .doc_started = false,
             .tag_directives = tag_dirs,
-            .allocated_strings = .{},
+            .allocated_strings = .empty,
             .pending_key = false,
             .block_map_started_line = null,
             .flow_after_value = false,
-            .flow_context_stack = .{},
-            .flow_start_col_stack = .{},
-            .flow_start_line_stack = .{},
+            .flow_context_stack = .empty,
+            .flow_start_col_stack = .empty,
+            .flow_start_line_stack = .empty,
             .seen_yaml_directive = false,
             .seen_content = false,
             .pending_directive = false,
@@ -706,7 +706,7 @@ pub const Scanner = struct {
         while (self.pos < self.input.len and isNsChar(self.input[self.pos])) self.advance();
         const name = self.input[name_start..self.pos];
         while (self.pos < self.input.len and self.input[self.pos] == ' ') self.advance();
-        var value_buf = std.ArrayList(u8){};
+        var value_buf: std.ArrayList(u8) = .empty;
         defer value_buf.deinit(self.allocator);
         while (self.pos < self.input.len and self.input[self.pos] != '\n') {
             // '#' is only a comment if preceded by whitespace
@@ -1010,7 +1010,7 @@ pub const Scanner = struct {
         self.error_offset = @intCast(start_pos);
         self.error_context = "in double-quoted string";
         self.advance();
-        var result = std.ArrayList(u8){};
+        var result: std.ArrayList(u8) = .empty;
         errdefer result.deinit(self.allocator);
         var scalar_has_newline = false; // Track if scalar spans multiple lines
         var seen_space_on_continuation = false; // Track if any continuation line started with space
@@ -1288,7 +1288,7 @@ pub const Scanner = struct {
         self.error_offset = @intCast(start_pos);
         self.error_context = "in single-quoted string";
         self.advance();
-        var result = std.ArrayList(u8){};
+        var result: std.ArrayList(u8) = .empty;
         errdefer result.deinit(self.allocator);
         var scalar_has_newline = false; // Track if scalar spans multiple lines
         while (self.pos < self.input.len) {
@@ -1519,7 +1519,7 @@ pub const Scanner = struct {
                 if (temp_pos < self.input.len) temp_pos += 1;
             }
         }
-        var result = std.ArrayList(u8){};
+        var result: std.ArrayList(u8) = .empty;
         errdefer result.deinit(self.allocator);
         var trailing_newlines: usize = 0;
         while (self.pos < self.input.len) {
@@ -1592,7 +1592,7 @@ pub const Scanner = struct {
 
         // For multi-line continuation, use the block's indent level, not scalar's start column
         const continuation_indent = self.indent;
-        var result = std.ArrayList(u8){};
+        var result: std.ArrayList(u8) = .empty;
         errdefer result.deinit(self.allocator);
         var pending_newline = false;
         var ended_at_newline = false; // Track if scalar ended at reduced indentation

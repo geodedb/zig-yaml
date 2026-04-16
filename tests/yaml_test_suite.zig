@@ -414,21 +414,22 @@ pub fn main() !void {
     var file_count: usize = 0;
 
     // Open and iterate through test files
-    var dir = std.fs.cwd().openDir(test_suite_dir, .{ .iterate = true }) catch |err| {
+    const io = std.Io.Threaded.global_single_threaded.io();
+    var dir = std.Io.Dir.cwd().openDir(io, test_suite_dir, .{ .iterate = true }) catch |err| {
         std.debug.print("Failed to open test suite directory: {}\n", .{err});
         return;
     };
-    defer dir.close();
+    defer dir.close(io);
 
     // Collect all files first to sort them
-    var files = std.ArrayList([]const u8){};
+    var files: std.ArrayList([]const u8) = .empty;
     defer {
         for (files.items) |f| allocator.free(f);
         files.deinit(allocator);
     }
 
     var iter = dir.iterate();
-    while (iter.next() catch null) |entry| {
+    while (iter.next(io) catch null) |entry| {
         if (entry.kind != .file) continue;
         if (!std.mem.endsWith(u8, entry.name, ".yaml")) continue;
         try files.append(allocator, try allocator.dupe(u8, entry.name));
@@ -446,7 +447,7 @@ pub fn main() !void {
         const file_path = std.fmt.allocPrint(allocator, "{s}/{s}", .{ test_suite_dir, name }) catch continue;
         defer allocator.free(file_path);
 
-        const file_content = std.fs.cwd().readFileAlloc(allocator, file_path, 1024 * 1024) catch continue;
+        const file_content = std.Io.Dir.cwd().readFileAlloc(io, file_path, allocator, .limited(1024 * 1024)) catch continue;
         defer allocator.free(file_content);
 
         // Extract file ID (without .yaml extension)
@@ -599,7 +600,8 @@ test "load actual test file" {
 
     // Test MUS6 (multiple test cases without ---)
     {
-        const content = std.fs.cwd().readFileAlloc(allocator, "testdata/yaml-test-suite/src/MUS6.yaml", 64 * 1024) catch return;
+        const io = std.Io.Threaded.global_single_threaded.io();
+        const content = std.Io.Dir.cwd().readFileAlloc(io, "testdata/yaml-test-suite/src/MUS6.yaml", allocator, .limited(64 * 1024)) catch return;
         defer allocator.free(content);
 
         const docs = yaml.loadAll(allocator, content, .{}) catch |err| {
@@ -623,7 +625,8 @@ test "load actual test file" {
 
     // Test N782 (block literal containing --- and ...)
     {
-        const content = std.fs.cwd().readFileAlloc(allocator, "testdata/yaml-test-suite/src/N782.yaml", 64 * 1024) catch return;
+        const io = std.Io.Threaded.global_single_threaded.io();
+        const content = std.Io.Dir.cwd().readFileAlloc(io, "testdata/yaml-test-suite/src/N782.yaml", allocator, .limited(64 * 1024)) catch return;
         defer allocator.free(content);
 
         const docs = yaml.loadAll(allocator, content, .{}) catch |err| {

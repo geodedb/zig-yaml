@@ -47,7 +47,7 @@ pub const Document = struct {
         return .{
             .arena = std.heap.ArenaAllocator.init(allocator),
             .root = 0,
-            .nodes = .{},
+            .nodes = .empty,
             .anchors = std.StringHashMap(NodeId).init(allocator),
             .allocator = allocator,
         };
@@ -109,7 +109,7 @@ pub const Composer = struct {
             .parse = try parser.Parser.init(allocator, input, opts),
             .options = opts,
             .limit_checker = limits.LimitChecker.initFromParseOptions(opts),
-            .documents = .{},
+            .documents = .empty,
             .current_doc = null,
             .last_error_line = 0,
             .last_error_col = 0,
@@ -192,7 +192,7 @@ pub const Composer = struct {
                 self.limit_checker.pushDepth() catch return error.MaxDepthExceeded;
                 defer self.limit_checker.popDepth();
 
-                var items = std.ArrayList(NodeId){};
+                var items: std.ArrayList(NodeId) = .empty;
                 defer items.deinit(self.allocator);
 
                 while (true) {
@@ -224,7 +224,7 @@ pub const Composer = struct {
                 self.limit_checker.pushDepth() catch return error.MaxDepthExceeded;
                 defer self.limit_checker.popDepth();
 
-                var items = std.ArrayList(KVPair){};
+                var items: std.ArrayList(KVPair) = .empty;
                 defer items.deinit(self.allocator);
 
                 while (true) {

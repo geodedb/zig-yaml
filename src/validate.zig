@@ -88,8 +88,8 @@ pub const Validator = struct {
     pub fn init(allocator: std.mem.Allocator) Self {
         return .{
             .allocator = allocator,
-            .errors = .{},
-            .path_stack = .{},
+            .errors = .empty,
+            .path_stack = .empty,
         };
     }
 

@@ -68,7 +68,7 @@ const Emitter = struct {
     fn init(allocator: std.mem.Allocator, opts: EmitOptions) Emitter {
         return .{
             .allocator = allocator,
-            .buffer = .{},
+            .buffer = .empty,
             .opts = opts,
         };
     }

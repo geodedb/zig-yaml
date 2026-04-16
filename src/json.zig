@@ -73,7 +73,7 @@ const JsonWriter = struct {
     fn init(allocator: std.mem.Allocator, options: JsonOptions) JsonWriter {
         return .{
             .allocator = allocator,
-            .output = .{},
+            .output = .empty,
             .options = options,
             .depth = 0,
         };

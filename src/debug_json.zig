@@ -11,7 +11,7 @@ const composer = @import("composer.zig");
 /// Serialize resolved values to compact JSON: {"d":[ ... ]}
 /// Maps are encoded as {"@":[[k,v],...]}
 pub fn debugJsonValue(allocator: std.mem.Allocator, vals: []const resolver.Value) ![]u8 {
-    var buffer = std.ArrayList(u8){};
+    var buffer: std.ArrayList(u8) = .empty;
     errdefer buffer.deinit(allocator);
 
     try buffer.appendSlice(allocator, "{\"d\":[");
@@ -32,7 +32,7 @@ pub fn debugJsonValue(allocator: std.mem.Allocator, vals: []const resolver.Value
 /// map: {"k":"m","i":[[K,V],...]}
 /// alias: {"k":"*","r":"ANCHOR"}
 pub fn debugJsonGraph(allocator: std.mem.Allocator, docs: []const composer.Document) ![]u8 {
-    var buffer = std.ArrayList(u8){};
+    var buffer: std.ArrayList(u8) = .empty;
     errdefer buffer.deinit(allocator);
 
     try buffer.appendSlice(allocator, "{\"d\":[");

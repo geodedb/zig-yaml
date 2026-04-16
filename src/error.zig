@@ -73,8 +73,7 @@ pub const ParseError = struct {
     /// Formats the error with location information to a provided buffer.
     /// Returns a slice of the buffer containing the formatted string.
     pub fn formatBuf(self: ParseError, buf: []u8) []const u8 {
-        var stream = std.io.fixedBufferStream(buf);
-        const writer = stream.writer();
+        var writer = std.Io.Writer.fixed(buf);
         if (self.context.len > 0) {
             writer.print("{s} at line {d}, column {d}: {s}", .{
                 self.code.message(),
@@ -89,7 +88,7 @@ pub const ParseError = struct {
                 self.col,
             }) catch {};
         }
-        return stream.getWritten();
+        return writer.buffered();
     }
 
     /// Formats the error with location information to a static buffer.
