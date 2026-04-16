@@ -7,7 +7,7 @@ const std = @import("std");
 const tp = @import("thread_pool");
 
 var global_pool: ?tp.ThreadPool = null;
-var pool_mutex: std.Thread.Mutex = .{};
+var pool_mutex: tp.sync.Mutex = .{};
 
 pub fn getPool() *tp.ThreadPool {
     pool_mutex.lock();

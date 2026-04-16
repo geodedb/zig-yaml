@@ -70,6 +70,9 @@ pub const json_mod = @import("json.zig");
 pub const comptime_mod = @import("comptime.zig");
 pub const err_mod = @import("error.zig");
 
+/// Parallel operations (requires `thread_pool`).
+pub const parallel = @import("parallel.zig");
+
 // ============================================================================
 // Public Types (as specified in API)
 // ============================================================================
@@ -1001,4 +1004,19 @@ test "yaml: loadAllWithDetails syntax error" {
         var r = result;
         r.deinit(allocator);
     }
+}
+
+test "parallel re-export is reachable" {
+    // Smoke test: verify parallel.zig is reachable through the public yaml
+    // module, and exercise parallelReduce end-to-end.
+    const data = [_]i32{ 1, 2, 3, 4, 5 };
+    const sum = parallel.parallelReduce(i32, &data, 0, struct {
+        fn add(a: i32, b: i32) i32 {
+            return a + b;
+        }
+    }.add);
+    try std.testing.expectEqual(@as(i32, 15), sum);
+
+    // deinitPool() must be a no-op-safe callable through the re-export.
+    parallel.deinitPool();
 }

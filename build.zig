@@ -38,6 +38,7 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
         .imports = &.{},
     });
+    if (tp_mod) |tm| yaml_mod.addImport("thread_pool", tm);
 
     // Unit tests (tests in src/yaml.zig)
     const unit_tests = b.addTest(.{
@@ -47,6 +48,7 @@ pub fn build(b: *std.Build) void {
             .optimize = optimize,
         }),
     });
+    if (tp_mod) |tm| unit_tests.root_module.addImport("thread_pool", tm);
 
     const run_unit_tests = b.addRunArtifact(unit_tests);
 
