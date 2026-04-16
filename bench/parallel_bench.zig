@@ -111,7 +111,7 @@ pub fn main() !void {
 
     std.debug.print("\n", .{});
     std.debug.print("========================================================================\n", .{});
-    std.debug.print("          YAML Library - Spice Parallel Operations Benchmark           \n", .{});
+    std.debug.print("      YAML Library - Thread Pool Parallel Operations Benchmark\n", .{});
     std.debug.print("========================================================================\n", .{});
     std.debug.print("\n", .{});
     std.debug.print("Warmup: {d} runs, Benchmark: {d} runs (averaged)\n", .{ WARMUP_RUNS, BENCH_RUNS });
