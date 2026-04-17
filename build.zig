@@ -158,12 +158,14 @@ pub fn build(b: *std.Build) void {
     test_step.dependOn(&run_suite_tests.step);
 
     // Check step (compile without running)
+    const check_mod = b.createModule(.{
+        .root_source_file = b.path("src/yaml.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+    if (tp_mod) |tm| check_mod.addImport("thread_pool", tm);
     const check = b.addTest(.{
-        .root_module = b.createModule(.{
-            .root_source_file = b.path("src/yaml.zig"),
-            .target = target,
-            .optimize = optimize,
-        }),
+        .root_module = check_mod,
     });
     const check_step = b.step("check", "Check for compilation errors");
     check_step.dependOn(&check.step);
