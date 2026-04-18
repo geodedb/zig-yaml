@@ -1,0 +1,37 @@
+# A/B stub: submitted.fetchAdd removed, submitted reader = 0
+# branch: df8d7b0, n=10, ReleaseFast
+# baseline: 566K ops/s (Task 1, commit 3506b29)
+--- run 1 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1020780010 ops_per_sec=979643
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=174115785 ops_per_sec=574330
+--- run 2 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1520298457 ops_per_sec=657766
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=189628801 ops_per_sec=527346
+--- run 3 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1362063960 ops_per_sec=734180
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=197206818 ops_per_sec=507082
+--- run 4 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1507788070 ops_per_sec=663223
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=189294516 ops_per_sec=528277
+--- run 5 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1030277293 ops_per_sec=970612
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=181108984 ops_per_sec=552154
+--- run 6 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=973149115 ops_per_sec=1027592
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=171889713 ops_per_sec=581768
+--- run 7 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1382934110 ops_per_sec=723100
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=175035409 ops_per_sec=571313
+--- run 8 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1145908306 ops_per_sec=872670
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=168983276 ops_per_sec=591775
+--- run 9 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1396009242 ops_per_sec=716328
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=163156902 ops_per_sec=612907
+--- run 10 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1076115077 ops_per_sec=929269
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=196924114 ops_per_sec=507810
+median: 803425
+min: 657766
+max: 1027592
+n: 10

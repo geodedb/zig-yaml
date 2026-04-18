@@ -1,0 +1,31 @@
+# A/B stub: acquireDescriptor CAS → mutex bump + flood_1m queue_capacity bump
+# branch: 1781ed9, n=10, ReleaseFast
+# baseline: 566K ops/s (Task 1, commit 3506b29)
+# NOTE: each iteration wrapped in  to bypass benchContended hang
+# (bump allocator + queue_capacity=4096 → contended_spawn_8x deadlocks on
+# backpressure=.block after ~4096 descriptors used; flood_1m line prints BEFORE
+# that hang, so timeout+grep captures it cleanly)
+--- run 1 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1925028928 ops_per_sec=519473
+--- run 2 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2053860554 ops_per_sec=486888
+--- run 3 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2130035666 ops_per_sec=469476
+--- run 4 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2073514401 ops_per_sec=482273
+--- run 5 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2048067221 ops_per_sec=488265
+--- run 6 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1940580503 ops_per_sec=515310
+--- run 7 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1995116240 ops_per_sec=501224
+--- run 8 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2491526195 ops_per_sec=401360
+--- run 9 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2126116574 ops_per_sec=470341
+--- run 10 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2310851655 ops_per_sec=432741
+median: 484580
+min: 401360
+max: 519473
+n: 10

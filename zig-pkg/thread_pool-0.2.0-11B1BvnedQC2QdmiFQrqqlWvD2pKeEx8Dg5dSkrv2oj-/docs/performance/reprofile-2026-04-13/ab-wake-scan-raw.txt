@@ -1,0 +1,39 @@
+# A/B stub: wake-scan primary-removed
+# branch: 663105c, n=10, ReleaseFast
+# baseline: 566K ops/s (Task 1, commit 3506b29)
+# load at start:  20:01:36 up 4 days,  2:55,  4 users,  load average: 22.07, 16.98, 15.53
+--- run 1 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1467750339 ops_per_sec=681315
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=176195062 ops_per_sec=567553
+--- run 2 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1386165431 ops_per_sec=721415
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=153468936 ops_per_sec=651598
+--- run 3 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1175317050 ops_per_sec=850834
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=154507069 ops_per_sec=647220
+--- run 4 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1287555668 ops_per_sec=776665
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=153942488 ops_per_sec=649593
+--- run 5 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1474730848 ops_per_sec=678090
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=163812697 ops_per_sec=610453
+--- run 6 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1142181028 ops_per_sec=875518
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=146404270 ops_per_sec=683040
+--- run 7 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1281219844 ops_per_sec=780506
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=141327193 ops_per_sec=707578
+--- run 8 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1745110990 ops_per_sec=573029
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=152811561 ops_per_sec=654401
+--- run 9 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1190608570 ops_per_sec=839907
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=180352486 ops_per_sec=554470
+--- run 10 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1333944720 ops_per_sec=749656
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=153446022 ops_per_sec=651695
+# load at end:  20:01:51 up 4 days,  2:55,  4 users,  load average: 29.93, 19.06, 16.24
+median: 763160
+min: 573029
+max: 875518
+n: 10
