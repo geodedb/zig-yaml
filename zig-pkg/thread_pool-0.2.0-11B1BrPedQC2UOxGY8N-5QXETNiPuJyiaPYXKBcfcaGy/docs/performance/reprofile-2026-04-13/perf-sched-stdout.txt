@@ -1,0 +1,6 @@
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2728371311 ops_per_sec=366519
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=208632895 ops_per_sec=479311
+[ perf record: Woken up 2 times to write data ]
+Warning:
+1 out of order events recorded.
+[ perf record: Captured and wrote 1169.879 MB /tmp/reprofile-perf.data (10838146 samples) ]

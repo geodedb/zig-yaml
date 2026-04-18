@@ -1,0 +1,25 @@
+# load at start:
+ 21:29:05 up 4 days,  4:23,  3 users,  load average: 2.82, 3.41, 4.48
+run 1: PASS (16s)
+run 2: PASS (3s)
+run 3: PASS (4s)
+run 4: PASS (4s)
+run 5: PASS (4s)
+run 6: PASS (3s)
+run 7: PASS (4s)
+run 8: PASS (4s)
+run 9: PASS (3s)
+run 10: PASS (4s)
+run 11: PASS (4s)
+run 12: PASS (4s)
+run 13: PASS (4s)
+run 14: PASS (4s)
+run 15: PASS (3s)
+run 16: PASS (4s)
+run 17: PASS (4s)
+run 18: PASS (4s)
+run 19: PASS (3s)
+run 20: PASS (4s)
+=== SUMMARY: pass=20 fail=0 ===
+# load at end:
+ 21:30:32 up 4 days,  4:24,  3 users,  load average: 8.58, 5.17, 5.00
