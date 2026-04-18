@@ -1,0 +1,20 @@
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2174519971 ops_per_sec=459872
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=220296915 ops_per_sec=453933
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1955764804 ops_per_sec=511309
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=233805854 ops_per_sec=427705
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2362874274 ops_per_sec=423213
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=236875468 ops_per_sec=422163
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2193616734 ops_per_sec=455868
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=245277167 ops_per_sec=407702
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2253258364 ops_per_sec=443802
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=226697725 ops_per_sec=441116
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2121215011 ops_per_sec=471428
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=269695196 ops_per_sec=370789
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2106527636 ops_per_sec=474715
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=253447143 ops_per_sec=394560
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1884849028 ops_per_sec=530546
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=269099552 ops_per_sec=371610
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2390447979 ops_per_sec=418332
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=240259897 ops_per_sec=416216
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1846298615 ops_per_sec=541624
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=251820142 ops_per_sec=397109

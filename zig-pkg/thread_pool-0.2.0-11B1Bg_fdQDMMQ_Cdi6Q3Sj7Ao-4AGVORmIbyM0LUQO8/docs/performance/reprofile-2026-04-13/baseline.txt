@@ -1,0 +1,41 @@
+# Baseline at 7a7ccb5 (2026-04-13T14:35:55-04:00)
+# n=10, ReleaseFast, direct binary invocation
+# NOTE: source state equivalent to ce0d56b; HEAD is docs-only commit on top
+--- run 1 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1759559408 ops_per_sec=568324
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=238745752 ops_per_sec=418856
+--- run 2 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1797667767 ops_per_sec=556276
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=154007525 ops_per_sec=649319
+--- run 3 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1748250728 ops_per_sec=572000
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=197113252 ops_per_sec=507323
+--- run 4 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1715980386 ops_per_sec=582757
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=193471282 ops_per_sec=516873
+--- run 5 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1755468278 ops_per_sec=569649
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=174977086 ops_per_sec=571503
+--- run 6 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2493404813 ops_per_sec=401058
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=178657260 ops_per_sec=559731
+--- run 7 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2070318250 ops_per_sec=483018
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=153056011 ops_per_sec=653356
+--- run 8 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1771787731 ops_per_sec=564402
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=174572885 ops_per_sec=572827
+--- run 9 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1787070979 ops_per_sec=559575
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=197088704 ops_per_sec=507386
+--- run 10 ---
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1740167987 ops_per_sec=574657
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=190882731 ops_per_sec=523882
+
+# --- flood_1m ops_per_sec statistics (n=10) ---
+# Extraction: grep 'scenario=flood_1m' | grep -Eo 'ops_per_sec=[0-9]+' | cut digits
+# NOTE: plan's default regex 'flood_1m[^0-9]*[0-9]+' would incorrectly capture tasks=1000000
+median: 566363
+min: 401058
+max: 582757
+n: 10
