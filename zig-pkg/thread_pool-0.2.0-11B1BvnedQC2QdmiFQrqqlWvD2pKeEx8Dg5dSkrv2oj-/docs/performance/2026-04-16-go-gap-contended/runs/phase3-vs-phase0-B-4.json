@@ -1,0 +1,735 @@
+{
+  "generated_at_unix_s": 1776427939,
+  "host_os": "linux",
+  "host_arch": "x86_64",
+  "runtimes": [
+    {
+      "runtime_name": "zig_thread_pool",
+      "runtime_version": "zig 0.15.2",
+      "source_commit": "d78a2061f26b67bbd95d76dc5e42ca0417723e7a",
+      "generated_at_unix_s": 1776427926,
+      "host_os": "linux",
+      "host_arch": "x86_64",
+      "rows": [
+        {
+          "scenario_name": "flood_1m",
+          "task_count": 1000000,
+          "submitter_count": 1,
+          "worker_count": 56,
+          "median_elapsed_ns": 953032206,
+          "median_ops_per_sec": 1049282.4835344546,
+          "stddev_ops_per_sec": 57366.91292920415,
+          "sample_count": 2,
+          "warmup_discarded": 1,
+          "samples": [
+            {
+              "elapsed_ns": 1032894149,
+              "ops_per_sec": 968153.4172384976,
+              "latency_p50_us": 0,
+              "latency_p95_us": 0,
+              "latency_p99_us": 0
+            },
+            {
+              "elapsed_ns": 953032206,
+              "ops_per_sec": 1049282.4835344546,
+              "latency_p50_us": 0,
+              "latency_p95_us": 0,
+              "latency_p99_us": 0
+            }
+          ],
+          "latency_p50_us": 0,
+          "latency_p95_us": 0,
+          "latency_p99_us": 0
+        },
+        {
+          "scenario_name": "contended_spawn_8x",
+          "task_count": 100000,
+          "submitter_count": 8,
+          "worker_count": 56,
+          "median_elapsed_ns": 82721883,
+          "median_ops_per_sec": 1208869.9673337948,
+          "stddev_ops_per_sec": 25206.06876820178,
+          "sample_count": 2,
+          "warmup_discarded": 1,
+          "samples": [
+            {
+              "elapsed_ns": 85235273,
+              "ops_per_sec": 1173223.203027695,
+              "latency_p50_us": 0,
+              "latency_p95_us": 0,
+              "latency_p99_us": 0
+            },
+            {
+              "elapsed_ns": 82721883,
+              "ops_per_sec": 1208869.9673337948,
+              "latency_p50_us": 0,
+              "latency_p95_us": 0,
+              "latency_p99_us": 0
+            }
+          ],
+          "latency_p50_us": 0,
+          "latency_p95_us": 0,
+          "latency_p99_us": 0
+        },
+        {
+          "scenario_name": "cpu_work_10us",
+          "task_count": 10000,
+          "submitter_count": 1,
+          "worker_count": 56,
+          "median_elapsed_ns": 9133001,
+          "median_ops_per_sec": 1094930.3520277727,
+          "stddev_ops_per_sec": 25758.633449608067,
+          "sample_count": 2,
+          "warmup_discarded": 1,
+          "samples": [
+            {
+              "elapsed_ns": 9447312,
+              "ops_per_sec": 1058502.1432551397,
+              "latency_p50_us": 36,
+              "latency_p95_us": 181,
+              "latency_p99_us": 250
+            },
+            {
+              "elapsed_ns": 9133001,
+              "ops_per_sec": 1094930.3520277727,
+              "latency_p50_us": 38,
+              "latency_p95_us": 206,
+              "latency_p99_us": 272
+            }
+          ],
+          "latency_p50_us": 38,
+          "latency_p95_us": 206,
+          "latency_p99_us": 272
+        },
+        {
+          "scenario_name": "cpu_work_100us",
+          "task_count": 2000,
+          "submitter_count": 1,
+          "worker_count": 56,
+          "median_elapsed_ns": 4168986,
+          "median_ops_per_sec": 479732.9614443416,
+          "stddev_ops_per_sec": 27716.91119734075,
+          "sample_count": 2,
+          "warmup_discarded": 1,
+          "samples": [
+            {
+              "elapsed_ns": 4539931,
+              "ops_per_sec": 440535.3297219716,
+              "latency_p50_us": 2105,
+              "latency_p95_us": 3901,
+              "latency_p99_us": 4135
+            },
+            {
+              "elapsed_ns": 4168986,
+              "ops_per_sec": 479732.9614443416,
+              "latency_p50_us": 1899,
+              "latency_p95_us": 3397,
+              "latency_p99_us": 3550
+            }
+          ],
+          "latency_p50_us": 1899,
+          "latency_p95_us": 3397,
+          "latency_p99_us": 3550
+        },
+        {
+          "scenario_name": "contended_cpu_10us",
+          "task_count": 10000,
+          "submitter_count": 4,
+          "worker_count": 56,
+          "median_elapsed_ns": 7871492,
+          "median_ops_per_sec": 1270407.1858295733,
+          "stddev_ops_per_sec": 11481.56488918029,
+          "sample_count": 2,
+          "warmup_discarded": 1,
+          "samples": [
+            {
+              "elapsed_ns": 7973402,
+              "ops_per_sec": 1254169.8010460278,
+              "latency_p50_us": 187,
+              "latency_p95_us": 438,
+              "latency_p99_us": 518
+            },
+            {
+              "elapsed_ns": 7871492,
+              "ops_per_sec": 1270407.1858295733,
+              "latency_p50_us": 180,
+              "latency_p95_us": 467,
+              "latency_p99_us": 544
+            }
+          ],
+          "latency_p50_us": 180,
+          "latency_p95_us": 467,
+          "latency_p99_us": 544
+        },
+        {
+          "scenario_name": "nested_fanout_4x",
+          "task_count": 10000,
+          "submitter_count": 1,
+          "worker_count": 56,
+          "median_elapsed_ns": 8116240,
+          "median_ops_per_sec": 1232097.6215587512,
+          "stddev_ops_per_sec": 11937.449143470312,
+          "sample_count": 2,
+          "warmup_discarded": 1,
+          "samples": [
+            {
+              "elapsed_ns": 8228993,
+              "ops_per_sec": 1215215.5190799164,
+              "latency_p50_us": 24,
+              "latency_p95_us": 169,
+              "latency_p99_us": 556
+            },
+            {
+              "elapsed_ns": 8116240,
+              "ops_per_sec": 1232097.6215587512,
+              "latency_p50_us": 23,
+              "latency_p95_us": 171,
+              "latency_p99_us": 587
+            }
+          ],
+          "latency_p50_us": 23,
+          "latency_p95_us": 171,
+          "latency_p99_us": 587
+        },
+        {
+          "scenario_name": "burst_drain_burst",
+          "task_count": 4000,
+          "submitter_count": 1,
+          "worker_count": 56,
+          "median_elapsed_ns": 24523785,
+          "median_ops_per_sec": 163106.95922346407,
+          "stddev_ops_per_sec": 891.9505136923916,
+          "sample_count": 2,
+          "warmup_discarded": 1,
+          "samples": [
+            {
+              "elapsed_ns": 24714921,
+              "ops_per_sec": 161845.55071003464,
+              "latency_p50_us": 706,
+              "latency_p95_us": 1466,
+              "latency_p99_us": 1637
+            },
+            {
+              "elapsed_ns": 24523785,
+              "ops_per_sec": 163106.95922346407,
+              "latency_p50_us": 595,
+              "latency_p95_us": 1424,
+              "latency_p99_us": 1608
+            }
+          ],
+          "latency_p50_us": 595,
+          "latency_p95_us": 1424,
+          "latency_p99_us": 1608
+        },
+        {
+          "scenario_name": "mixed_fast_slow",
+          "task_count": 5000,
+          "submitter_count": 1,
+          "worker_count": 56,
+          "median_elapsed_ns": 24161119,
+          "median_ops_per_sec": 206944.05751654133,
+          "stddev_ops_per_sec": 5353.970650035653,
+          "sample_count": 2,
+          "warmup_discarded": 1,
+          "samples": [
+            {
+              "elapsed_ns": 25078697,
+              "ops_per_sec": 199372.39961071342,
+              "latency_p50_us": 11817,
+              "latency_p95_us": 19839,
+              "latency_p99_us": 21446
+            },
+            {
+              "elapsed_ns": 24161119,
+              "ops_per_sec": 206944.05751654133,
+              "latency_p50_us": 11685,
+              "latency_p95_us": 18567,
+              "latency_p99_us": 20556
+            }
+          ],
+          "latency_p50_us": 11685,
+          "latency_p95_us": 18567,
+          "latency_p99_us": 20556
+        }
+      ]
+    }
+,
+    {
+      "runtime_name": "tokio",
+      "runtime_version": "tokio 1.52.0",
+      "source_commit": "5f7be0ac42cb3e1b739da1562f98a797cd55a606",
+      "generated_at_unix_s": 1776427935,
+      "host_os": "linux",
+      "host_arch": "x86_64",
+      "rows": [
+        {
+          "scenario_name": "flood_1m",
+          "task_count": 1000000,
+          "submitter_count": 1,
+          "worker_count": 56,
+          "median_elapsed_ns": 2838530836,
+          "median_ops_per_sec": 352294.9221891067,
+          "stddev_ops_per_sec": 15787.38255400147,
+          "sample_count": 2,
+          "warmup_discarded": 1,
+          "samples": [
+            {
+              "elapsed_ns": 3030595146,
+              "ops_per_sec": 329968.19166686543
+            },
+            {
+              "elapsed_ns": 2838530836,
+              "ops_per_sec": 352294.9221891067
+            }
+          ],
+          "latency_p50_us": 0,
+          "latency_p95_us": 0,
+          "latency_p99_us": 0
+        },
+        {
+          "scenario_name": "contended_spawn_8x",
+          "task_count": 100000,
+          "submitter_count": 8,
+          "worker_count": 56,
+          "median_elapsed_ns": 138718019,
+          "median_ops_per_sec": 720886.8806005657,
+          "stddev_ops_per_sec": 79312.84541146703,
+          "sample_count": 2,
+          "warmup_discarded": 1,
+          "samples": [
+            {
+              "elapsed_ns": 164278717,
+              "ops_per_sec": 608721.5789492683
+            },
+            {
+              "elapsed_ns": 138718019,
+              "ops_per_sec": 720886.8806005657
+            }
+          ],
+          "latency_p50_us": 0,
+          "latency_p95_us": 0,
+          "latency_p99_us": 0
+        },
+        {
+          "scenario_name": "cpu_work_10us",
+          "task_count": 10000,
+          "submitter_count": 1,
+          "worker_count": 56,
+          "median_elapsed_ns": 14921517,
+          "median_ops_per_sec": 670173.1466043298,
+          "stddev_ops_per_sec": 182150.8968330661,
+          "sample_count": 2,
+          "warmup_discarded": 1,
+          "samples": [
+            {
+              "elapsed_ns": 24238142,
+              "ops_per_sec": 412572.8779045853,
+              "latency_p50_us": 23,
+              "latency_p95_us": 94,
+              "latency_p99_us": 268
+            },
+            {
+              "elapsed_ns": 14921517,
+              "ops_per_sec": 670173.1466043298,
+              "latency_p50_us": 21,
+              "latency_p95_us": 83,
+              "latency_p99_us": 235
+            }
+          ],
+          "latency_p50_us": 21,
+          "latency_p95_us": 83,
+          "latency_p99_us": 235
+        },
+        {
+          "scenario_name": "cpu_work_100us",
+          "task_count": 2000,
+          "submitter_count": 1,
+          "worker_count": 56,
+          "median_elapsed_ns": 5050010,
+          "median_ops_per_sec": 396038.8197251095,
+          "stddev_ops_per_sec": 29235.549971051354,
+          "sample_count": 2,
+          "warmup_discarded": 1,
+          "samples": [
+            {
+              "elapsed_ns": 5638671,
+              "ops_per_sec": 354693.5084526123,
+              "latency_p50_us": 2825,
+              "latency_p95_us": 4064,
+              "latency_p99_us": 4190
+            },
+            {
+              "elapsed_ns": 5050010,
+              "ops_per_sec": 396038.8197251095,
+              "latency_p50_us": 2458,
+              "latency_p95_us": 3352,
+              "latency_p99_us": 3529
+            }
+          ],
+          "latency_p50_us": 2458,
+          "latency_p95_us": 3352,
+          "latency_p99_us": 3529
+        },
+        {
+          "scenario_name": "contended_cpu_10us",
+          "task_count": 10000,
+          "submitter_count": 4,
+          "worker_count": 56,
+          "median_elapsed_ns": 18098862,
+          "median_ops_per_sec": 552520.9264538289,
+          "stddev_ops_per_sec": 9728.999542837419,
+          "sample_count": 2,
+          "warmup_discarded": 1,
+          "samples": [
+            {
+              "elapsed_ns": 18561070,
+              "ops_per_sec": 538762.0433520266,
+              "latency_p50_us": 31,
+              "latency_p95_us": 353,
+              "latency_p99_us": 419
+            },
+            {
+              "elapsed_ns": 18098862,
+              "ops_per_sec": 552520.9264538289,
+              "latency_p50_us": 26,
+              "latency_p95_us": 478,
+              "latency_p99_us": 599
+            }
+          ],
+          "latency_p50_us": 26,
+          "latency_p95_us": 478,
+          "latency_p99_us": 599
+        },
+        {
+          "scenario_name": "nested_fanout_4x",
+          "task_count": 10000,
+          "submitter_count": 1,
+          "worker_count": 56,
+          "median_elapsed_ns": 6585032,
+          "median_ops_per_sec": 1518595.5056862289,
+          "stddev_ops_per_sec": 324988.44091050926,
+          "sample_count": 2,
+          "warmup_discarded": 1,
+          "samples": [
+            {
+              "elapsed_ns": 9442938,
+              "ops_per_sec": 1058992.4449360995,
+              "latency_p50_us": 8,
+              "latency_p95_us": 35,
+              "latency_p99_us": 289
+            },
+            {
+              "elapsed_ns": 6585032,
+              "ops_per_sec": 1518595.5056862289,
+              "latency_p50_us": 5,
+              "latency_p95_us": 23,
+              "latency_p99_us": 147
+            }
+          ],
+          "latency_p50_us": 5,
+          "latency_p95_us": 23,
+          "latency_p99_us": 147
+        },
+        {
+          "scenario_name": "burst_drain_burst",
+          "task_count": 4000,
+          "submitter_count": 1,
+          "worker_count": 56,
+          "median_elapsed_ns": 29445439,
+          "median_ops_per_sec": 135844.46813647437,
+          "stddev_ops_per_sec": 1221.233217396922,
+          "sample_count": 2,
+          "warmup_discarded": 1,
+          "samples": [
+            {
+              "elapsed_ns": 29824620,
+              "ops_per_sec": 134117.38355761112,
+              "latency_p50_us": 930,
+              "latency_p95_us": 1409,
+              "latency_p99_us": 1582
+            },
+            {
+              "elapsed_ns": 29445439,
+              "ops_per_sec": 135844.46813647437,
+              "latency_p50_us": 1311,
+              "latency_p95_us": 1981,
+              "latency_p99_us": 2180
+            }
+          ],
+          "latency_p50_us": 1311,
+          "latency_p95_us": 1981,
+          "latency_p99_us": 2180
+        },
+        {
+          "scenario_name": "mixed_fast_slow",
+          "task_count": 5000,
+          "submitter_count": 1,
+          "worker_count": 56,
+          "median_elapsed_ns": 21502610,
+          "median_ops_per_sec": 232529.9114851639,
+          "stddev_ops_per_sec": 51449.49053514532,
+          "sample_count": 2,
+          "warmup_discarded": 1,
+          "samples": [
+            {
+              "elapsed_ns": 31295115,
+              "ops_per_sec": 159769.3441931752,
+              "latency_p50_us": 14987,
+              "latency_p95_us": 25942,
+              "latency_p99_us": 27701
+            },
+            {
+              "elapsed_ns": 21502610,
+              "ops_per_sec": 232529.9114851639,
+              "latency_p50_us": 9939,
+              "latency_p95_us": 16958,
+              "latency_p99_us": 19195
+            }
+          ],
+          "latency_p50_us": 9939,
+          "latency_p95_us": 16958,
+          "latency_p99_us": 19195
+        }
+      ]
+    },
+    {
+      "runtime_name": "go",
+      "runtime_version": "go1.27-devel_a1e7a415 Tue Apr 14 20:34:30 2026 -0700 linux/amd64",
+      "source_commit": "a1e7a41560e1f64aa49d30ccbdea5b0e715663c6",
+      "generated_at_unix_s": 1776427939,
+      "host_os": "linux",
+      "host_arch": "amd64",
+      "rows": [
+        {
+          "scenario_name": "flood_1m",
+          "task_count": 1000000,
+          "submitter_count": 1,
+          "worker_count": 56,
+          "median_elapsed_ns": 1142305725,
+          "median_ops_per_sec": 875422.3830927574,
+          "stddev_ops_per_sec": 77475.54761585908,
+          "sample_count": 2,
+          "warmup_discarded": 1,
+          "samples": [
+            {
+              "elapsed_ns": 1305729493,
+              "ops_per_sec": 765855.412902127
+            },
+            {
+              "elapsed_ns": 1142305725,
+              "ops_per_sec": 875422.3830927574
+            }
+          ],
+          "latency_p50_us": 0,
+          "latency_p95_us": 0,
+          "latency_p99_us": 0
+        },
+        {
+          "scenario_name": "contended_spawn_8x",
+          "task_count": 100000,
+          "submitter_count": 8,
+          "worker_count": 56,
+          "median_elapsed_ns": 33382008,
+          "median_ops_per_sec": 2995625.66757518,
+          "stddev_ops_per_sec": 134717.43108844318,
+          "sample_count": 2,
+          "warmup_discarded": 1,
+          "samples": [
+            {
+              "elapsed_ns": 35649271,
+              "ops_per_sec": 2805106.449441841
+            },
+            {
+              "elapsed_ns": 33382008,
+              "ops_per_sec": 2995625.66757518
+            }
+          ],
+          "latency_p50_us": 0,
+          "latency_p95_us": 0,
+          "latency_p99_us": 0
+        },
+        {
+          "scenario_name": "cpu_work_10us",
+          "task_count": 10000,
+          "submitter_count": 1,
+          "worker_count": 56,
+          "median_elapsed_ns": 13082524,
+          "median_ops_per_sec": 764378.4945473825,
+          "stddev_ops_per_sec": 87329.84304488098,
+          "sample_count": 2,
+          "warmup_discarded": 1,
+          "samples": [
+            {
+              "elapsed_ns": 15603656,
+              "ops_per_sec": 640875.4461133981,
+              "latency_p50_us": 40,
+              "latency_p95_us": 106,
+              "latency_p99_us": 135
+            },
+            {
+              "elapsed_ns": 13082524,
+              "ops_per_sec": 764378.4945473825,
+              "latency_p50_us": 36,
+              "latency_p95_us": 105,
+              "latency_p99_us": 135
+            }
+          ],
+          "latency_p50_us": 36,
+          "latency_p95_us": 105,
+          "latency_p99_us": 135
+        },
+        {
+          "scenario_name": "cpu_work_100us",
+          "task_count": 2000,
+          "submitter_count": 1,
+          "worker_count": 56,
+          "median_elapsed_ns": 5087323,
+          "median_ops_per_sec": 393134.0707087008,
+          "stddev_ops_per_sec": 95366.86058752272,
+          "sample_count": 2,
+          "warmup_discarded": 1,
+          "samples": [
+            {
+              "elapsed_ns": 7743985,
+              "ops_per_sec": 258264.96306488197,
+              "latency_p50_us": 1594,
+              "latency_p95_us": 4556,
+              "latency_p99_us": 7353
+            },
+            {
+              "elapsed_ns": 5087323,
+              "ops_per_sec": 393134.0707087008,
+              "latency_p50_us": 1380,
+              "latency_p95_us": 1783,
+              "latency_p99_us": 1913
+            }
+          ],
+          "latency_p50_us": 1380,
+          "latency_p95_us": 1783,
+          "latency_p99_us": 1913
+        },
+        {
+          "scenario_name": "contended_cpu_10us",
+          "task_count": 10000,
+          "submitter_count": 4,
+          "worker_count": 56,
+          "median_elapsed_ns": 5524344,
+          "median_ops_per_sec": 1810169.6780649433,
+          "stddev_ops_per_sec": 460164.7035872393,
+          "sample_count": 2,
+          "warmup_discarded": 1,
+          "samples": [
+            {
+              "elapsed_ns": 8625162,
+              "ops_per_sec": 1159398.5133264742,
+              "latency_p50_us": 149,
+              "latency_p95_us": 625,
+              "latency_p99_us": 750
+            },
+            {
+              "elapsed_ns": 5524344,
+              "ops_per_sec": 1810169.6780649433,
+              "latency_p50_us": 357,
+              "latency_p95_us": 684,
+              "latency_p99_us": 810
+            }
+          ],
+          "latency_p50_us": 357,
+          "latency_p95_us": 684,
+          "latency_p99_us": 810
+        },
+        {
+          "scenario_name": "nested_fanout_4x",
+          "task_count": 10000,
+          "submitter_count": 1,
+          "worker_count": 56,
+          "median_elapsed_ns": 3081889,
+          "median_ops_per_sec": 3244763.1955596064,
+          "stddev_ops_per_sec": 947131.3686806248,
+          "sample_count": 2,
+          "warmup_discarded": 1,
+          "samples": [
+            {
+              "elapsed_ns": 5248470,
+              "ops_per_sec": 1905317.168622475,
+              "latency_p50_us": 8,
+              "latency_p95_us": 235,
+              "latency_p99_us": 608
+            },
+            {
+              "elapsed_ns": 3081889,
+              "ops_per_sec": 3244763.1955596064,
+              "latency_p50_us": 7,
+              "latency_p95_us": 108,
+              "latency_p99_us": 200
+            }
+          ],
+          "latency_p50_us": 7,
+          "latency_p95_us": 108,
+          "latency_p99_us": 200
+        },
+        {
+          "scenario_name": "burst_drain_burst",
+          "task_count": 4000,
+          "submitter_count": 1,
+          "worker_count": 56,
+          "median_elapsed_ns": 26578595,
+          "median_ops_per_sec": 150497.0447083452,
+          "stddev_ops_per_sec": 3864.826603241546,
+          "sample_count": 2,
+          "warmup_discarded": 1,
+          "samples": [
+            {
+              "elapsed_ns": 27580243,
+              "ops_per_sec": 145031.35450982067,
+              "latency_p50_us": 855,
+              "latency_p95_us": 1314,
+              "latency_p99_us": 1785
+            },
+            {
+              "elapsed_ns": 26578595,
+              "ops_per_sec": 150497.0447083452,
+              "latency_p50_us": 667,
+              "latency_p95_us": 956,
+              "latency_p99_us": 1347
+            }
+          ],
+          "latency_p50_us": 667,
+          "latency_p95_us": 956,
+          "latency_p99_us": 1347
+        },
+        {
+          "scenario_name": "mixed_fast_slow",
+          "task_count": 5000,
+          "submitter_count": 1,
+          "worker_count": 56,
+          "median_elapsed_ns": 20163995,
+          "median_ops_per_sec": 247966.7347665976,
+          "stddev_ops_per_sec": 11315.780078936154,
+          "sample_count": 2,
+          "warmup_discarded": 1,
+          "samples": [
+            {
+              "elapsed_ns": 21555087,
+              "ops_per_sec": 231963.8051101348,
+              "latency_p50_us": 9008,
+              "latency_p95_us": 14490,
+              "latency_p99_us": 15916
+            },
+            {
+              "elapsed_ns": 20163995,
+              "ops_per_sec": 247966.7347665976,
+              "latency_p50_us": 8490,
+              "latency_p95_us": 14564,
+              "latency_p99_us": 15550
+            }
+          ],
+          "latency_p50_us": 8490,
+          "latency_p95_us": 14564,
+          "latency_p99_us": 15550
+        }
+      ]
+    }
+
+  ]
+}

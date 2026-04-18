@@ -1,0 +1,801 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 747K of event 'cycles:P'
+# Event count (approx.): 454568719173
+#
+# Overhead  Command          Shared Object             Symbol
+# ........  ...............  ........................  ............................................................
+#
+    69.69%  thread-pool-tok  thread-pool-tokio-parity  [.] Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |
+            |--12.90%--pool.Core.nextTask (inlined)
+            |          pool.Core.workerMain (inlined)
+            |          Thread.callFn__anon_5095 (inlined)
+            |          Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |          os.linux.x86_64.clone
+            |
+            |--10.91%--atomic.Value(usize).load (inlined)
+            |          queue.bounded_ring.BoundedRing(u64).popMany (inlined)
+            |          pool.Core.nextTask (inlined)
+            |          pool.Core.workerMain (inlined)
+            |          Thread.callFn__anon_5095 (inlined)
+            |          Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |          os.linux.x86_64.clone
+            |
+            |--9.30%--atomic.Value(u64).load (inlined)
+            |          |
+            |          |--5.04%--pool.Core.idle (inlined)
+            |          |          pool.Core.workerMain (inlined)
+            |          |          Thread.callFn__anon_5095 (inlined)
+            |          |          Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |          |          os.linux.x86_64.clone
+            |          |
+            |          |--2.92%--pool.Core.nextTask (inlined)
+            |          |          pool.Core.workerMain (inlined)
+            |          |          Thread.callFn__anon_5095 (inlined)
+            |          |          Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |          |          os.linux.x86_64.clone
+            |          |
+            |           --1.29%--pool.Core.releaseDescriptor (inlined)
+            |                     pool.Core.runTask (inlined)
+            |                     pool.Core.workerMain (inlined)
+            |                     Thread.callFn__anon_5095 (inlined)
+            |                     Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |                     os.linux.x86_64.clone
+            |
+            |--4.71%--atomic.Value(pool.PoolState).load (inlined)
+            |          |
+            |          |--2.36%--pool.Core.idle (inlined)
+            |          |          pool.Core.workerMain (inlined)
+            |          |          Thread.callFn__anon_5095 (inlined)
+            |          |          Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |          |          os.linux.x86_64.clone
+            |          |
+            |           --2.34%--pool.Core.shouldExit (inlined)
+            |                     pool.Core.workerMain (inlined)
+            |                     Thread.callFn__anon_5095 (inlined)
+            |                     Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |                     os.linux.x86_64.clone
+            |
+            |--4.07%--atomic.Value(u64).cmpxchgWeak (inlined)
+            |          |
+            |           --4.07%--pool.Core.releaseDescriptor (inlined)
+            |                     pool.Core.runTask (inlined)
+            |                     pool.Core.workerMain (inlined)
+            |                     Thread.callFn__anon_5095 (inlined)
+            |                     Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |                     os.linux.x86_64.clone
+            |
+            |--4.02%--atomic.Value(u64).fetchAdd (inlined)
+            |          |
+            |          |--1.34%--stats.latency.LatencyHistogram.observe (inlined)
+            |          |          pool.Core.runTask (inlined)
+            |          |          pool.Core.workerMain (inlined)
+            |          |          Thread.callFn__anon_5095 (inlined)
+            |          |          Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |          |          os.linux.x86_64.clone
+            |          |
+            |          |--1.09%--pool.Core.idle (inlined)
+            |          |          pool.Core.workerMain (inlined)
+            |          |          Thread.callFn__anon_5095 (inlined)
+            |          |          Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |          |          os.linux.x86_64.clone
+            |          |
+            |          |--0.91%--pool.Core.runTask (inlined)
+            |          |          pool.Core.workerMain (inlined)
+            |          |          Thread.callFn__anon_5095 (inlined)
+            |          |          Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |          |          os.linux.x86_64.clone
+            |          |
+            |           --0.68%--pool.Core.nextTask (inlined)
+            |                     pool.Core.workerMain (inlined)
+            |                     Thread.callFn__anon_5095 (inlined)
+            |                     Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |                     os.linux.x86_64.clone
+            |
+            |--3.72%--pool.Core.workerMain (inlined)
+            |          Thread.callFn__anon_5095 (inlined)
+            |          Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |          os.linux.x86_64.clone
+            |
+            |--2.47%--pool.Core.idle (inlined)
+            |          pool.Core.workerMain (inlined)
+            |          Thread.callFn__anon_5095 (inlined)
+            |          Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |          os.linux.x86_64.clone
+            |
+            |--2.43%--atomic.Value(usize).cmpxchgStrong (inlined)
+            |          queue.bounded_ring.BoundedRing(u64).popMany (inlined)
+            |          pool.Core.nextTask (inlined)
+            |          pool.Core.workerMain (inlined)
+            |          Thread.callFn__anon_5095 (inlined)
+            |          Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |          os.linux.x86_64.clone
+            |
+            |--2.37%--atomic.Value(u64).fetchSub (inlined)
+            |          |
+            |          |--1.38%--pool.Core.releaseDescriptor (inlined)
+            |          |          pool.Core.runTask (inlined)
+            |          |          pool.Core.workerMain (inlined)
+            |          |          Thread.callFn__anon_5095 (inlined)
+            |          |          Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |          |          os.linux.x86_64.clone
+            |          |
+            |           --0.56%--pool.Core.decrementQueued (inlined)
+            |                     pool.Core.runTask (inlined)
+            |                     pool.Core.workerMain (inlined)
+            |                     Thread.callFn__anon_5095 (inlined)
+            |                     Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |                     os.linux.x86_64.clone
+            |
+            |--2.06%--pool.Core.runTask (inlined)
+            |          pool.Core.workerMain (inlined)
+            |          Thread.callFn__anon_5095 (inlined)
+            |          Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |          os.linux.x86_64.clone
+            |
+            |--1.87%--pool.Core.releaseDescriptor (inlined)
+            |          pool.Core.runTask (inlined)
+            |          pool.Core.workerMain (inlined)
+            |          Thread.callFn__anon_5095 (inlined)
+            |          Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |          os.linux.x86_64.clone
+            |
+            |--1.63%--atomic.Value(u32).store (inlined)
+            |          |
+            |           --1.63%--queue.ring_queue.RingQueue(u64).pop (inlined)
+            |                     pool.LocalQueue.popBottom (inlined)
+            |                     pool.Core.nextTask (inlined)
+            |                     pool.Core.workerMain (inlined)
+            |                     Thread.callFn__anon_5095 (inlined)
+            |                     Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |                     os.linux.x86_64.clone
+            |
+            |--1.36%--atomic.Value(u64).swap (inlined)
+            |          pool.Core.nextTask (inlined)
+            |          pool.Core.workerMain (inlined)
+            |          Thread.callFn__anon_5095 (inlined)
+            |          Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |          os.linux.x86_64.clone
+            |
+            |--0.69%--queue.bounded_ring.BoundedRing(u64).popMany (inlined)
+            |          pool.Core.nextTask (inlined)
+            |          pool.Core.workerMain (inlined)
+            |          Thread.callFn__anon_5095 (inlined)
+            |          Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |          os.linux.x86_64.clone
+            |
+            |--0.63%--atomic.Value(u32).swap (inlined)
+            |          Thread.Mutex.FutexImpl.unlock (inlined)
+            |          Thread.Mutex.unlock (inlined)
+            |          |
+            |           --0.61%--pool.Core.idle (inlined)
+            |                     pool.Core.workerMain (inlined)
+            |                     Thread.callFn__anon_5095 (inlined)
+            |                     Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |                     os.linux.x86_64.clone
+            |
+            |--0.58%--pool.LocalQueue.steal (inlined)
+            |          pool.Core.nextTask (inlined)
+            |          pool.Core.workerMain (inlined)
+            |          Thread.callFn__anon_5095 (inlined)
+            |          Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+            |          os.linux.x86_64.clone
+            |
+             --0.50%--atomic.Value(u32).fetchOr (inlined)
+                       atomic.Value(u32).bitSet (inlined)
+                       Thread.Mutex.FutexImpl.tryLock (inlined)
+                       Thread.Mutex.FutexImpl.lock (inlined)
+                       Thread.Mutex.lock (inlined)
+
+     9.16%  thread-pool-tok  thread-pool-tokio-parity  [.] pool.Core.enqueuePush
+            |
+            |--2.15%--atomic.Value(u64).cmpxchgWeak (inlined)
+            |          |
+            |           --2.15%--pool.Core.acquireDescriptor (inlined)
+            |                     pool.Core.enqueuePush
+            |                     |
+            |                     |--1.56%--pool.Core.submitBatch (inlined)
+            |                     |          pool.ThreadPool.submitBatch
+            |                     |          |
+            |                     |          |--0.90%--bench_tokio_parity.contendedBatchedSubmitterThread (inlined)
+            |                     |          |          Thread.callFn__anon_7798 (inlined)
+            |                     |          |          Thread.LinuxThreadImpl.spawn__anon_4721.Instance.entryFn
+            |                     |          |          os.linux.x86_64.clone
+            |                     |          |
+            |                     |           --0.66%--bench_tokio_parity.benchFloodBatched__anon_2848 (inlined)
+            |                     |                     bench_tokio_parity.main (inlined)
+            |                     |                     start.callMain (inlined)
+            |                     |                     start.callMainWithArgs (inlined)
+            |                     |                     start.posixCallMainAndExit
+            |                     |                     start._start (inlined)
+            |                     |
+            |                      --0.59%--pool.Core.enqueueTask (inlined)
+            |                                pool.Core.submitInternal (inlined)
+            |                                pool.Core.submit (inlined)
+            |                                pool.ThreadPool.submit
+            |
+            |--1.35%--pool.Core.enqueuePush
+            |          |
+            |           --0.99%--pool.Core.submitBatch (inlined)
+            |                     pool.ThreadPool.submitBatch
+            |                     |
+            |                      --0.61%--bench_tokio_parity.benchFloodBatched__anon_2848 (inlined)
+            |                                bench_tokio_parity.main (inlined)
+            |                                start.callMain (inlined)
+            |                                start.callMainWithArgs (inlined)
+            |                                start.posixCallMainAndExit
+            |                                start._start (inlined)
+            |
+            |--1.24%--atomic.Value(usize).cmpxchgWeak (inlined)
+            |          queue.bounded_ring.BoundedRing(u64).tryPush (inlined)
+            |          pool.Core.enqueuePush
+            |          |
+            |           --0.86%--pool.Core.submitBatch (inlined)
+            |                     pool.ThreadPool.submitBatch
+            |                     |
+            |                      --0.51%--bench_tokio_parity.contendedBatchedSubmitterThread (inlined)
+            |                                Thread.callFn__anon_7798 (inlined)
+            |                                Thread.LinuxThreadImpl.spawn__anon_4721.Instance.entryFn
+            |                                os.linux.x86_64.clone
+            |
+            |--1.11%--pool.Core.acquireDescriptor (inlined)
+            |          pool.Core.enqueuePush
+            |          |
+            |          |--0.57%--pool.Core.submitBatch (inlined)
+            |          |          pool.ThreadPool.submitBatch
+            |          |
+            |           --0.54%--pool.Core.enqueueTask (inlined)
+            |                     pool.Core.submitInternal (inlined)
+            |                     pool.Core.submit (inlined)
+            |                     pool.ThreadPool.submit
+            |
+            |--1.02%--atomic.Value(u64).load (inlined)
+            |          |
+            |           --0.94%--pool.Core.acquireDescriptor (inlined)
+            |                     pool.Core.enqueuePush
+            |                     |
+            |                      --0.61%--pool.Core.submitBatch (inlined)
+            |                                pool.ThreadPool.submitBatch
+            |
+            |--0.90%--atomic.Value(u64).fetchAdd (inlined)
+            |          pool.Core.acquireDescriptor (inlined)
+            |          pool.Core.enqueuePush
+            |
+             --0.69%--queue.bounded_ring.BoundedRing(u64).tryPush (inlined)
+                       pool.Core.enqueuePush
+                       |
+                        --0.52%--pool.Core.submitBatch (inlined)
+                                  pool.ThreadPool.submitBatch
+
+     2.15%  thread-pool-tok  [kernel.kallsyms]         [k] entry_SYSRETQ_unsafe_stack
+            |
+             --1.98%--entry_SYSRETQ_unsafe_stack
+                       |
+                       |--1.00%--os.linux.errnoFromSyscall (inlined)
+                       |          Thread.Futex.LinuxImpl.wait (inlined)
+                       |          Thread.Futex.timedWait
+                       |          Thread.Futex.Deadline.wait
+                       |          Thread.Condition.FutexImpl.wait
+                       |          Thread.Condition.timedWait (inlined)
+                       |          |
+                       |           --1.00%--pool.Core.idle (inlined)
+                       |                     pool.Core.workerMain (inlined)
+                       |                     Thread.callFn__anon_5095 (inlined)
+                       |                     Thread.LinuxThreadImpl.spawn__anon_4162.Instance.entryFn
+                       |                     os.linux.x86_64.clone
+                       |
+                        --0.91%--os.linux.x86_64.syscall3 (inlined)
+                                  os.linux.futex_3arg (inlined)
+                                  Thread.Futex.LinuxImpl.wake (inlined)
+                                  Thread.Futex.wake (inlined)
+                                  |
+                                   --0.90%--Thread.Condition.FutexImpl.wake__anon_6992 (inlined)
+                                             Thread.Condition.signal (inlined)
+                                             pool.Core.notifySubmits
+                                             |
+                                              --0.88%--pool.Core.enqueueTask (inlined)
+                                                        pool.Core.submitInternal (inlined)
+                                                        pool.Core.submit (inlined)
+                                                        pool.ThreadPool.submit
+                                                        |
+                                                         --0.76%--bench_tokio_parity.benchFlood__anon_1803 (inlined)
+                                                                   bench_tokio_parity.main (inlined)
+                                                                   start.callMain (inlined)
+                                                                   start.callMainWithArgs (inlined)
+                                                                   start.posixCallMainAndExit
+                                                                   start._start (inlined)
+
+     1.27%  thread-pool-tok  thread-pool-tokio-parity  [.] pool.Core.notifySubmits
+     0.70%  thread-pool-tok  [kernel.kallsyms]         [k] entry_SYSCALL_64
+            |
+             --0.60%--entry_SYSCALL_64
+
+     0.68%  thread-pool-tok  [vdso]                    [.] __vdso_clock_gettime
+            |
+             --0.68%--__vdso_clock_gettime
+                       |
+                        --0.63%--os.linux.clock_gettime (inlined)
+                                  posix.clock_gettime (inlined)
+                                  |
+                                   --0.51%--time.nanoTimestamp (inlined)
+                                             pool.nowNs (inlined)
+
+     0.61%  thread-pool-tok  [kernel.kallsyms]         [k] syscall_return_via_sysret
+            |
+             --0.60%--syscall_return_via_sysret
+
+     0.57%  thread-pool-tok  thread-pool-tokio-parity  [.] Thread.Condition.FutexImpl.wait
+     0.55%  thread-pool-tok  [kernel.kallsyms]         [k] futex_wake
+            |
+             --0.54%--futex_wake
+                       do_futex
+                       __x64_sys_futex
+                       do_syscall_64
+                       entry_SYSCALL_64_after_hwframe
+                       |
+                        --0.52%--os.linux.x86_64.syscall3 (inlined)
+                                  os.linux.futex_3arg (inlined)
+                                  Thread.Futex.LinuxImpl.wake (inlined)
+                                  Thread.Futex.wake (inlined)
+                                  |
+                                   --0.52%--Thread.Condition.FutexImpl.wake__anon_6992 (inlined)
+                                             Thread.Condition.signal (inlined)
+                                             pool.Core.notifySubmits
+                                             |
+                                              --0.52%--pool.Core.enqueueTask (inlined)
+                                                        pool.Core.submitInternal (inlined)
+                                                        pool.Core.submit (inlined)
+                                                        pool.ThreadPool.submit
+
+     0.53%  thread-pool-tok  [kernel.kallsyms]         [k] native_write_msr
+            |
+             --0.52%--native_write_msr
+
+     0.47%  thread-pool-tok  [kernel.kallsyms]         [k] dequeue_entity
+     0.46%  thread-pool-tok  [kernel.kallsyms]         [k] try_to_wake_up
+     0.40%  thread-pool-tok  [kernel.kallsyms]         [k] available_idle_cpu
+     0.37%  thread-pool-tok  [kernel.kallsyms]         [k] futex_wake_mark
+     0.36%  thread-pool-tok  [kernel.kallsyms]         [k] __update_load_avg_cfs_rq
+     0.35%  thread-pool-tok  [kernel.kallsyms]         [k] native_queued_spin_lock_slowpath
+     0.34%  thread-pool-tok  [kernel.kallsyms]         [k] psi_group_change
+     0.33%  thread-pool-tok  [kernel.kallsyms]         [k] call_function_single_prep_ipi
+     0.31%  thread-pool-tok  [kernel.kallsyms]         [k] _raw_spin_lock_irqsave
+     0.28%  thread-pool-tok  thread-pool-tokio-parity  [.] bench_tokio_parity.noopTask
+     0.27%  thread-pool-tok  [kernel.kallsyms]         [k] ttwu_queue_wakelist
+     0.26%  thread-pool-tok  [kernel.kallsyms]         [k] update_curr
+     0.26%  thread-pool-tok  [kernel.kallsyms]         [k] update_load_avg
+     0.26%  thread-pool-tok  [kernel.kallsyms]         [k] llist_add_batch
+     0.23%  thread-pool-tok  [kernel.kallsyms]         [k] hrtimer_start_range_ns
+     0.23%  thread-pool-tok  [kernel.kallsyms]         [k] _raw_spin_lock
+     0.23%  thread-pool-tok  [kernel.kallsyms]         [k] __schedule
+     0.23%  thread-pool-tok  [kernel.kallsyms]         [k] finish_task_switch.isra.0
+     0.22%  thread-pool-tok  [kernel.kallsyms]         [k] __calc_delta.constprop.0
+     0.22%  thread-pool-tok  [kernel.kallsyms]         [k] __update_load_avg_se
+     0.20%  thread-pool-tok  [kernel.kallsyms]         [k] __x64_sys_futex
+     0.19%  thread-pool-tok  [kernel.kallsyms]         [k] dequeue_entities
+     0.18%  thread-pool-tok  [kernel.kallsyms]         [k] entry_SYSCALL_64_after_hwframe
+     0.18%  thread-pool-tok  [kernel.kallsyms]         [k] read_tsc
+     0.17%  thread-pool-tok  [kernel.kallsyms]         [k] do_syscall_64
+     0.17%  thread-pool-tok  [kernel.kallsyms]         [k] __perf_event_task_sched_in
+     0.17%  thread-pool-tok  [kernel.kallsyms]         [k] futex_q_lock
+     0.16%  thread-pool-tok  thread-pool-tokio-parity  [.] Thread.Futex.Deadline.wait
+     0.16%  thread-pool-tok  [kernel.kallsyms]         [k] lapic_next_deadline
+     0.15%  thread-pool-tok  thread-pool-tokio-parity  [.] start.posixCallMainAndExit
+     0.15%  thread-pool-tok  [kernel.kallsyms]         [k] avg_vruntime
+     0.15%  thread-pool-tok  thread-pool-tokio-parity  [.] pool.ThreadPool.submitBatch
+     0.14%  thread-pool-tok  [kernel.kallsyms]         [k] hrtimer_try_to_cancel.part.0
+     0.13%  thread-pool-tok  [kernel.kallsyms]         [k] select_task_rq_fair
+     0.13%  thread-pool-tok  [kernel.kallsyms]         [k] psi_task_switch
+     0.13%  thread-pool-tok  [kernel.kallsyms]         [k] __futex_wait
+     0.13%  thread-pool-tok  thread-pool-tokio-parity  [.] Thread.Futex.timedWait
+     0.13%  thread-pool-tok  [kernel.kallsyms]         [k] sched_balance_newidle
+     0.12%  thread-pool-tok  thread-pool-tokio-parity  [.] pool.ThreadPool.submit
+     0.12%  thread-pool-tok  [kernel.kallsyms]         [k] update_entity_lag
+     0.12%  thread-pool-tok  [kernel.kallsyms]         [k] ktime_get
+     0.11%  thread-pool-tok  [kernel.kallsyms]         [k] cpuacct_charge
+     0.10%  thread-pool-tok  [kernel.kallsyms]         [k] __futex_unqueue
+     0.10%  thread-pool-tok  [kernel.kallsyms]         [k] rb_erase
+     0.09%  thread-pool-tok  [kernel.kallsyms]         [k] native_sched_clock
+     0.09%  thread-pool-tok  [kernel.kallsyms]         [k] put_prev_entity
+     0.09%  thread-pool-tok  [kernel.kallsyms]         [k] __rcu_read_unlock
+     0.09%  thread-pool-tok  [kernel.kallsyms]         [k] futex_wait
+     0.09%  thread-pool-tok  [kernel.kallsyms]         [k] update_curr_se
+     0.09%  thread-pool-tok  [kernel.kallsyms]         [k] do_futex
+     0.08%  thread-pool-tok  [kernel.kallsyms]         [k] update_sd_lb_stats.constprop.0
+     0.08%  thread-pool-tok  [kernel.kallsyms]         [k] futex_unqueue
+     0.08%  thread-pool-tok  [kernel.kallsyms]         [k] sched_balance_update_blocked_averages
+     0.08%  thread-pool-tok  [kernel.kallsyms]         [k] __get_user_nocheck_4
+     0.08%  thread-pool-tok  [kernel.kallsyms]         [k] timerqueue_del
+     0.08%  thread-pool-tok  [kernel.kallsyms]         [k] vruntime_eligible
+     0.08%  thread-pool-tok  [kernel.kallsyms]         [k] futex_hash
+     0.08%  thread-pool-tok  [kernel.kallsyms]         [k] futex_wait_queue
+     0.08%  thread-pool-tok  [kernel.kallsyms]         [k] __softirqentry_text_end
+     0.08%  thread-pool-tok  [kernel.kallsyms]         [k] switch_fpu_return
+     0.07%  thread-pool-tok  [kernel.kallsyms]         [k] syscall_exit_to_user_mode
+     0.07%  thread-pool-tok  [kernel.kallsyms]         [k] task_non_contending
+     0.07%  thread-pool-tok  [kernel.kallsyms]         [k] arch_exit_to_user_mode_prepare.isra.0
+     0.07%  thread-pool-tok  [kernel.kallsyms]         [k] restore_fpregs_from_fpstate
+     0.07%  thread-pool-tok  [kernel.kallsyms]         [k] _raw_spin_unlock_irqrestore
+     0.07%  thread-pool-tok  [kernel.kallsyms]         [k] update_cfs_group
+     0.07%  thread-pool-tok  [kernel.kallsyms]         [k] dequeue_task_fair
+     0.07%  thread-pool-tok  [kernel.kallsyms]         [k] timerqueue_add
+     0.07%  thread-pool-tok  [kernel.kallsyms]         [k] set_next_task_idle
+     0.06%  thread-pool-tok  [kernel.kallsyms]         [k] __hrtimer_init
+     0.06%  thread-pool-tok  [kernel.kallsyms]         [k] __remove_hrtimer
+     0.06%  thread-pool-tok  [kernel.kallsyms]         [k] update_rq_clock
+     0.06%  thread-pool-tok  [kernel.kallsyms]         [k] hrtimer_active
+     0.06%  thread-pool-tok  [kernel.kallsyms]         [k] rcu_note_context_switch
+     0.06%  thread-pool-tok  [kernel.kallsyms]         [k] get_futex_key
+     0.06%  thread-pool-tok  [kernel.kallsyms]         [k] clockevents_program_event
+     0.06%  thread-pool-tok  [kernel.kallsyms]         [k] wake_up_q
+     0.06%  thread-pool-tok  [kernel.kallsyms]         [k] __list_del_entry_valid_or_report
+     0.06%  thread-pool-tok  [kernel.kallsyms]         [k] entry_SYSCALL_64_safe_stack
+     0.05%  thread-pool-tok  [kernel.kallsyms]         [k] futex_wait_setup
+     0.05%  thread-pool-tok  [kernel.kallsyms]         [k] put_prev_task_fair
+     0.05%  thread-pool-tok  [kernel.kallsyms]         [k] idle_cpu
+     0.05%  thread-pool-tok  [kernel.kallsyms]         [k] __update_idle_core
+     0.05%  thread-pool-tok  [kernel.kallsyms]         [k] sched_clock_cpu
+     0.05%  thread-pool-tok  [kernel.kallsyms]         [k] rb_insert_color
+     0.05%  thread-pool-tok  [kernel.kallsyms]         [k] get_nohz_timer_target
+     0.05%  thread-pool-tok  [kernel.kallsyms]         [k] wake_q_add_safe
+     0.04%  thread-pool-tok  [kernel.kallsyms]         [k] record_times
+     0.04%  thread-pool-tok  [kernel.kallsyms]         [k] schedule
+     0.04%  thread-pool-tok  [kernel.kallsyms]         [k] x86_pmu_disable
+     0.04%  thread-pool-tok  [kernel.kallsyms]         [k] x64_sys_call
+     0.04%  thread-pool-tok  [kernel.kallsyms]         [k] sched_clock
+     0.04%  thread-pool-tok  [kernel.kallsyms]         [k] plist_add
+     0.04%  thread-pool-tok  [kernel.kallsyms]         [k] update_curr_dl_se
+     0.04%  thread-pool-tok  [kernel.kallsyms]         [k] __perf_event_task_sched_out
+     0.03%  thread-pool-tok  [kernel.kallsyms]         [k] __irqentry_text_end
+     0.03%  thread-pool-tok  [kernel.kallsyms]         [k] __rcu_read_lock
+     0.03%  thread-pool-tok  [kernel.kallsyms]         [k] _copy_from_user
+     0.03%  thread-pool-tok  [kernel.kallsyms]         [k] syscall_exit_to_user_mode_prepare
+     0.03%  thread-pool-tok  [kernel.kallsyms]         [k] _raw_spin_unlock
+     0.03%  thread-pool-tok  [kernel.kallsyms]         [k] ktime_add_safe
+     0.03%  thread-pool-tok  [kernel.kallsyms]         [k] plist_del
+     0.03%  thread-pool-tok  [kernel.kallsyms]         [k] pick_next_task_fair
+     0.03%  thread-pool-tok  [kernel.kallsyms]         [k] perf_ctx_disable
+     0.03%  thread-pool-tok  [kernel.kallsyms]         [k] __hrtimer_next_event_base
+     0.03%  thread-pool-tok  [kernel.kallsyms]         [k] memset_orig
+     0.03%  thread-pool-tok  [kernel.kallsyms]         [k] enqueue_hrtimer
+     0.03%  thread-pool-tok  [kernel.kallsyms]         [k] get_timespec64
+     0.03%  thread-pool-tok  [kernel.kallsyms]         [k] __cgroup_account_cputime
+     0.03%  thread-pool-tok  [kernel.kallsyms]         [k] cgroup_rstat_updated
+     0.02%  thread-pool-tok  [kernel.kallsyms]         [k] futex_setup_timer
+     0.02%  thread-pool-tok  [kernel.kallsyms]         [k] hrtimer_update_next_event
+     0.02%  thread-pool-tok  [kernel.kallsyms]         [k] dl_server_stop
+     0.02%  thread-pool-tok  [kernel.kallsyms]         [k] __futex_queue
+     0.02%  thread-pool-tok  [kernel.kallsyms]         [k] psi_flags_change
+     0.02%  thread-pool-tok  [kernel.kallsyms]         [k] hrtimer_init_sleeper
+     0.02%  thread-pool-tok  [kernel.kallsyms]         [k] fpregs_assert_state_consistent
+     0.02%  thread-pool-tok  [kernel.kallsyms]         [k] __list_add_valid_or_report
+     0.02%  thread-pool-tok  [kernel.kallsyms]         [k] tick_program_event
+     0.02%  thread-pool-tok  [kernel.kallsyms]         [k] futex_get_value_locked
+     0.02%  thread-pool-tok  [kernel.kallsyms]         [k] __smp_call_single_queue
+     0.02%  thread-pool-tok  [kernel.kallsyms]         [k] sugov_update_single_freq
+     0.02%  thread-pool-tok  [kernel.kallsyms]         [k] rep_movs_alternative
+     0.02%  thread-pool-tok  [kernel.kallsyms]         [k] clear_page_erms
+     0.02%  thread-pool-tok  [kernel.kallsyms]         [k] update_rt_rq_load_avg
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] arch_scale_cpu_capacity
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] _find_next_and_bit
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] hrtimer_cancel
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] __dequeue_dl_entity
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] hrtimer_reprogram
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] task_h_load
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] prandom_u32_state
+     0.01%  thread-pool-tok  thread-pool-tokio-parity  [.] Thread.Mutex.FutexImpl.lockSlow
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] update_dl_rq_load_avg
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] perf_ctx_unlock
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] pick_task_fair
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] dl_server_update
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] select_idle_core.isra.0
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] intel_pmu_disable_all
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] hrtimer_try_to_cancel
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] __msecs_to_jiffies
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] reweight_entity
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] cpufreq_this_cpu_can_update
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] _find_next_bit
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] native_irq_return_iret
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] perf_event_alloc
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] sched_clock_noinstr
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] sched_balance_rq
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] set_task_cpu
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] hrtick_update
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] update_other_load_avgs
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] cpu_util
+     0.01%  thread-pool-tok  [kernel.kallsyms]         [k] sched_balance_trigger
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] xfd_validate_state
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] cpus_share_cache
+     0.00%  thread-pool-tok  thread-pool-tokio-parity  [.] Thread.LinuxThreadImpl.spawn__anon_4695.Instance.entryFn
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] error_entry
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] sched_balance_domains
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] ktime_get_update_offsets_now
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] effective_cpu_util
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __free_one_page
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] sched_balance_find_dst_group
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] sugov_get_util
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] slab_update_freelist.isra.0
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] pick_task_idle
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] smp_call_function_many_cond
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] migrate_task_rq_fair
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] _raw_spin_lock_irq
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] acct_account_cputime
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] kfree
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __task_rq_lock
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] perf_adjust_freq_unthr_context
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] native_apic_msr_eoi
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] task_tick_fair
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] unmap_page_range
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] rcu_sched_clock_irq
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] inherit_event.isra.0
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] raw_spin_rq_lock_nested
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] hrtimer_interrupt
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] arch_scale_freq_tick
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] enqueue_task_fair
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] native_flush_tlb_one_user
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] intel_get_event_constraints
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] ftrace_profile_free_filter
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] get_next_freq
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __enqueue_entity
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __switch_to_asm
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] kmem_cache_free
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] native_read_msr
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] update_process_times
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] switch_mm_irqs_off
+     0.00%  thread-pool-tok  thread-pool-tokio-parity  [.] pool.ThreadPool.init
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] x2apic_send_IPI
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __intel_pmu_enable_all.isra.0
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] hrtimer_sleeper_start_expires
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] remove_entity_load_avg
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] sched_tick
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] perf_event_groups_insert
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] sched_balance_find_src_group
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __dequeue_entity
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] get_jiffies_update
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] pick_eevdf
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __hrtimer_run_queues
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] note_gp_changes
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] cpu_util_cfs_boost
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] rb_next
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __sysvec_apic_timer_interrupt
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __irq_exit_rcu
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] _raw_spin_rq_lock_irqsave
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] rcu_core
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __rmqueue_pcplist
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] enqueue_entity
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __mutex_init
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] asm_sysvec_apic_timer_interrupt
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] cpufreq_driver_resolve_freq
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] x86_pmu_hw_config
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] mas_topiary_replace
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] intel_cpuc_prepare
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] rcu_cblist_dequeue
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] prep_new_page
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] intel_pmu_hw_config.part.0
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __percpu_counter_sum
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __bitmap_andnot
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] task_mm_cid_work
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] irqentry_enter
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] handle_softirqs
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] try_charge_memcg
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] tmigr_requires_handle_remote
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] _find_next_or_bit
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] task_tick_mm_cid
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __memcg_slab_free_hook
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __switch_to
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] sysvec_apic_timer_interrupt
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] vms_gather_munmap_vmas
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] sugov_iowait_boost
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] account_user_time
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] irq_work_tick
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] copy_process
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] page_counter_uncharge
+     0.00%  thread-pool-tok  thread-pool-tokio-parity  [.] pool.Core.joinAllWorkers
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] calc_global_load_tick
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __put_partials
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] perf_iterate_ctx
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] tick_nohz_handler
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __mod_memcg_lruvec_state
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] tick_nohz_get_idle_calls_cpu
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] irqentry_exit_to_user_mode
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] free_pcppages_bulk
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __x86_indirect_thunk_r14
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] raise_softirq
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] kmem_cache_alloc_bulk_noprof
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] update_vsyscall
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] timekeeping_advance
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] find_get_pmu_context
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] sync_regs
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] may_expand_vm
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] perf_ctx_enable
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] intel_pebs_constraints
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] x86_setup_perfctr
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] native_send_call_func_single_ipi
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] set_next_entity
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] ima_file_mprotect
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] mutex_unlock
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] llist_reverse_order
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] recalc_sigpending
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __perf_event_header__init_id
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __kmalloc_cache_noprof
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] kmem_cache_alloc_noprof
+     0.00%  thread-pool-tok  thread-pool-tokio-parity  [.] os.linux.x86_64.clone
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] perf_event_mmap_output
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] sched_use_asym_prio
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __task_pid_nr_ns
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] ___slab_alloc
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] place_entity
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __slab_free
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] sched_balance_softirq
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __split_vma
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __vmalloc_node_range_noprof
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] vma_merge_new_range
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __folio_throttle_swaprate
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] change_protection
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] dup_user_cpus_ptr
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] run_posix_cpu_timers
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] tlb_gather_mmu
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __x86_indirect_thunk_r12
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] down_write
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] inherit_task_group.isra.0
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __bitmap_and
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] mas_walk
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] security_perf_event_alloc
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __output_copy
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] mab_mas_cp
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __mmdrop
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] can_migrate_task
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] nohz_balance_exit_idle
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __cgroup_account_cputime_field
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] set_next_buddy
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __srcu_read_lock
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] mod_node_page_state
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] bdw_limit_period
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] raw_spin_rq_unlock
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __memset
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] perf_try_init_event
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] resched_curr
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] cgroup_post_fork
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] down_read_trylock
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __kmalloc_cache_node_noprof
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] rcu_do_batch
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] get_pfnblock_flags_mask
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] account_process_tick
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] folio_remove_rmap_ptes
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __note_gp_changes
+     0.00%  bash             [kernel.kallsyms]         [k] copy_process
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] free_percpu
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] start_dl_timer
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] clear_delayed.part.0.constprop.0
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] rcu_core_si
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] check_preempt_wakeup_fair
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] kthread_is_per_cpu
+     0.00%  bash             [kernel.kallsyms]         [k] memset_orig
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] hrtimer_wakeup
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] vm_get_page_prot
+     0.00%  bash             [kernel.kallsyms]         [k] pids_can_fork
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] _raw_spin_trylock
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] memcpy_orig
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] security_cred_free
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] invoke_rcu_core
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] folio_batch_move_lru
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] hrtimer_forward
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __mem_cgroup_charge
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] task_work_add
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __rb_erase_color
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] mlock_drain_local
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] update_group_capacity
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] rcu_report_qs_rnp
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] hrtimer_run_queues
+     0.00%  bash             [kernel.kallsyms]         [k] __put_user_4
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] save_fpregs_to_fpstate
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] wake_up_process
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] psi_task_change
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __x86_indirect_thunk_rbp
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] free_unref_page_commit
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] key_put
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] skb_release_head_state
+     0.00%  thread-pool-tok  [nf_conntrack]            [k] nf_ct_get_tuple
+     0.00%  bash             bash                      [.] mbschr
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] mas_update_gap.part.0
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] deactivate_task
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] irq_exit_rcu
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] mas_prev_slot
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __tlb_remove_folio_pages
+     0.00%  bash             [kernel.kallsyms]         [k] _raw_spin_lock
+     0.00%  bash             [kernel.kallsyms]         [k] restore_altstack
+     0.00%  seq              [kernel.kallsyms]         [k] x64_sys_call
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] next_uptodate_folio
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] wakeup_preempt
+     0.00%  bash             [kernel.kallsyms]         [k] perf_iterate_ctx
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __flush_smp_call_function_queue
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] cpufreq_driver_fast_switch
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] early_xen_iret_patch
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] folio_lruvec_lock_irqsave
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] sched_clock_tick
+     0.00%  bash             libc.so.6                 [.] 0x00000000000a2382
+     0.00%  seq              [kernel.kallsyms]         [k] next_uptodate_folio
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __update_load_avg_blocked_se
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __lruvec_stat_mod_folio
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] pcpu_free_area
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] obj_cgroup_uncharge_pages
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] enqueue_task
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] native_flush_tlb_local
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] pcpu_block_update
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] irq_enter_rcu
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] cpuacct_account_field
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] sched_mm_cid_before_execve
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] irqentry_enter_from_user_mode
+     0.00%  bash             ld-linux-x86-64.so.2      [.] 0x000000000000a0ad
+     0.00%  seq              [kernel.kallsyms]         [k] arch_exit_to_user_mode_prepare.isra.0
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] vmalloc_to_page
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] min_vruntime_cb_rotate
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] account_system_time
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] asm_sysvec_call_function_single
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] need_active_balance
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] profile_tick
+     0.00%  bash             [kernel.kallsyms]         [k] __d_lookup_rcu
+     0.00%  bash             [kernel.kallsyms]         [k] __do_sys_newfstatat
+     0.00%  bash             [kernel.kallsyms]         [k] __memcg_slab_post_alloc_hook
+     0.00%  bash             [kernel.kallsyms]         [k] __percpu_counter_init_many
+     0.00%  bash             [kernel.kallsyms]         [k] __tlb_remove_folio_pages
+     0.00%  bash             [kernel.kallsyms]         [k] anon_vma_interval_tree_remove
+     0.00%  bash             [kernel.kallsyms]         [k] folios_put_refs
+     0.00%  bash             [kernel.kallsyms]         [k] mas_preallocate
+     0.00%  bash             [kernel.kallsyms]         [k] security_mmap_file
+     0.00%  bash             [kernel.kallsyms]         [k] tlb_gather_mmu_fullmm
+     0.00%  bash             [kernel.kallsyms]         [k] tomoyo_encode2
+     0.00%  bash             [kernel.kallsyms]         [k] vm_normal_page
+     0.00%  bash             ld-linux-x86-64.so.2      [.] 0x000000000000f017
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __rdgsbase_inactive
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] intel_cpufreq_fast_switch
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] irqentry_exit
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] mas_alloc_nodes
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] mas_store_prealloc
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] rwsem_down_write_slowpath
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] unlink_anon_vmas
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] mod_memcg_state
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] attach_entity_load_avg
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] put_pid.part.0
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] task_work_run
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] tmigr_handle_remote
+     0.00%  bash             bash                      [.] sigemptyset@plt
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] proc_free_inode
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] clockevents_program_min_delta
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] taskstats_exit
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] ima_inode_free_rcu
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] restore_regs_and_return_to_kernel
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] rcu_segcblist_accelerate
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] mt_free_rcu
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] account_system_index_time
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] perf_event_task_tick
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] error_return
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] __x86_indirect_thunk_rdx
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] vm_area_free_rcu_cb
+     0.00%  thread-pool-tok  [nf_tables]               [k] nft_do_chain
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] rcu_accelerate_cbs
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] rcu_start_this_gp
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] rcu_segcblist_ready_cbs
+     0.00%  thread-pool-tok  [unknown]                 [k] 0xffffffffc01f5570
+     0.00%  thread-pool-tok  [be2net]                  [k] be_rx_compl_get
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] exit_creds
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] _raw_spin_unlock_irq
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] p4d_offset
+     0.00%  thread-pool-tok  [nf_defrag_ipv4]          [k] ipv4_conntrack_defrag
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] irq_work_run_list
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] refill_obj_stock
+     0.00%  thread-pool-tok  [nf_tables]               [k] nft_meta_get_eval
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] acct_collect
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] pfn_to_dma_pte
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] fib_validate_source
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] detach_entity_load_avg
+     0.00%  thread-pool-tok  [kernel.kallsyms]         [k] delayacct_add_tsk
+
+
+#
+# (Tip: To not accumulate CPU time of children symbols add --no-children)
+#
