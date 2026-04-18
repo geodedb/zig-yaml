@@ -1,0 +1,210 @@
+=== round 1 order=BSSB ===
+-- baseline 1 a --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1892789098 ops_per_sec=528321
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1110821478 ops_per_sec=900235
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=170969876 ops_per_sec=584898
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=147979823 ops_per_sec=675768
+-- stub 1 a --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2559049117 ops_per_sec=390770
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1000905912 ops_per_sec=999095
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=154444294 ops_per_sec=647483
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=149065938 ops_per_sec=670844
+-- stub 1 b --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2618510337 ops_per_sec=381897
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1355183944 ops_per_sec=737907
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=150581367 ops_per_sec=664093
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=148561437 ops_per_sec=673122
+-- baseline 1 b --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1967092503 ops_per_sec=508365
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1440632480 ops_per_sec=694140
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=166557386 ops_per_sec=600394
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=156600422 ops_per_sec=638568
+=== round 2 order=BSSB ===
+-- baseline 2 a --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2597051371 ops_per_sec=385052
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1072803481 ops_per_sec=932137
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=168387951 ops_per_sec=593867
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=152912741 ops_per_sec=653968
+-- stub 2 a --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2157899580 ops_per_sec=463414
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1507432995 ops_per_sec=663379
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=161252562 ops_per_sec=620145
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=146500418 ops_per_sec=682592
+-- stub 2 b --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2171536009 ops_per_sec=460504
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1127394337 ops_per_sec=887001
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=153274655 ops_per_sec=652424
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=154354710 ops_per_sec=647858
+-- baseline 2 b --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1942228492 ops_per_sec=514872
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1086744149 ops_per_sec=920180
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=163924034 ops_per_sec=610039
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=155905856 ops_per_sec=641413
+=== round 3 order=BSSB ===
+-- baseline 3 a --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2557508795 ops_per_sec=391005
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1067637208 ops_per_sec=936648
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=159664159 ops_per_sec=626315
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=157813656 ops_per_sec=633659
+-- stub 3 a --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2340698825 ops_per_sec=427223
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1108956957 ops_per_sec=901748
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=154475101 ops_per_sec=647354
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=138970518 ops_per_sec=719577
+-- stub 3 b --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2497200511 ops_per_sec=400448
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1039249950 ops_per_sec=962232
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=150148103 ops_per_sec=666009
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=136665404 ops_per_sec=731714
+-- baseline 3 b --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2429477543 ops_per_sec=411611
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1094736410 ops_per_sec=913462
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=170450209 ops_per_sec=586682
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=158231153 ops_per_sec=631987
+=== round 4 order=BSSB ===
+-- baseline 4 a --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2597569035 ops_per_sec=384975
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1055634466 ops_per_sec=947298
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=163918482 ops_per_sec=610059
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=156987231 ops_per_sec=636994
+-- stub 4 a --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2594287977 ops_per_sec=385462
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1023309600 ops_per_sec=977221
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=155615347 ops_per_sec=642610
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=163448724 ops_per_sec=611813
+-- stub 4 b --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2487202464 ops_per_sec=402058
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1040906074 ops_per_sec=960701
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=151669318 ops_per_sec=659329
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=160529190 ops_per_sec=622940
+-- baseline 4 b --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2568025290 ops_per_sec=389404
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1229710325 ops_per_sec=813200
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=174828316 ops_per_sec=571990
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=159070483 ops_per_sec=628652
+=== round 5 order=BSSB ===
+-- baseline 5 a --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2706839550 ops_per_sec=369435
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1558096482 ops_per_sec=641809
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=165893100 ops_per_sec=602798
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=148764227 ops_per_sec=672205
+-- stub 5 a --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2418305594 ops_per_sec=413513
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=945568292 ops_per_sec=1057565
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=151014690 ops_per_sec=662187
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=135769188 ops_per_sec=736544
+-- stub 5 b --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2396361354 ops_per_sec=417299
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1033906239 ops_per_sec=967206
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=154908764 ops_per_sec=645541
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=163110740 ops_per_sec=613080
+-- baseline 5 b --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2366277220 ops_per_sec=422605
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1572929938 ops_per_sec=635756
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=164539572 ops_per_sec=607757
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=147776469 ops_per_sec=676698
+=== round 6 order=BSSB ===
+-- baseline 6 a --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2592168607 ops_per_sec=385777
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1131898147 ops_per_sec=883472
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=170048479 ops_per_sec=588068
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=156952542 ops_per_sec=637135
+-- stub 6 a --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2596750465 ops_per_sec=385097
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1090784370 ops_per_sec=916771
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=161782275 ops_per_sec=618115
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=145881422 ops_per_sec=685488
+-- stub 6 b --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2437180976 ops_per_sec=410310
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=946170875 ops_per_sec=1056892
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=152474648 ops_per_sec=655847
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=139820618 ops_per_sec=715202
+-- baseline 6 b --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2473033179 ops_per_sec=404362
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1146442862 ops_per_sec=872263
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=186007718 ops_per_sec=537612
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=157062232 ops_per_sec=636690
+=== round 7 order=BSSB ===
+-- baseline 7 a --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2545009874 ops_per_sec=392926
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1078402733 ops_per_sec=927297
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=165093214 ops_per_sec=605718
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=150377792 ops_per_sec=664992
+-- stub 7 a --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2495110365 ops_per_sec=400784
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=986811281 ops_per_sec=1013365
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=155567358 ops_per_sec=642808
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=137162487 ops_per_sec=729062
+-- stub 7 b --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2405909195 ops_per_sec=415643
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1033894875 ops_per_sec=967216
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=182660130 ops_per_sec=547465
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=153529280 ops_per_sec=651342
+-- baseline 7 b --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2092178549 ops_per_sec=477971
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1051270911 ops_per_sec=951230
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=174366191 ops_per_sec=573506
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=150121334 ops_per_sec=666128
+=== round 8 order=BSSB ===
+-- baseline 8 a --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2634917643 ops_per_sec=379519
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1077147627 ops_per_sec=928378
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=172522427 ops_per_sec=579635
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=154898117 ops_per_sec=645586
+-- stub 8 a --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1881786439 ops_per_sec=531410
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1201849568 ops_per_sec=832051
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=156361695 ops_per_sec=639543
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=138923663 ops_per_sec=719820
+-- stub 8 b --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2435687249 ops_per_sec=410562
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1229016928 ops_per_sec=813658
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=158353613 ops_per_sec=631498
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=169536467 ops_per_sec=589844
+-- baseline 8 b --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=1835419685 ops_per_sec=544835
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1120952829 ops_per_sec=892098
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=177948668 ops_per_sec=561960
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=182563365 ops_per_sec=547755
+=== round 9 order=BSSB ===
+-- baseline 9 a --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2656761314 ops_per_sec=376398
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1098606888 ops_per_sec=910244
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=175944435 ops_per_sec=568361
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=159188603 ops_per_sec=628186
+-- stub 9 a --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2417964795 ops_per_sec=413571
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1383218604 ops_per_sec=722952
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=161221815 ops_per_sec=620263
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=169029088 ops_per_sec=591614
+-- stub 9 b --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2502181921 ops_per_sec=399651
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1271272246 ops_per_sec=786614
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=148795177 ops_per_sec=672065
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=141634824 ops_per_sec=706041
+-- baseline 9 b --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2482068513 ops_per_sec=402890
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1004848412 ops_per_sec=995175
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=172027254 ops_per_sec=581303
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=156771177 ops_per_sec=637872
+=== round 10 order=BSSB ===
+-- baseline 10 a --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2609708915 ops_per_sec=383184
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1300968191 ops_per_sec=768658
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=164044625 ops_per_sec=609590
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=160936585 ops_per_sec=621363
+-- stub 10 a --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2258883642 ops_per_sec=442697
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1027823254 ops_per_sec=972930
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=168535044 ops_per_sec=593348
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=135671802 ops_per_sec=737073
+-- stub 10 b --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2593352577 ops_per_sec=385601
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1088835054 ops_per_sec=918413
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=157610480 ops_per_sec=634476
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=164881164 ops_per_sec=606497
+-- baseline 10 b --
+tokio_parity scenario=flood_1m tasks=1000000 elapsed_ns=2569982076 ops_per_sec=389108
+tokio_parity scenario=flood_1m_batched tasks=1000000 batch=64 elapsed_ns=1188813950 ops_per_sec=841175
+tokio_parity scenario=contended_spawn_8x tasks=100000 submitters=8 elapsed_ns=162375355 ops_per_sec=615857
+tokio_parity scenario=contended_spawn_8x_batched tasks=100000 submitters=8 batch=64 elapsed_ns=154414471 ops_per_sec=647608
