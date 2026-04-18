@@ -1,0 +1,248 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 1M of event 'cycles:P'
+# Event count (approx.): 1270513670741
+#
+# Overhead       Samples  Command          Shared Object             Symbol
+# ........  ............  ...............  ........................  ............................................................
+#
+    87.39%       1356202  thread-pool-tok  thread-pool-tokio-parity  [.] Thread.LinuxThreadImpl.spawn__anon_4019.Instance.entryFn
+            |
+            |--43.79%--pool.LocalQueue.len (inlined)
+            |          pool.Core.nextTask (inlined)
+            |          pool.Core.workerMain (inlined)
+            |          Thread.callFn__anon_4907 (inlined)
+            |          Thread.LinuxThreadImpl.spawn__anon_4019.Instance.entryFn
+            |          os.linux.x86_64.clone
+            |
+            |--14.00%--pool.Core.nextTask (inlined)
+            |          pool.Core.workerMain (inlined)
+            |          Thread.callFn__anon_4907 (inlined)
+            |          Thread.LinuxThreadImpl.spawn__anon_4019.Instance.entryFn
+            |          os.linux.x86_64.clone
+            |
+            |--3.84%--atomic.Value(u64).cmpxchgWeak (inlined)
+            |          |
+            |           --3.84%--pool.Core.releaseDescriptor (inlined)
+            |                     pool.Core.runTask (inlined)
+            |                     pool.Core.workerMain (inlined)
+            |                     Thread.callFn__anon_4907 (inlined)
+            |                     Thread.LinuxThreadImpl.spawn__anon_4019.Instance.entryFn
+            |                     os.linux.x86_64.clone
+            |
+            |--3.04%--atomic.Value(u64).load (inlined)
+            |          |
+            |          |--1.65%--pool.Core.releaseDescriptor (inlined)
+            |          |          pool.Core.runTask (inlined)
+            |          |          pool.Core.workerMain (inlined)
+            |          |          Thread.callFn__anon_4907 (inlined)
+            |          |          Thread.LinuxThreadImpl.spawn__anon_4019.Instance.entryFn
+            |          |          os.linux.x86_64.clone
+            |          |
+            |          |--0.73%--pool.Core.idle (inlined)
+            |          |          pool.Core.workerMain (inlined)
+            |          |          Thread.callFn__anon_4907 (inlined)
+            |          |          Thread.LinuxThreadImpl.spawn__anon_4019.Instance.entryFn
+            |          |          os.linux.x86_64.clone
+            |          |
+            |           --0.65%--pool.Core.nextTask (inlined)
+            |                     pool.Core.workerMain (inlined)
+            |                     Thread.callFn__anon_4907 (inlined)
+            |                     Thread.LinuxThreadImpl.spawn__anon_4019.Instance.entryFn
+            |                     os.linux.x86_64.clone
+            |
+            |--3.04%--atomic.Value(u64).fetchAdd (inlined)
+            |          |
+            |          |--1.47%--stats.latency.LatencyHistogram.observe (inlined)
+            |          |          pool.Core.runTask (inlined)
+            |          |          pool.Core.workerMain (inlined)
+            |          |          Thread.callFn__anon_4907 (inlined)
+            |          |          Thread.LinuxThreadImpl.spawn__anon_4019.Instance.entryFn
+            |          |          os.linux.x86_64.clone
+            |          |
+            |           --0.92%--pool.Core.runTask (inlined)
+            |                     pool.Core.workerMain (inlined)
+            |                     Thread.callFn__anon_4907 (inlined)
+            |                     Thread.LinuxThreadImpl.spawn__anon_4019.Instance.entryFn
+            |                     os.linux.x86_64.clone
+            |
+            |--2.56%--atomic.Value(u64).fetchSub (inlined)
+            |          |
+            |          |--1.55%--pool.Core.releaseDescriptor (inlined)
+            |          |          pool.Core.runTask (inlined)
+            |          |          pool.Core.workerMain (inlined)
+            |          |          Thread.callFn__anon_4907 (inlined)
+            |          |          Thread.LinuxThreadImpl.spawn__anon_4019.Instance.entryFn
+            |          |          os.linux.x86_64.clone
+            |          |
+            |           --0.53%--pool.Core.runTask (inlined)
+            |                     pool.Core.workerMain (inlined)
+            |                     Thread.callFn__anon_4907 (inlined)
+            |                     Thread.LinuxThreadImpl.spawn__anon_4019.Instance.entryFn
+            |                     os.linux.x86_64.clone
+            |
+            |--2.41%--atomic.Value(usize).load (inlined)
+            |          queue.bounded_ring.BoundedRing(u32).popMany (inlined)
+            |          pool.Core.nextTask (inlined)
+            |          pool.Core.workerMain (inlined)
+            |          Thread.callFn__anon_4907 (inlined)
+            |          Thread.LinuxThreadImpl.spawn__anon_4019.Instance.entryFn
+            |          os.linux.x86_64.clone
+            |
+            |--1.90%--pool.Core.runTask (inlined)
+            |          pool.Core.workerMain (inlined)
+            |          Thread.callFn__anon_4907 (inlined)
+            |          Thread.LinuxThreadImpl.spawn__anon_4019.Instance.entryFn
+            |          os.linux.x86_64.clone
+            |
+            |--1.86%--pool.Core.releaseDescriptor (inlined)
+            |          pool.Core.runTask (inlined)
+            |          pool.Core.workerMain (inlined)
+            |          Thread.callFn__anon_4907 (inlined)
+            |          Thread.LinuxThreadImpl.spawn__anon_4019.Instance.entryFn
+            |          os.linux.x86_64.clone
+            |
+            |--1.61%--atomic.Value(u32).store (inlined)
+            |          |
+            |           --1.60%--queue.ring_queue.RingQueue(u32).pop (inlined)
+            |                     pool.LocalQueue.popBottom (inlined)
+            |                     pool.Core.nextTask (inlined)
+            |                     pool.Core.workerMain (inlined)
+            |                     Thread.callFn__anon_4907 (inlined)
+            |                     Thread.LinuxThreadImpl.spawn__anon_4019.Instance.entryFn
+            |                     os.linux.x86_64.clone
+            |
+            |--1.17%--atomic.Value(usize).cmpxchgStrong (inlined)
+            |          queue.bounded_ring.BoundedRing(u32).popMany (inlined)
+            |          pool.Core.nextTask (inlined)
+            |          pool.Core.workerMain (inlined)
+            |          Thread.callFn__anon_4907 (inlined)
+            |          Thread.LinuxThreadImpl.spawn__anon_4019.Instance.entryFn
+            |          os.linux.x86_64.clone
+            |
+            |--1.05%--pool.LocalQueue.popBottom (inlined)
+            |          pool.Core.nextTask (inlined)
+            |          pool.Core.workerMain (inlined)
+            |          Thread.callFn__anon_4907 (inlined)
+            |          Thread.LinuxThreadImpl.spawn__anon_4019.Instance.entryFn
+            |          os.linux.x86_64.clone
+            |
+            |--1.05%--atomic.Value(u32).load (inlined)
+            |
+            |--1.03%--queue.ring_queue.RingQueue(u32).len (inlined)
+            |          pool.LocalQueue.len (inlined)
+            |          pool.Core.nextTask (inlined)
+            |          pool.Core.workerMain (inlined)
+            |          Thread.callFn__anon_4907 (inlined)
+            |          Thread.LinuxThreadImpl.spawn__anon_4019.Instance.entryFn
+            |          os.linux.x86_64.clone
+            |
+            |--0.98%--atomic.Value(u32).swap (inlined)
+            |          |
+            |           --0.64%--pool.Core.nextTask (inlined)
+            |                     pool.Core.workerMain (inlined)
+            |                     Thread.callFn__anon_4907 (inlined)
+            |                     Thread.LinuxThreadImpl.spawn__anon_4019.Instance.entryFn
+            |                     os.linux.x86_64.clone
+            |
+            |--0.61%--atomic.Value(types.TaskState).cmpxchgStrong (inlined)
+            |          pool.Core.runTask (inlined)
+            |          pool.Core.workerMain (inlined)
+            |          Thread.callFn__anon_4907 (inlined)
+            |          Thread.LinuxThreadImpl.spawn__anon_4019.Instance.entryFn
+            |          os.linux.x86_64.clone
+            |
+            |--0.58%--atomic.Value(u32).fetchSub (inlined)
+            |          types.WaitGroup.done (inlined)
+            |          pool.Core.runTask (inlined)
+            |          pool.Core.workerMain (inlined)
+            |          Thread.callFn__anon_4907 (inlined)
+            |          Thread.LinuxThreadImpl.spawn__anon_4019.Instance.entryFn
+            |          os.linux.x86_64.clone
+            |
+             --0.56%--atomic.Value(pool.PoolState).load (inlined)
+
+     6.82%         30205  thread-pool-tok  thread-pool-tokio-parity  [.] start.posixCallMainAndExit
+            |
+            |--1.33%--atomic.Value(u64).cmpxchgWeak (inlined)
+            |          pool.Core.acquireDescriptor (inlined)
+            |          pool.Core.enqueuePush (inlined)
+            |          pool.Core.submitBatch (inlined)
+            |          pool.ThreadPool.submitBatch (inlined)
+            |          bench_tokio_parity.benchFloodBatched__anon_1804 (inlined)
+            |          bench_tokio_parity.main (inlined)
+            |          start.callMain (inlined)
+            |          start.callMainWithArgs (inlined)
+            |          start.posixCallMainAndExit
+            |          start._start (inlined)
+            |
+            |--1.15%--atomic.Value(usize).cmpxchgWeak (inlined)
+            |          queue.bounded_ring.BoundedRing(u32).tryPush (inlined)
+            |          pool.Core.enqueuePush (inlined)
+            |          pool.Core.submitBatch (inlined)
+            |          pool.ThreadPool.submitBatch (inlined)
+            |          bench_tokio_parity.benchFloodBatched__anon_1804 (inlined)
+            |          bench_tokio_parity.main (inlined)
+            |          start.callMain (inlined)
+            |          start.callMainWithArgs (inlined)
+            |          start.posixCallMainAndExit
+            |          start._start (inlined)
+            |
+            |--0.87%--pool.Core.enqueuePush (inlined)
+            |          pool.Core.submitBatch (inlined)
+            |          pool.ThreadPool.submitBatch (inlined)
+            |          bench_tokio_parity.benchFloodBatched__anon_1804 (inlined)
+            |          bench_tokio_parity.main (inlined)
+            |          start.callMain (inlined)
+            |          start.callMainWithArgs (inlined)
+            |          start.posixCallMainAndExit
+            |          start._start (inlined)
+            |
+            |--0.73%--atomic.Value(u64).fetchAdd (inlined)
+            |          pool.Core.acquireDescriptor (inlined)
+            |          pool.Core.enqueuePush (inlined)
+            |          pool.Core.submitBatch (inlined)
+            |          pool.ThreadPool.submitBatch (inlined)
+            |          bench_tokio_parity.benchFloodBatched__anon_1804 (inlined)
+            |          bench_tokio_parity.main (inlined)
+            |          start.callMain (inlined)
+            |          start.callMainWithArgs (inlined)
+            |          start.posixCallMainAndExit
+            |          start._start (inlined)
+            |
+            |--0.70%--pool.Core.acquireDescriptor (inlined)
+            |          pool.Core.enqueuePush (inlined)
+            |          pool.Core.submitBatch (inlined)
+            |          pool.ThreadPool.submitBatch (inlined)
+            |          bench_tokio_parity.benchFloodBatched__anon_1804 (inlined)
+            |          bench_tokio_parity.main (inlined)
+            |          start.callMain (inlined)
+            |          start.callMainWithArgs (inlined)
+            |          start.posixCallMainAndExit
+            |          start._start (inlined)
+            |
+             --0.69%--atomic.Value(u64).load (inlined)
+                       |
+                        --0.61%--pool.Core.acquireDescriptor (inlined)
+                                  pool.Core.enqueuePush (inlined)
+                                  pool.Core.submitBatch (inlined)
+                                  pool.ThreadPool.submitBatch (inlined)
+                                  bench_tokio_parity.benchFloodBatched__anon_1804 (inlined)
+                                  bench_tokio_parity.main (inlined)
+                                  start.callMain (inlined)
+                                  start.callMainWithArgs (inlined)
+                                  start.posixCallMainAndExit
+                                  start._start (inlined)
+
+     0.51%          6467  thread-pool-tok  [vdso]                    [.] __vdso_clock_gettime
+            |
+             --0.51%--__vdso_clock_gettime
+
+
+
+#
+# (Tip: To change sampling frequency to 100 Hz: perf record -F 100)
+#

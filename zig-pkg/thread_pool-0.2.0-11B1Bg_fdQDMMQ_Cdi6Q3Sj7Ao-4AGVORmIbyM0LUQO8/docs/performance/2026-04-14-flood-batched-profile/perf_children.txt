@@ -1,0 +1,1297 @@
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 1M of event 'cycles:P'
+# Event count (approx.): 1270513670741
+#
+# Children      Self       Samples  Command          Shared Object             Symbol
+# ........  ........  ............  ...............  ........................  ............................................................
+#
+    92.66%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] os.linux.x86_64.clone
+            |
+            ---os.linux.x86_64.clone
+               |
+                --92.61%--Thread.LinuxThreadImpl.spawn__anon_4019.Instance.entryFn
+                          Thread.callFn__anon_4907 (inlined)
+                          pool.Core.workerMain (inlined)
+                          |
+                          |--68.77%--pool.Core.nextTask (inlined)
+                          |          |
+                          |          |--45.39%--pool.LocalQueue.len (inlined)
+                          |          |          |
+                          |          |           --1.45%--queue.ring_queue.RingQueue(u32).len (inlined)
+                          |          |
+                          |          |--4.10%--queue.bounded_ring.BoundedRing(u32).popMany (inlined)
+                          |          |          |
+                          |          |          |--2.42%--atomic.Value(usize).load (inlined)
+                          |          |          |
+                          |          |           --1.17%--atomic.Value(usize).cmpxchgStrong (inlined)
+                          |          |
+                          |          |--3.10%--pool.LocalQueue.popBottom (inlined)
+                          |          |          |
+                          |          |           --2.05%--queue.ring_queue.RingQueue(u32).pop (inlined)
+                          |          |                     |
+                          |          |                      --1.60%--atomic.Value(u32).store (inlined)
+                          |          |
+                          |          |--0.65%--atomic.Value(u64).load (inlined)
+                          |          |
+                          |          |--0.64%--atomic.Value(u32).swap (inlined)
+                          |          |
+                          |           --0.53%--pool.LocalQueue.steal (inlined)
+                          |
+                          |--16.53%--pool.Core.runTask (inlined)
+                          |          |
+                          |          |--9.05%--pool.Core.releaseDescriptor (inlined)
+                          |          |          |
+                          |          |          |--3.84%--atomic.Value(u64).cmpxchgWeak (inlined)
+                          |          |          |
+                          |          |          |--1.65%--atomic.Value(u64).load (inlined)
+                          |          |          |
+                          |          |           --1.55%--atomic.Value(u64).fetchSub (inlined)
+                          |          |
+                          |          |--1.66%--stats.latency.LatencyHistogram.observe (inlined)
+                          |          |          |
+                          |          |           --1.47%--atomic.Value(u64).fetchAdd (inlined)
+                          |          |
+                          |          |--0.92%--atomic.Value(u64).fetchAdd (inlined)
+                          |          |
+                          |          |--0.61%--atomic.Value(types.TaskState).cmpxchgStrong (inlined)
+                          |          |
+                          |          |--0.60%--types.WaitGroup.done (inlined)
+                          |          |          |
+                          |          |           --0.58%--atomic.Value(u32).fetchSub (inlined)
+                          |          |
+                          |           --0.53%--atomic.Value(u64).fetchSub (inlined)
+                          |
+                           --6.70%--pool.Core.idle (inlined)
+                                     |
+                                     |--4.31%--Thread.Condition.timedWait (inlined)
+                                     |          |
+                                     |           --4.30%--Thread.Condition.FutexImpl.wait
+                                     |                     |
+                                     |                      --4.13%--Thread.Futex.Deadline.wait
+                                     |                                |
+                                     |                                 --4.07%--Thread.Futex.timedWait
+                                     |                                           |
+                                     |                                            --4.07%--Thread.Futex.LinuxImpl.wait (inlined)
+                                     |                                                      |
+                                     |                                                       --4.06%--os.linux.errnoFromSyscall (inlined)
+                                     |                                                                 |
+                                     |                                                                  --3.45%--entry_SYSCALL_64_after_hwframe
+                                     |                                                                            |
+                                     |                                                                             --3.44%--do_syscall_64
+                                     |                                                                                       |
+                                     |                                                                                        --3.34%--__x64_sys_futex
+                                     |                                                                                                  |
+                                     |                                                                                                   --3.21%--do_futex
+                                     |                                                                                                             |
+                                     |                                                                                                              --3.19%--futex_wait
+                                     |                                                                                                                        |
+                                     |                                                                                                                         --3.09%--__futex_wait
+                                     |                                                                                                                                   |
+                                     |                                                                                                                                    --2.91%--futex_wait_queue
+                                     |                                                                                                                                              |
+                                     |                                                                                                                                               --2.64%--schedule
+                                     |                                                                                                                                                         |
+                                     |                                                                                                                                                          --2.62%--__schedule
+                                     |                                                                                                                                                                    |
+                                     |                                                                                                                                                                    |--1.32%--dequeue_task_fair
+                                     |                                                                                                                                                                    |          |
+                                     |                                                                                                                                                                    |           --1.28%--dequeue_entities
+                                     |                                                                                                                                                                    |                     |
+                                     |                                                                                                                                                                    |                      --0.77%--dequeue_entity
+                                     |                                                                                                                                                                    |
+                                     |                                                                                                                                                                     --0.64%--pick_next_task_fair
+                                     |                                                                                                                                                                               |
+                                     |                                                                                                                                                                                --0.60%--sched_balance_newidle
+                                     |
+                                      --0.73%--atomic.Value(u64).load (inlined)
+
+    92.63%    87.39%       1356202  thread-pool-tok  thread-pool-tokio-parity  [.] Thread.LinuxThreadImpl.spawn__anon_4019.Instance.entryFn
+            |
+            |--87.37%--os.linux.x86_64.clone
+            |          |
+            |           --87.37%--0x1014740
+            |                     0x1014740
+            |                     0x1014740
+            |                     |
+            |                     |--68.55%--0x1014143
+            |                     |          |
+            |                     |          |--45.24%--0x1014869
+            |                     |          |          |
+            |                     |          |           --1.45%--0x1014e00
+            |                     |          |
+            |                     |          |--4.08%--0x1014143
+            |                     |          |          |
+            |                     |          |          |--2.41%--0x1014143
+            |                     |          |          |
+            |                     |          |           --1.17%--0x1014183
+            |                     |          |
+            |                     |          |--3.09%--0x1013f4c
+            |                     |          |          |
+            |                     |          |           --2.04%--0x1013f60
+            |                     |          |                     |
+            |                     |          |                      --1.60%--0x1013f60
+            |                     |          |
+            |                     |          |--0.65%--0x10141fc
+            |                     |          |
+            |                     |          |--0.64%--0x1013f36
+            |                     |          |
+            |                     |           --0.53%--0x1014a47
+            |                     |
+            |                     |--15.88%--0x1014740
+            |                     |          |
+            |                     |          |--9.03%--0x1014740
+            |                     |          |          |
+            |                     |          |          |--3.84%--0x101475b
+            |                     |          |          |
+            |                     |          |          |--1.65%--0x1014740
+            |                     |          |          |
+            |                     |          |           --1.55%--0x1014712
+            |                     |          |
+            |                     |          |--1.65%--0x10142c7
+            |                     |          |          |
+            |                     |          |           --1.47%--0x10142c7
+            |                     |          |
+            |                     |          |--0.92%--0x10145b6
+            |                     |          |
+            |                     |          |--0.61%--0x10140b0
+            |                     |          |
+            |                     |          |--0.60%--0x10145d0
+            |                     |          |          |
+            |                     |          |           --0.58%--0x10145d0
+            |                     |          |
+            |                     |           --0.53%--0x10145a0
+            |                     |
+            |                      --2.35%--0x1014b85
+            |                                |
+            |                                 --0.73%--0x1014b64
+            |
+             --5.24%--0x1014c8f
+                       0x1014c8f
+                       0x1014c8f
+                       |
+                       |--4.35%--0x1014c8f
+                       |          |
+                       |           --4.30%--0x1014c8f
+                       |                     |
+                       |                      --4.30%--0x102290b
+                       |                                |
+                       |                                 --4.13%--0x103fd1f
+                       |                                           |
+                       |                                            --4.07%--0x103fd7d
+                       |                                                      |
+                       |                                                       --4.07%--0x103fd7d
+                       |                                                                 |
+                       |                                                                  --4.06%--0x103fd7d
+                       |                                                                            |
+                       |                                                                             --3.45%--0xffffffff90a0012f
+                       |                                                                                       |
+                       |                                                                                        --3.44%--0xffffffff908f31f2
+                       |                                                                                                  |
+                       |                                                                                                   --3.34%--0xffffffff8fdbfde7
+                       |                                                                                                             |
+                       |                                                                                                              --3.21%--0xffffffff8fdbfbeb
+                       |                                                                                                                        |
+                       |                                                                                                                         --3.19%--0xffffffff8fdc4229
+                       |                                                                                                                                   |
+                       |                                                                                                                                    --3.09%--0xffffffff8fdc4131
+                       |                                                                                                                                              |
+                       |                                                                                                                                               --2.91%--0xffffffff8fdc3948
+                       |                                                                                                                                                         |
+                       |                                                                                                                                                          --2.64%--0xffffffff908ff347
+                       |                                                                                                                                                                    |
+                       |                                                                                                                                                                     --2.62%--0xffffffff908fe901
+                       |                                                                                                                                                                               |
+                       |                                                                                                                                                                               |--1.32%--0xffffffff8fd1e9a0
+                       |                                                                                                                                                                               |          |
+                       |                                                                                                                                                                               |           --1.28%--0xffffffff8fd1e09c
+                       |                                                                                                                                                                               |                     |
+                       |                                                                                                                                                                               |                      --0.77%--0xffffffff8fd1d69a
+                       |                                                                                                                                                                               |
+                       |                                                                                                                                                                                --0.64%--0xffffffff8fd26a3d
+                       |                                                                                                                                                                                          |
+                       |                                                                                                                                                                                           --0.60%--0xffffffff8fd26656
+                       |
+                        --0.66%--0x1014472
+
+    92.61%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] Thread.callFn__anon_4907 (inlined)
+            |
+            ---Thread.callFn__anon_4907 (inlined)
+               pool.Core.workerMain (inlined)
+               |
+               |--68.77%--pool.Core.nextTask (inlined)
+               |          |
+               |          |--45.39%--pool.LocalQueue.len (inlined)
+               |          |          |
+               |          |           --1.45%--queue.ring_queue.RingQueue(u32).len (inlined)
+               |          |
+               |          |--4.10%--queue.bounded_ring.BoundedRing(u32).popMany (inlined)
+               |          |          |
+               |          |          |--2.42%--atomic.Value(usize).load (inlined)
+               |          |          |
+               |          |           --1.17%--atomic.Value(usize).cmpxchgStrong (inlined)
+               |          |
+               |          |--3.10%--pool.LocalQueue.popBottom (inlined)
+               |          |          |
+               |          |           --2.05%--queue.ring_queue.RingQueue(u32).pop (inlined)
+               |          |                     |
+               |          |                      --1.60%--atomic.Value(u32).store (inlined)
+               |          |
+               |          |--0.65%--atomic.Value(u64).load (inlined)
+               |          |
+               |          |--0.64%--atomic.Value(u32).swap (inlined)
+               |          |
+               |           --0.53%--pool.LocalQueue.steal (inlined)
+               |
+               |--16.53%--pool.Core.runTask (inlined)
+               |          |
+               |          |--9.05%--pool.Core.releaseDescriptor (inlined)
+               |          |          |
+               |          |          |--3.84%--atomic.Value(u64).cmpxchgWeak (inlined)
+               |          |          |
+               |          |          |--1.65%--atomic.Value(u64).load (inlined)
+               |          |          |
+               |          |           --1.55%--atomic.Value(u64).fetchSub (inlined)
+               |          |
+               |          |--1.66%--stats.latency.LatencyHistogram.observe (inlined)
+               |          |          |
+               |          |           --1.47%--atomic.Value(u64).fetchAdd (inlined)
+               |          |
+               |          |--0.92%--atomic.Value(u64).fetchAdd (inlined)
+               |          |
+               |          |--0.61%--atomic.Value(types.TaskState).cmpxchgStrong (inlined)
+               |          |
+               |          |--0.60%--types.WaitGroup.done (inlined)
+               |          |          |
+               |          |           --0.58%--atomic.Value(u32).fetchSub (inlined)
+               |          |
+               |           --0.53%--atomic.Value(u64).fetchSub (inlined)
+               |
+                --6.70%--pool.Core.idle (inlined)
+                          |
+                          |--4.31%--Thread.Condition.timedWait (inlined)
+                          |          |
+                          |           --4.30%--Thread.Condition.FutexImpl.wait
+                          |                     |
+                          |                      --4.13%--Thread.Futex.Deadline.wait
+                          |                                |
+                          |                                 --4.07%--Thread.Futex.timedWait
+                          |                                           |
+                          |                                            --4.07%--Thread.Futex.LinuxImpl.wait (inlined)
+                          |                                                      |
+                          |                                                       --4.06%--os.linux.errnoFromSyscall (inlined)
+                          |                                                                 |
+                          |                                                                  --3.45%--entry_SYSCALL_64_after_hwframe
+                          |                                                                            |
+                          |                                                                             --3.44%--do_syscall_64
+                          |                                                                                       |
+                          |                                                                                        --3.34%--__x64_sys_futex
+                          |                                                                                                  |
+                          |                                                                                                   --3.21%--do_futex
+                          |                                                                                                             |
+                          |                                                                                                              --3.19%--futex_wait
+                          |                                                                                                                        |
+                          |                                                                                                                         --3.09%--__futex_wait
+                          |                                                                                                                                   |
+                          |                                                                                                                                    --2.91%--futex_wait_queue
+                          |                                                                                                                                              |
+                          |                                                                                                                                               --2.64%--schedule
+                          |                                                                                                                                                         |
+                          |                                                                                                                                                          --2.62%--__schedule
+                          |                                                                                                                                                                    |
+                          |                                                                                                                                                                    |--1.32%--dequeue_task_fair
+                          |                                                                                                                                                                    |          |
+                          |                                                                                                                                                                    |           --1.28%--dequeue_entities
+                          |                                                                                                                                                                    |                     |
+                          |                                                                                                                                                                    |                      --0.77%--dequeue_entity
+                          |                                                                                                                                                                    |
+                          |                                                                                                                                                                     --0.64%--pick_next_task_fair
+                          |                                                                                                                                                                               |
+                          |                                                                                                                                                                                --0.60%--sched_balance_newidle
+                          |
+                           --0.73%--atomic.Value(u64).load (inlined)
+
+    92.61%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] pool.Core.workerMain (inlined)
+            |
+            ---pool.Core.workerMain (inlined)
+               |
+               |--68.77%--pool.Core.nextTask (inlined)
+               |          |
+               |          |--45.39%--pool.LocalQueue.len (inlined)
+               |          |          |
+               |          |           --1.45%--queue.ring_queue.RingQueue(u32).len (inlined)
+               |          |
+               |          |--4.10%--queue.bounded_ring.BoundedRing(u32).popMany (inlined)
+               |          |          |
+               |          |          |--2.42%--atomic.Value(usize).load (inlined)
+               |          |          |
+               |          |           --1.17%--atomic.Value(usize).cmpxchgStrong (inlined)
+               |          |
+               |          |--3.10%--pool.LocalQueue.popBottom (inlined)
+               |          |          |
+               |          |           --2.05%--queue.ring_queue.RingQueue(u32).pop (inlined)
+               |          |                     |
+               |          |                      --1.60%--atomic.Value(u32).store (inlined)
+               |          |
+               |          |--0.65%--atomic.Value(u64).load (inlined)
+               |          |
+               |          |--0.64%--atomic.Value(u32).swap (inlined)
+               |          |
+               |           --0.53%--pool.LocalQueue.steal (inlined)
+               |
+               |--16.53%--pool.Core.runTask (inlined)
+               |          |
+               |          |--9.05%--pool.Core.releaseDescriptor (inlined)
+               |          |          |
+               |          |          |--3.84%--atomic.Value(u64).cmpxchgWeak (inlined)
+               |          |          |
+               |          |          |--1.65%--atomic.Value(u64).load (inlined)
+               |          |          |
+               |          |           --1.55%--atomic.Value(u64).fetchSub (inlined)
+               |          |
+               |          |--1.66%--stats.latency.LatencyHistogram.observe (inlined)
+               |          |          |
+               |          |           --1.47%--atomic.Value(u64).fetchAdd (inlined)
+               |          |
+               |          |--0.92%--atomic.Value(u64).fetchAdd (inlined)
+               |          |
+               |          |--0.61%--atomic.Value(types.TaskState).cmpxchgStrong (inlined)
+               |          |
+               |          |--0.60%--types.WaitGroup.done (inlined)
+               |          |          |
+               |          |           --0.58%--atomic.Value(u32).fetchSub (inlined)
+               |          |
+               |           --0.53%--atomic.Value(u64).fetchSub (inlined)
+               |
+                --6.70%--pool.Core.idle (inlined)
+                          |
+                          |--4.31%--Thread.Condition.timedWait (inlined)
+                          |          |
+                          |           --4.30%--Thread.Condition.FutexImpl.wait
+                          |                     |
+                          |                      --4.13%--Thread.Futex.Deadline.wait
+                          |                                |
+                          |                                 --4.07%--Thread.Futex.timedWait
+                          |                                           |
+                          |                                            --4.07%--Thread.Futex.LinuxImpl.wait (inlined)
+                          |                                                      |
+                          |                                                       --4.06%--os.linux.errnoFromSyscall (inlined)
+                          |                                                                 |
+                          |                                                                  --3.45%--entry_SYSCALL_64_after_hwframe
+                          |                                                                            |
+                          |                                                                             --3.44%--do_syscall_64
+                          |                                                                                       |
+                          |                                                                                        --3.34%--__x64_sys_futex
+                          |                                                                                                  |
+                          |                                                                                                   --3.21%--do_futex
+                          |                                                                                                             |
+                          |                                                                                                              --3.19%--futex_wait
+                          |                                                                                                                        |
+                          |                                                                                                                         --3.09%--__futex_wait
+                          |                                                                                                                                   |
+                          |                                                                                                                                    --2.91%--futex_wait_queue
+                          |                                                                                                                                              |
+                          |                                                                                                                                               --2.64%--schedule
+                          |                                                                                                                                                         |
+                          |                                                                                                                                                          --2.62%--__schedule
+                          |                                                                                                                                                                    |
+                          |                                                                                                                                                                    |--1.32%--dequeue_task_fair
+                          |                                                                                                                                                                    |          |
+                          |                                                                                                                                                                    |           --1.28%--dequeue_entities
+                          |                                                                                                                                                                    |                     |
+                          |                                                                                                                                                                    |                      --0.77%--dequeue_entity
+                          |                                                                                                                                                                    |
+                          |                                                                                                                                                                     --0.64%--pick_next_task_fair
+                          |                                                                                                                                                                               |
+                          |                                                                                                                                                                                --0.60%--sched_balance_newidle
+                          |
+                           --0.73%--atomic.Value(u64).load (inlined)
+
+    68.77%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] pool.Core.nextTask (inlined)
+            |
+            ---pool.Core.nextTask (inlined)
+               |
+               |--45.39%--pool.LocalQueue.len (inlined)
+               |          |
+               |           --1.45%--queue.ring_queue.RingQueue(u32).len (inlined)
+               |
+               |--4.10%--queue.bounded_ring.BoundedRing(u32).popMany (inlined)
+               |          |
+               |          |--2.42%--atomic.Value(usize).load (inlined)
+               |          |
+               |           --1.17%--atomic.Value(usize).cmpxchgStrong (inlined)
+               |
+               |--3.10%--pool.LocalQueue.popBottom (inlined)
+               |          |
+               |           --2.05%--queue.ring_queue.RingQueue(u32).pop (inlined)
+               |                     |
+               |                      --1.60%--atomic.Value(u32).store (inlined)
+               |
+               |--0.65%--atomic.Value(u64).load (inlined)
+               |
+               |--0.64%--atomic.Value(u32).swap (inlined)
+               |
+                --0.53%--pool.LocalQueue.steal (inlined)
+
+    45.39%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] pool.LocalQueue.len (inlined)
+            |
+            ---pool.LocalQueue.len (inlined)
+               |
+                --1.45%--queue.ring_queue.RingQueue(u32).len (inlined)
+
+    16.53%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] pool.Core.runTask (inlined)
+            |
+            ---pool.Core.runTask (inlined)
+               |
+               |--9.05%--pool.Core.releaseDescriptor (inlined)
+               |          |
+               |          |--3.84%--atomic.Value(u64).cmpxchgWeak (inlined)
+               |          |
+               |          |--1.65%--atomic.Value(u64).load (inlined)
+               |          |
+               |           --1.55%--atomic.Value(u64).fetchSub (inlined)
+               |
+               |--1.66%--stats.latency.LatencyHistogram.observe (inlined)
+               |          |
+               |           --1.47%--atomic.Value(u64).fetchAdd (inlined)
+               |
+               |--0.92%--atomic.Value(u64).fetchAdd (inlined)
+               |
+               |--0.61%--atomic.Value(types.TaskState).cmpxchgStrong (inlined)
+               |
+               |--0.60%--types.WaitGroup.done (inlined)
+               |          |
+               |           --0.58%--atomic.Value(u32).fetchSub (inlined)
+               |
+                --0.53%--atomic.Value(u64).fetchSub (inlined)
+
+     9.05%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] pool.Core.releaseDescriptor (inlined)
+            |
+            ---pool.Core.releaseDescriptor (inlined)
+               |
+               |--3.84%--atomic.Value(u64).cmpxchgWeak (inlined)
+               |
+               |--1.65%--atomic.Value(u64).load (inlined)
+               |
+                --1.55%--atomic.Value(u64).fetchSub (inlined)
+
+     7.26%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] start._start (inlined)
+            |
+            ---start._start (inlined)
+               |
+                --7.26%--start.posixCallMainAndExit
+                          start.callMainWithArgs (inlined)
+                          start.callMain (inlined)
+                          bench_tokio_parity.main (inlined)
+                          bench_tokio_parity.benchFloodBatched__anon_1804 (inlined)
+                          |
+                           --7.20%--pool.ThreadPool.submitBatch (inlined)
+                                     pool.Core.submitBatch (inlined)
+                                     |
+                                      --6.55%--pool.Core.enqueuePush (inlined)
+                                                |
+                                                |--3.46%--pool.Core.acquireDescriptor (inlined)
+                                                |          |
+                                                |          |--1.33%--atomic.Value(u64).cmpxchgWeak (inlined)
+                                                |          |
+                                                |          |--0.73%--atomic.Value(u64).fetchAdd (inlined)
+                                                |          |
+                                                |           --0.61%--atomic.Value(u64).load (inlined)
+                                                |
+                                                 --1.81%--queue.bounded_ring.BoundedRing(u32).tryPush (inlined)
+                                                           |
+                                                            --1.15%--atomic.Value(usize).cmpxchgWeak (inlined)
+
+     7.26%     6.82%         30205  thread-pool-tok  thread-pool-tokio-parity  [.] start.posixCallMainAndExit
+            |
+             --6.82%--start._start (inlined)
+                       start.posixCallMainAndExit
+                       start.callMainWithArgs (inlined)
+                       start.callMain (inlined)
+                       bench_tokio_parity.main (inlined)
+                       bench_tokio_parity.benchFloodBatched__anon_1804 (inlined)
+                       |
+                        --6.82%--pool.ThreadPool.submitBatch (inlined)
+                                  pool.Core.submitBatch (inlined)
+                                  |
+                                   --6.42%--pool.Core.enqueuePush (inlined)
+                                             |
+                                             |--3.45%--pool.Core.acquireDescriptor (inlined)
+                                             |          |
+                                             |          |--1.33%--atomic.Value(u64).cmpxchgWeak (inlined)
+                                             |          |
+                                             |          |--0.73%--atomic.Value(u64).fetchAdd (inlined)
+                                             |          |
+                                             |           --0.61%--atomic.Value(u64).load (inlined)
+                                             |
+                                              --1.81%--queue.bounded_ring.BoundedRing(u32).tryPush (inlined)
+                                                        |
+                                                         --1.15%--atomic.Value(usize).cmpxchgWeak (inlined)
+
+     7.26%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] start.callMainWithArgs (inlined)
+            |
+            ---start.callMainWithArgs (inlined)
+               start.callMain (inlined)
+               bench_tokio_parity.main (inlined)
+               bench_tokio_parity.benchFloodBatched__anon_1804 (inlined)
+               |
+                --7.20%--pool.ThreadPool.submitBatch (inlined)
+                          pool.Core.submitBatch (inlined)
+                          |
+                           --6.55%--pool.Core.enqueuePush (inlined)
+                                     |
+                                     |--3.46%--pool.Core.acquireDescriptor (inlined)
+                                     |          |
+                                     |          |--1.33%--atomic.Value(u64).cmpxchgWeak (inlined)
+                                     |          |
+                                     |          |--0.73%--atomic.Value(u64).fetchAdd (inlined)
+                                     |          |
+                                     |           --0.61%--atomic.Value(u64).load (inlined)
+                                     |
+                                      --1.81%--queue.bounded_ring.BoundedRing(u32).tryPush (inlined)
+                                                |
+                                                 --1.15%--atomic.Value(usize).cmpxchgWeak (inlined)
+
+     7.26%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] start.callMain (inlined)
+            |
+            ---start.callMain (inlined)
+               bench_tokio_parity.main (inlined)
+               bench_tokio_parity.benchFloodBatched__anon_1804 (inlined)
+               |
+                --7.20%--pool.ThreadPool.submitBatch (inlined)
+                          pool.Core.submitBatch (inlined)
+                          |
+                           --6.55%--pool.Core.enqueuePush (inlined)
+                                     |
+                                     |--3.46%--pool.Core.acquireDescriptor (inlined)
+                                     |          |
+                                     |          |--1.33%--atomic.Value(u64).cmpxchgWeak (inlined)
+                                     |          |
+                                     |          |--0.73%--atomic.Value(u64).fetchAdd (inlined)
+                                     |          |
+                                     |           --0.61%--atomic.Value(u64).load (inlined)
+                                     |
+                                      --1.81%--queue.bounded_ring.BoundedRing(u32).tryPush (inlined)
+                                                |
+                                                 --1.15%--atomic.Value(usize).cmpxchgWeak (inlined)
+
+     7.26%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] bench_tokio_parity.main (inlined)
+            |
+            ---bench_tokio_parity.main (inlined)
+               bench_tokio_parity.benchFloodBatched__anon_1804 (inlined)
+               |
+                --7.20%--pool.ThreadPool.submitBatch (inlined)
+                          pool.Core.submitBatch (inlined)
+                          |
+                           --6.55%--pool.Core.enqueuePush (inlined)
+                                     |
+                                     |--3.46%--pool.Core.acquireDescriptor (inlined)
+                                     |          |
+                                     |          |--1.33%--atomic.Value(u64).cmpxchgWeak (inlined)
+                                     |          |
+                                     |          |--0.73%--atomic.Value(u64).fetchAdd (inlined)
+                                     |          |
+                                     |           --0.61%--atomic.Value(u64).load (inlined)
+                                     |
+                                      --1.81%--queue.bounded_ring.BoundedRing(u32).tryPush (inlined)
+                                                |
+                                                 --1.15%--atomic.Value(usize).cmpxchgWeak (inlined)
+
+     7.26%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] bench_tokio_parity.benchFloodBatched__anon_1804 (inlined)
+            |
+            ---bench_tokio_parity.benchFloodBatched__anon_1804 (inlined)
+               |
+                --7.20%--pool.ThreadPool.submitBatch (inlined)
+                          pool.Core.submitBatch (inlined)
+                          |
+                           --6.55%--pool.Core.enqueuePush (inlined)
+                                     |
+                                     |--3.46%--pool.Core.acquireDescriptor (inlined)
+                                     |          |
+                                     |          |--1.33%--atomic.Value(u64).cmpxchgWeak (inlined)
+                                     |          |
+                                     |          |--0.73%--atomic.Value(u64).fetchAdd (inlined)
+                                     |          |
+                                     |           --0.61%--atomic.Value(u64).load (inlined)
+                                     |
+                                      --1.81%--queue.bounded_ring.BoundedRing(u32).tryPush (inlined)
+                                                |
+                                                 --1.15%--atomic.Value(usize).cmpxchgWeak (inlined)
+
+     7.20%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] pool.ThreadPool.submitBatch (inlined)
+            |
+            ---pool.ThreadPool.submitBatch (inlined)
+               pool.Core.submitBatch (inlined)
+               |
+                --6.55%--pool.Core.enqueuePush (inlined)
+                          |
+                          |--3.46%--pool.Core.acquireDescriptor (inlined)
+                          |          |
+                          |          |--1.33%--atomic.Value(u64).cmpxchgWeak (inlined)
+                          |          |
+                          |          |--0.73%--atomic.Value(u64).fetchAdd (inlined)
+                          |          |
+                          |           --0.61%--atomic.Value(u64).load (inlined)
+                          |
+                           --1.81%--queue.bounded_ring.BoundedRing(u32).tryPush (inlined)
+                                     |
+                                      --1.15%--atomic.Value(usize).cmpxchgWeak (inlined)
+
+     7.20%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] pool.Core.submitBatch (inlined)
+            |
+            ---pool.Core.submitBatch (inlined)
+               |
+                --6.55%--pool.Core.enqueuePush (inlined)
+                          |
+                          |--3.46%--pool.Core.acquireDescriptor (inlined)
+                          |          |
+                          |          |--1.33%--atomic.Value(u64).cmpxchgWeak (inlined)
+                          |          |
+                          |          |--0.73%--atomic.Value(u64).fetchAdd (inlined)
+                          |          |
+                          |           --0.61%--atomic.Value(u64).load (inlined)
+                          |
+                           --1.81%--queue.bounded_ring.BoundedRing(u32).tryPush (inlined)
+                                     |
+                                      --1.15%--atomic.Value(usize).cmpxchgWeak (inlined)
+
+     6.70%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] pool.Core.idle (inlined)
+            |
+            ---pool.Core.idle (inlined)
+               |
+               |--4.31%--Thread.Condition.timedWait (inlined)
+               |          |
+               |           --4.30%--Thread.Condition.FutexImpl.wait
+               |                     |
+               |                      --4.13%--Thread.Futex.Deadline.wait
+               |                                |
+               |                                 --4.07%--Thread.Futex.timedWait
+               |                                           |
+               |                                            --4.07%--Thread.Futex.LinuxImpl.wait (inlined)
+               |                                                      |
+               |                                                       --4.06%--os.linux.errnoFromSyscall (inlined)
+               |                                                                 |
+               |                                                                  --3.45%--entry_SYSCALL_64_after_hwframe
+               |                                                                            |
+               |                                                                             --3.44%--do_syscall_64
+               |                                                                                       |
+               |                                                                                        --3.34%--__x64_sys_futex
+               |                                                                                                  |
+               |                                                                                                   --3.21%--do_futex
+               |                                                                                                             |
+               |                                                                                                              --3.19%--futex_wait
+               |                                                                                                                        |
+               |                                                                                                                         --3.09%--__futex_wait
+               |                                                                                                                                   |
+               |                                                                                                                                    --2.91%--futex_wait_queue
+               |                                                                                                                                              |
+               |                                                                                                                                               --2.64%--schedule
+               |                                                                                                                                                         |
+               |                                                                                                                                                          --2.62%--__schedule
+               |                                                                                                                                                                    |
+               |                                                                                                                                                                    |--1.32%--dequeue_task_fair
+               |                                                                                                                                                                    |          |
+               |                                                                                                                                                                    |           --1.28%--dequeue_entities
+               |                                                                                                                                                                    |                     |
+               |                                                                                                                                                                    |                      --0.77%--dequeue_entity
+               |                                                                                                                                                                    |
+               |                                                                                                                                                                     --0.64%--pick_next_task_fair
+               |                                                                                                                                                                               |
+               |                                                                                                                                                                                --0.60%--sched_balance_newidle
+               |
+                --0.73%--atomic.Value(u64).load (inlined)
+
+     6.55%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] pool.Core.enqueuePush (inlined)
+            |
+            ---pool.Core.enqueuePush (inlined)
+               |
+               |--3.46%--pool.Core.acquireDescriptor (inlined)
+               |          |
+               |          |--1.33%--atomic.Value(u64).cmpxchgWeak (inlined)
+               |          |
+               |          |--0.73%--atomic.Value(u64).fetchAdd (inlined)
+               |          |
+               |           --0.61%--atomic.Value(u64).load (inlined)
+               |
+                --1.81%--queue.bounded_ring.BoundedRing(u32).tryPush (inlined)
+                          |
+                           --1.15%--atomic.Value(usize).cmpxchgWeak (inlined)
+
+     4.31%     0.13%          2132  thread-pool-tok  thread-pool-tokio-parity  [.] Thread.Condition.FutexImpl.wait
+            |
+             --4.18%--Thread.Condition.FutexImpl.wait
+                       |
+                        --4.13%--Thread.Futex.Deadline.wait
+                                  |
+                                   --4.08%--Thread.Futex.timedWait
+                                             |
+                                              --4.08%--Thread.Futex.LinuxImpl.wait (inlined)
+                                                        |
+                                                         --4.07%--os.linux.errnoFromSyscall (inlined)
+                                                                   |
+                                                                    --3.45%--entry_SYSCALL_64_after_hwframe
+                                                                              |
+                                                                               --3.44%--do_syscall_64
+                                                                                         |
+                                                                                          --3.34%--__x64_sys_futex
+                                                                                                    |
+                                                                                                     --3.21%--do_futex
+                                                                                                               |
+                                                                                                                --3.19%--futex_wait
+                                                                                                                          |
+                                                                                                                           --3.09%--__futex_wait
+                                                                                                                                     |
+                                                                                                                                      --2.91%--futex_wait_queue
+                                                                                                                                                |
+                                                                                                                                                 --2.64%--schedule
+                                                                                                                                                           |
+                                                                                                                                                            --2.62%--__schedule
+                                                                                                                                                                      |
+                                                                                                                                                                      |--1.32%--dequeue_task_fair
+                                                                                                                                                                      |          |
+                                                                                                                                                                      |           --1.28%--dequeue_entities
+                                                                                                                                                                      |                     |
+                                                                                                                                                                      |                      --0.77%--dequeue_entity
+                                                                                                                                                                      |
+                                                                                                                                                                       --0.64%--pick_next_task_fair
+                                                                                                                                                                                 |
+                                                                                                                                                                                  --0.60%--sched_balance_newidle
+
+     4.31%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] Thread.Condition.timedWait (inlined)
+            |
+            ---Thread.Condition.timedWait (inlined)
+               |
+                --4.30%--Thread.Condition.FutexImpl.wait
+                          |
+                           --4.13%--Thread.Futex.Deadline.wait
+                                     |
+                                      --4.07%--Thread.Futex.timedWait
+                                                |
+                                                 --4.07%--Thread.Futex.LinuxImpl.wait (inlined)
+                                                           |
+                                                            --4.06%--os.linux.errnoFromSyscall (inlined)
+                                                                      |
+                                                                       --3.45%--entry_SYSCALL_64_after_hwframe
+                                                                                 |
+                                                                                  --3.44%--do_syscall_64
+                                                                                            |
+                                                                                             --3.34%--__x64_sys_futex
+                                                                                                       |
+                                                                                                        --3.21%--do_futex
+                                                                                                                  |
+                                                                                                                   --3.19%--futex_wait
+                                                                                                                             |
+                                                                                                                              --3.09%--__futex_wait
+                                                                                                                                        |
+                                                                                                                                         --2.91%--futex_wait_queue
+                                                                                                                                                   |
+                                                                                                                                                    --2.64%--schedule
+                                                                                                                                                              |
+                                                                                                                                                               --2.62%--__schedule
+                                                                                                                                                                         |
+                                                                                                                                                                         |--1.32%--dequeue_task_fair
+                                                                                                                                                                         |          |
+                                                                                                                                                                         |           --1.28%--dequeue_entities
+                                                                                                                                                                         |                     |
+                                                                                                                                                                         |                      --0.77%--dequeue_entity
+                                                                                                                                                                         |
+                                                                                                                                                                          --0.64%--pick_next_task_fair
+                                                                                                                                                                                    |
+                                                                                                                                                                                     --0.60%--sched_balance_newidle
+
+     4.13%     0.04%           690  thread-pool-tok  thread-pool-tokio-parity  [.] Thread.Futex.Deadline.wait
+            |
+             --4.09%--Thread.Futex.Deadline.wait
+                       |
+                        --4.08%--Thread.Futex.timedWait
+                                  |
+                                   --4.08%--Thread.Futex.LinuxImpl.wait (inlined)
+                                             |
+                                              --4.07%--os.linux.errnoFromSyscall (inlined)
+                                                        |
+                                                         --3.45%--entry_SYSCALL_64_after_hwframe
+                                                                   |
+                                                                    --3.44%--do_syscall_64
+                                                                              |
+                                                                               --3.34%--__x64_sys_futex
+                                                                                         |
+                                                                                          --3.21%--do_futex
+                                                                                                    |
+                                                                                                     --3.19%--futex_wait
+                                                                                                               |
+                                                                                                                --3.09%--__futex_wait
+                                                                                                                          |
+                                                                                                                           --2.91%--futex_wait_queue
+                                                                                                                                     |
+                                                                                                                                      --2.64%--schedule
+                                                                                                                                                |
+                                                                                                                                                 --2.62%--__schedule
+                                                                                                                                                           |
+                                                                                                                                                           |--1.32%--dequeue_task_fair
+                                                                                                                                                           |          |
+                                                                                                                                                           |           --1.28%--dequeue_entities
+                                                                                                                                                           |                     |
+                                                                                                                                                           |                      --0.77%--dequeue_entity
+                                                                                                                                                           |
+                                                                                                                                                            --0.64%--pick_next_task_fair
+                                                                                                                                                                      |
+                                                                                                                                                                       --0.60%--sched_balance_newidle
+
+     4.10%     0.06%          1083  thread-pool-tok  thread-pool-tokio-parity  [.] Thread.Futex.timedWait
+            |
+             --4.04%--Thread.Futex.timedWait
+                       |
+                        --4.04%--Thread.Futex.LinuxImpl.wait (inlined)
+                                  os.linux.errnoFromSyscall (inlined)
+                                  |
+                                   --3.45%--entry_SYSCALL_64_after_hwframe
+                                             |
+                                              --3.44%--do_syscall_64
+                                                        |
+                                                         --3.34%--__x64_sys_futex
+                                                                   |
+                                                                    --3.21%--do_futex
+                                                                              |
+                                                                               --3.19%--futex_wait
+                                                                                         |
+                                                                                          --3.09%--__futex_wait
+                                                                                                    |
+                                                                                                     --2.91%--futex_wait_queue
+                                                                                                               |
+                                                                                                                --2.64%--schedule
+                                                                                                                          |
+                                                                                                                           --2.62%--__schedule
+                                                                                                                                     |
+                                                                                                                                     |--1.32%--dequeue_task_fair
+                                                                                                                                     |          |
+                                                                                                                                     |           --1.28%--dequeue_entities
+                                                                                                                                     |                     |
+                                                                                                                                     |                      --0.77%--dequeue_entity
+                                                                                                                                     |
+                                                                                                                                      --0.64%--pick_next_task_fair
+                                                                                                                                                |
+                                                                                                                                                 --0.60%--sched_balance_newidle
+
+     4.10%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] queue.bounded_ring.BoundedRing(u32).popMany (inlined)
+            |
+            ---queue.bounded_ring.BoundedRing(u32).popMany (inlined)
+               |
+               |--2.42%--atomic.Value(usize).load (inlined)
+               |
+                --1.17%--atomic.Value(usize).cmpxchgStrong (inlined)
+
+     4.08%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] Thread.Futex.LinuxImpl.wait (inlined)
+            |
+            ---Thread.Futex.LinuxImpl.wait (inlined)
+               |
+                --4.07%--os.linux.errnoFromSyscall (inlined)
+                          |
+                           --3.45%--entry_SYSCALL_64_after_hwframe
+                                     |
+                                      --3.44%--do_syscall_64
+                                                |
+                                                 --3.34%--__x64_sys_futex
+                                                           |
+                                                            --3.21%--do_futex
+                                                                      |
+                                                                       --3.19%--futex_wait
+                                                                                 |
+                                                                                  --3.09%--__futex_wait
+                                                                                            |
+                                                                                             --2.91%--futex_wait_queue
+                                                                                                       |
+                                                                                                        --2.64%--schedule
+                                                                                                                  |
+                                                                                                                   --2.62%--__schedule
+                                                                                                                             |
+                                                                                                                             |--1.32%--dequeue_task_fair
+                                                                                                                             |          |
+                                                                                                                             |           --1.28%--dequeue_entities
+                                                                                                                             |                     |
+                                                                                                                             |                      --0.77%--dequeue_entity
+                                                                                                                             |
+                                                                                                                              --0.64%--pick_next_task_fair
+                                                                                                                                        |
+                                                                                                                                         --0.60%--sched_balance_newidle
+
+     4.07%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] os.linux.errnoFromSyscall (inlined)
+            |
+            ---os.linux.errnoFromSyscall (inlined)
+               |
+                --3.45%--entry_SYSCALL_64_after_hwframe
+                          |
+                           --3.44%--do_syscall_64
+                                     |
+                                      --3.34%--__x64_sys_futex
+                                                |
+                                                 --3.21%--do_futex
+                                                           |
+                                                            --3.19%--futex_wait
+                                                                      |
+                                                                       --3.09%--__futex_wait
+                                                                                 |
+                                                                                  --2.91%--futex_wait_queue
+                                                                                            |
+                                                                                             --2.64%--schedule
+                                                                                                       |
+                                                                                                        --2.62%--__schedule
+                                                                                                                  |
+                                                                                                                  |--1.32%--dequeue_task_fair
+                                                                                                                  |          |
+                                                                                                                  |           --1.28%--dequeue_entities
+                                                                                                                  |                     |
+                                                                                                                  |                      --0.77%--dequeue_entity
+                                                                                                                  |
+                                                                                                                   --0.64%--pick_next_task_fair
+                                                                                                                             |
+                                                                                                                              --0.60%--sched_balance_newidle
+
+     3.84%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] atomic.Value(u64).cmpxchgWeak (inlined)
+            |
+            ---atomic.Value(u64).cmpxchgWeak (inlined)
+
+     3.68%     0.03%           499  thread-pool-tok  [kernel.kallsyms]         [k] entry_SYSCALL_64_after_hwframe
+            |
+             --3.65%--entry_SYSCALL_64_after_hwframe
+                       |
+                        --3.65%--do_syscall_64
+                                  |
+                                   --3.46%--__x64_sys_futex
+                                             |
+                                              --3.34%--do_futex
+                                                        |
+                                                         --3.19%--futex_wait
+                                                                   |
+                                                                    --3.10%--__futex_wait
+                                                                              |
+                                                                               --2.91%--futex_wait_queue
+                                                                                         |
+                                                                                          --2.64%--schedule
+                                                                                                    |
+                                                                                                     --2.63%--__schedule
+                                                                                                               |
+                                                                                                               |--1.32%--dequeue_task_fair
+                                                                                                               |          |
+                                                                                                               |           --1.28%--dequeue_entities
+                                                                                                               |                     |
+                                                                                                               |                      --0.77%--dequeue_entity
+                                                                                                               |
+                                                                                                                --0.64%--pick_next_task_fair
+                                                                                                                          |
+                                                                                                                           --0.60%--sched_balance_newidle
+
+     3.65%     0.03%           449  thread-pool-tok  [kernel.kallsyms]         [k] do_syscall_64
+            |
+             --3.62%--do_syscall_64
+                       |
+                        --3.46%--__x64_sys_futex
+                                  |
+                                   --3.34%--do_futex
+                                             |
+                                              --3.19%--futex_wait
+                                                        |
+                                                         --3.10%--__futex_wait
+                                                                   |
+                                                                    --2.91%--futex_wait_queue
+                                                                              |
+                                                                               --2.64%--schedule
+                                                                                         |
+                                                                                          --2.63%--__schedule
+                                                                                                    |
+                                                                                                    |--1.32%--dequeue_task_fair
+                                                                                                    |          |
+                                                                                                    |           --1.28%--dequeue_entities
+                                                                                                    |                     |
+                                                                                                    |                      --0.77%--dequeue_entity
+                                                                                                    |
+                                                                                                     --0.64%--pick_next_task_fair
+                                                                                                               |
+                                                                                                                --0.60%--sched_balance_newidle
+
+     3.46%     0.05%           880  thread-pool-tok  [kernel.kallsyms]         [k] __x64_sys_futex
+            |
+             --3.41%--__x64_sys_futex
+                       |
+                        --3.34%--do_futex
+                                  |
+                                   --3.19%--futex_wait
+                                             |
+                                              --3.10%--__futex_wait
+                                                        |
+                                                         --2.91%--futex_wait_queue
+                                                                   |
+                                                                    --2.64%--schedule
+                                                                              |
+                                                                               --2.63%--__schedule
+                                                                                         |
+                                                                                         |--1.32%--dequeue_task_fair
+                                                                                         |          |
+                                                                                         |           --1.28%--dequeue_entities
+                                                                                         |                     |
+                                                                                         |                      --0.77%--dequeue_entity
+                                                                                         |
+                                                                                          --0.64%--pick_next_task_fair
+                                                                                                    |
+                                                                                                     --0.60%--sched_balance_newidle
+
+     3.46%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] pool.Core.acquireDescriptor (inlined)
+            |
+            ---pool.Core.acquireDescriptor (inlined)
+               |
+               |--1.33%--atomic.Value(u64).cmpxchgWeak (inlined)
+               |
+               |--0.73%--atomic.Value(u64).fetchAdd (inlined)
+               |
+                --0.61%--atomic.Value(u64).load (inlined)
+
+     3.34%     0.02%           303  thread-pool-tok  [kernel.kallsyms]         [k] do_futex
+            |
+             --3.32%--do_futex
+                       |
+                        --3.19%--futex_wait
+                                  |
+                                   --3.10%--__futex_wait
+                                             |
+                                              --2.91%--futex_wait_queue
+                                                        |
+                                                         --2.64%--schedule
+                                                                   |
+                                                                    --2.63%--__schedule
+                                                                              |
+                                                                              |--1.32%--dequeue_task_fair
+                                                                              |          |
+                                                                              |           --1.28%--dequeue_entities
+                                                                              |                     |
+                                                                              |                      --0.77%--dequeue_entity
+                                                                              |
+                                                                               --0.64%--pick_next_task_fair
+                                                                                         |
+                                                                                          --0.60%--sched_balance_newidle
+
+     3.20%     0.02%           390  thread-pool-tok  [kernel.kallsyms]         [k] futex_wait
+            |
+             --3.17%--futex_wait
+                       |
+                        --3.10%--__futex_wait
+                                  |
+                                   --2.91%--futex_wait_queue
+                                             |
+                                              --2.64%--schedule
+                                                        |
+                                                         --2.63%--__schedule
+                                                                   |
+                                                                   |--1.32%--dequeue_task_fair
+                                                                   |          |
+                                                                   |           --1.28%--dequeue_entities
+                                                                   |                     |
+                                                                   |                      --0.77%--dequeue_entity
+                                                                   |
+                                                                    --0.64%--pick_next_task_fair
+                                                                              |
+                                                                               --0.60%--sched_balance_newidle
+
+     3.10%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] pool.LocalQueue.popBottom (inlined)
+            |
+            ---pool.LocalQueue.popBottom (inlined)
+               |
+                --2.05%--queue.ring_queue.RingQueue(u32).pop (inlined)
+                          |
+                           --1.60%--atomic.Value(u32).store (inlined)
+
+     3.10%     0.04%           639  thread-pool-tok  [kernel.kallsyms]         [k] __futex_wait
+            |
+             --3.06%--__futex_wait
+                       |
+                        --2.91%--futex_wait_queue
+                                  |
+                                   --2.64%--schedule
+                                             |
+                                              --2.63%--__schedule
+                                                        |
+                                                        |--1.32%--dequeue_task_fair
+                                                        |          |
+                                                        |           --1.28%--dequeue_entities
+                                                        |                     |
+                                                        |                      --0.77%--dequeue_entity
+                                                        |
+                                                         --0.64%--pick_next_task_fair
+                                                                   |
+                                                                    --0.60%--sched_balance_newidle
+
+     3.04%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] atomic.Value(u64).load (inlined)
+            |
+            ---atomic.Value(u64).load (inlined)
+
+     3.04%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] atomic.Value(u64).fetchAdd (inlined)
+            |
+            ---atomic.Value(u64).fetchAdd (inlined)
+
+     2.91%     0.02%           308  thread-pool-tok  [kernel.kallsyms]         [k] futex_wait_queue
+            |
+             --2.89%--futex_wait_queue
+                       |
+                        --2.64%--schedule
+                                  |
+                                   --2.63%--__schedule
+                                             |
+                                             |--1.32%--dequeue_task_fair
+                                             |          |
+                                             |           --1.28%--dequeue_entities
+                                             |                     |
+                                             |                      --0.77%--dequeue_entity
+                                             |
+                                              --0.64%--pick_next_task_fair
+                                                        |
+                                                         --0.60%--sched_balance_newidle
+
+     2.65%     0.02%           263  thread-pool-tok  [kernel.kallsyms]         [k] schedule
+            |
+             --2.63%--schedule
+                       |
+                        --2.63%--__schedule
+                                  |
+                                  |--1.32%--dequeue_task_fair
+                                  |          |
+                                  |           --1.28%--dequeue_entities
+                                  |                     |
+                                  |                      --0.77%--dequeue_entity
+                                  |
+                                   --0.64%--pick_next_task_fair
+                                             |
+                                              --0.60%--sched_balance_newidle
+
+     2.63%     0.08%          1299  thread-pool-tok  [kernel.kallsyms]         [k] __schedule
+            |
+             --2.55%--__schedule
+                       |
+                       |--1.32%--dequeue_task_fair
+                       |          |
+                       |           --1.28%--dequeue_entities
+                       |                     |
+                       |                      --0.77%--dequeue_entity
+                       |
+                        --0.64%--pick_next_task_fair
+                                  |
+                                   --0.60%--sched_balance_newidle
+
+     2.56%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] atomic.Value(u64).fetchSub (inlined)
+            |
+            ---atomic.Value(u64).fetchSub (inlined)
+
+     2.42%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] atomic.Value(usize).load (inlined)
+            |
+            ---atomic.Value(usize).load (inlined)
+
+     2.05%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] queue.ring_queue.RingQueue(u32).pop (inlined)
+            |
+            ---queue.ring_queue.RingQueue(u32).pop (inlined)
+               |
+                --1.60%--atomic.Value(u32).store (inlined)
+
+     1.81%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] queue.bounded_ring.BoundedRing(u32).tryPush (inlined)
+            |
+            ---queue.bounded_ring.BoundedRing(u32).tryPush (inlined)
+               |
+                --1.15%--atomic.Value(usize).cmpxchgWeak (inlined)
+
+     1.66%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] stats.latency.LatencyHistogram.observe (inlined)
+            |
+            ---stats.latency.LatencyHistogram.observe (inlined)
+               |
+                --1.47%--atomic.Value(u64).fetchAdd (inlined)
+
+     1.61%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] atomic.Value(u32).store (inlined)
+            |
+            ---atomic.Value(u32).store (inlined)
+
+     1.45%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] queue.ring_queue.RingQueue(u32).len (inlined)
+            |
+            ---queue.ring_queue.RingQueue(u32).len (inlined)
+
+     1.33%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] atomic.Value(u64).cmpxchgWeak (inlined)
+            |
+            ---atomic.Value(u64).cmpxchgWeak (inlined)
+
+     1.32%     0.03%           486  thread-pool-tok  [kernel.kallsyms]         [k] dequeue_task_fair
+            |
+             --1.29%--dequeue_task_fair
+                       |
+                        --1.29%--dequeue_entities
+                                  |
+                                   --0.77%--dequeue_entity
+
+     1.31%     0.08%          1285  thread-pool-tok  [kernel.kallsyms]         [k] dequeue_entities
+            |
+             --1.23%--dequeue_entities
+                       |
+                        --0.78%--dequeue_entity
+
+     1.17%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] atomic.Value(usize).cmpxchgStrong (inlined)
+            |
+            ---atomic.Value(usize).cmpxchgStrong (inlined)
+
+     1.15%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] atomic.Value(usize).cmpxchgWeak (inlined)
+            |
+            ---atomic.Value(usize).cmpxchgWeak (inlined)
+
+     1.06%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] atomic.Value(u32).load (inlined)
+            |
+            ---atomic.Value(u32).load (inlined)
+
+     0.98%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] atomic.Value(u32).swap (inlined)
+            |
+            ---atomic.Value(u32).swap (inlined)
+
+     0.78%     0.14%          2241  thread-pool-tok  [kernel.kallsyms]         [k] dequeue_entity
+            |
+             --0.64%--dequeue_entity
+
+     0.73%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] atomic.Value(u64).fetchAdd (inlined)
+            |
+            ---atomic.Value(u64).fetchAdd (inlined)
+
+     0.69%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] atomic.Value(u64).load (inlined)
+            |
+            ---atomic.Value(u64).load (inlined)
+
+     0.64%     0.01%           169  thread-pool-tok  [kernel.kallsyms]         [k] pick_next_task_fair
+            |
+             --0.63%--pick_next_task_fair
+                       |
+                        --0.60%--sched_balance_newidle
+
+     0.61%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] atomic.Value(types.TaskState).cmpxchgStrong (inlined)
+            |
+            ---atomic.Value(types.TaskState).cmpxchgStrong (inlined)
+
+     0.60%     0.07%          1085  thread-pool-tok  [kernel.kallsyms]         [k] sched_balance_newidle
+            |
+             --0.54%--sched_balance_newidle
+
+     0.60%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] types.WaitGroup.done (inlined)
+            |
+            ---types.WaitGroup.done (inlined)
+               |
+                --0.58%--atomic.Value(u32).fetchSub (inlined)
+
+     0.58%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] atomic.Value(u32).fetchSub (inlined)
+            |
+            ---atomic.Value(u32).fetchSub (inlined)
+
+     0.56%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] atomic.Value(pool.PoolState).load (inlined)
+            |
+            ---atomic.Value(pool.PoolState).load (inlined)
+
+     0.53%     0.00%             0  thread-pool-tok  thread-pool-tokio-parity  [.] pool.LocalQueue.steal (inlined)
+            |
+            ---pool.LocalQueue.steal (inlined)
+
+     0.51%     0.51%          6467  thread-pool-tok  [vdso]                    [.] __vdso_clock_gettime
+
+
+#
+# (Tip: To set sample time separation other than 100ms with --sort time use --time-quantum)
+#

@@ -1,0 +1,327 @@
+---
+# GitLab CI/CD Pipeline for thread-pool
+# SPDX-License-Identifier: Apache-2.0
+#
+# Reusable components live in gitlab.com/devnw/ci-catalog.
+# Zig components pinned at v1.22.0 (first tag with multi-OS + test_step
+# + bounded zig-fuzz). Security/SBOM components stay on their existing
+# pins since those APIs haven't changed.
+#
+# Linux jobs run on shared runners. macOS and Windows jobs require
+# GitLab SaaS runners (`saas-macos-medium-m1`, `saas-windows-medium-amd64`);
+# they are gated behind rules + allow_failure so pipelines without those
+# runners still pass. Trigger cross-OS runs by setting RUN_CROSS_OS=true
+# or by scheduling / merging to the default branch.
+
+# Cancel in-flight pipelines on new commits for everything except
+# release-producing runs (tag pipelines and default-branch pipelines,
+# which feed `release-semantic`). All jobs default to interruptible so
+# the auto-cancel actually kicks in; opt out per-job when needed.
+workflow:
+  auto_cancel:
+    on_new_commit: interruptible
+  rules:
+    - if: '$CI_COMMIT_TAG'
+      auto_cancel:
+        on_new_commit: none
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      auto_cancel:
+        on_new_commit: none
+    - when: always
+
+default:
+  interruptible: true
+
+include:
+  - component: gitlab.com/devnw/ci-catalog/security-sast@v1.7.1
+  - component: gitlab.com/devnw/ci-catalog/security-dependency-scanning@v1.7.1
+  - component: gitlab.com/devnw/ci-catalog/security-secrets@v1.7.1
+  - component: gitlab.com/devnw/ci-catalog/security-gitleaks@v1.7.1
+  - component: gitlab.com/devnw/ci-catalog/sbom-generate@v1.7.1
+  - component: gitlab.com/devnw/ci-catalog/sbom-scan@v1.7.1
+  - component: gitlab.com/devnw/ci-catalog/release-semantic@v1.7.1
+
+  # Zig formatting (Linux).
+  - component: gitlab.com/devnw/ci-catalog/zig-format@v1.22.0
+    inputs:
+      zig_version: "0.16.0"
+      paths: "src/ tests/ benchmarks/ examples/"
+
+  # Zig build (Linux): static lib + check-compile.
+  - component: gitlab.com/devnw/ci-catalog/zig-build@v1.22.0
+    inputs:
+      stage: build
+      zig_version: "0.16.0"
+      build_options: "build check"
+
+  # Zig tests — Linux matrix across optimize modes + integration + stress.
+  - component: gitlab.com/devnw/ci-catalog/zig-test@v1.22.0
+    inputs:
+      zig_version: "0.16.0"
+      job_suffix: "-unit-debug"
+      test_step: "test"
+      optimize: "Debug"
+  - component: gitlab.com/devnw/ci-catalog/zig-test@v1.22.0
+    inputs:
+      zig_version: "0.16.0"
+      job_suffix: "-unit-releasesafe"
+      test_step: "test"
+      optimize: "ReleaseSafe"
+  - component: gitlab.com/devnw/ci-catalog/zig-test@v1.22.0
+    inputs:
+      zig_version: "0.16.0"
+      job_suffix: "-unit-releasefast"
+      test_step: "test"
+      optimize: "ReleaseFast"
+  - component: gitlab.com/devnw/ci-catalog/zig-test@v1.22.0
+    inputs:
+      zig_version: "0.16.0"
+      job_suffix: "-unit-releasesmall"
+      test_step: "test"
+      optimize: "ReleaseSmall"
+  - component: gitlab.com/devnw/ci-catalog/zig-test@v1.22.0
+    inputs:
+      zig_version: "0.16.0"
+      job_suffix: "-integration"
+      test_step: "test-integration"
+  - component: gitlab.com/devnw/ci-catalog/zig-test@v1.22.0
+    inputs:
+      zig_version: "0.16.0"
+      job_suffix: "-stress"
+      test_step: "test-stress"
+
+  # Fuzz sweep (advisory). fuzz_duration is the in-shell SIGINT
+  # budget; timeout: is GitLab's job cap.
+  - component: gitlab.com/devnw/ci-catalog/zig-fuzz@v1.22.0
+    inputs:
+      zig_version: "0.16.0"
+      test_step: "test"
+      test_options: "--fuzz"
+      fuzz_duration: "60"
+      timeout: "5m"
+      allow_failure: true
+
+  # Zig build + tests on macOS (gated).
+  - component: gitlab.com/devnw/ci-catalog/zig-build-macos@v1.22.0
+    inputs:
+      zig_version: "0.16.0"
+      build_step: "build"
+      build_options: "check"
+  - component: gitlab.com/devnw/ci-catalog/zig-test-macos@v1.22.0
+    inputs:
+      zig_version: "0.16.0"
+      job_suffix: "-unit"
+      test_step: "test"
+  - component: gitlab.com/devnw/ci-catalog/zig-test-macos@v1.22.0
+    inputs:
+      zig_version: "0.16.0"
+      job_suffix: "-integration"
+      test_step: "test-integration"
+  - component: gitlab.com/devnw/ci-catalog/zig-test-macos@v1.22.0
+    inputs:
+      zig_version: "0.16.0"
+      job_suffix: "-stress"
+      test_step: "test-stress"
+
+  # Zig build + tests on Windows (gated).
+  - component: gitlab.com/devnw/ci-catalog/zig-build-windows@v1.22.0
+    inputs:
+      zig_version: "0.16.0"
+      build_step: "build"
+      build_options: "check"
+  - component: gitlab.com/devnw/ci-catalog/zig-test-windows@v1.22.0
+    inputs:
+      zig_version: "0.16.0"
+      job_suffix: "-unit"
+      test_step: "test"
+  - component: gitlab.com/devnw/ci-catalog/zig-test-windows@v1.22.0
+    inputs:
+      zig_version: "0.16.0"
+      job_suffix: "-integration"
+      test_step: "test-integration"
+  - component: gitlab.com/devnw/ci-catalog/zig-test-windows@v1.22.0
+    inputs:
+      zig_version: "0.16.0"
+      job_suffix: "-stress"
+      test_step: "test-stress"
+
+variables:
+  ZIG_VERSION: "0.16.0"
+
+stages:
+  - lint
+  - build
+  - test
+  - fuzz
+  - performance
+  - security
+  - sbom
+  - release
+
+# ---------------------------------------------------------------
+# Cross-OS gating: apply rules to the catalog-generated jobs so
+# macOS / Windows only run on default branch, schedule, or when
+# RUN_CROSS_OS=true. Elsewhere they fall back to manual.
+# ---------------------------------------------------------------
+
+.cross-os-rules: &cross-os-rules
+  - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+  - if: '$CI_PIPELINE_SOURCE == "schedule"'
+  - if: '$RUN_CROSS_OS == "true"'
+  - when: manual
+    allow_failure: true
+
+zig-build-macos-0.16.0:
+  rules: *cross-os-rules
+
+zig-test-macos-unit-0.16.0:
+  rules: *cross-os-rules
+  needs: ["zig-build-macos-0.16.0"]
+
+zig-test-macos-integration-0.16.0:
+  rules: *cross-os-rules
+  needs: ["zig-build-macos-0.16.0"]
+
+zig-test-macos-stress-0.16.0:
+  rules: *cross-os-rules
+  needs: ["zig-build-macos-0.16.0"]
+
+zig-build-windows-0.16.0:
+  rules: *cross-os-rules
+
+zig-test-windows-unit-0.16.0:
+  rules: *cross-os-rules
+  needs: ["zig-build-windows-0.16.0"]
+
+zig-test-windows-integration-0.16.0:
+  rules: *cross-os-rules
+  needs: ["zig-build-windows-0.16.0"]
+
+zig-test-windows-stress-0.16.0:
+  rules: *cross-os-rules
+  needs: ["zig-build-windows-0.16.0"]
+
+# ---------------------------------------------------------------
+# Thread-pool-specific jobs (not covered by the catalog).
+#
+# We install Zig directly via scripts/install-zig.sh on a stock
+# ubuntu:24.04 image rather than pulling a prebuilt catalog image.
+# The catalog publishes :0.15.2 but not :0.16.0 (as of v1.22.0); the
+# catalog-driven zig-build / zig-test jobs avoid the image entirely
+# and bootstrap zig themselves, so we mirror that pattern here.
+# ---------------------------------------------------------------
+
+.zig-host-base:
+  image: "ubuntu:24.04"
+  interruptible: true
+  before_script:
+    - apt-get update -qq
+    - apt-get install -y --no-install-recommends curl ca-certificates xz-utils git build-essential python3
+    - bash scripts/install-zig.sh "$ZIG_VERSION"
+    - export PATH="$(pwd)/zig-${ZIG_VERSION}:$PATH"
+    - zig version
+
+cross-check:
+  extends: .zig-host-base
+  stage: test
+  script:
+    - zig build cross-check
+  needs: ["zig-build-0.16.0"]
+
+benchmark-regression:
+  extends: .zig-host-base
+  stage: performance
+  script:
+    - zig build bench -- --output benchmarks/results/ci-current.json
+    - zig build compare-bench -- --baseline benchmarks/results/baseline.json --current benchmarks/results/ci-current.json
+  artifacts:
+    when: always
+    paths:
+      - benchmarks/results/ci-current.json
+  needs: ["zig-build-0.16.0"]
+
+bench-micro:
+  extends: .zig-host-base
+  stage: performance
+  script:
+    - zig build bench-micro-submit > micro-submit.txt
+    - zig build bench-micro-steal > micro-steal.txt
+    - zig build bench-micro-wake > micro-wake.txt
+    - zig build bench-tokio-parity > tokio-parity.txt
+    - cat micro-submit.txt micro-steal.txt micro-wake.txt tokio-parity.txt
+  artifacts:
+    when: always
+    paths:
+      - micro-submit.txt
+      - micro-steal.txt
+      - micro-wake.txt
+      - tokio-parity.txt
+  needs: ["zig-build-0.16.0"]
+  allow_failure: true # advisory until thresholds are tuned
+
+scale-bench-manual:
+  extends: .zig-host-base
+  stage: performance
+  script:
+    - timeout 120 zig build scale-bench -- --output benchmarks/results/scale-current.json
+  artifacts:
+    when: always
+    paths:
+      - benchmarks/results/scale-current.json
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - when: manual
+      allow_failure: true
+  needs: ["zig-build-0.16.0"]
+
+# ---------------------------------------------------------------
+# ThreadSanitizer soak — scheduled / on-demand.
+#
+# These jobs pin their own Zig install via scripts/install-zig.sh on a
+# stock ubuntu:24.04 image. The manual install is intentional and
+# independent of the catalog image so a TSan regression isn't masked
+# by a coincident catalog image version bump, and so the soak remains
+# reproducible from a fresh image.
+#
+# TSan warnings are never "just noise" for a concurrency primitive —
+# any finding is a real signal. Because TSan instrumentation is
+# expensive, we don't run these on every MR. They run on schedule,
+# default branch, or when RUN_TSAN=true is set on the pipeline.
+#
+# Current state on main (2026-04-15): zero warnings across test,
+# test-integration, test-stress under TSan. See
+# docs/performance/appsec-fixes-2026-04-15/TSAN-findings.md.
+# ---------------------------------------------------------------
+
+.tsan-rules: &tsan-rules
+  - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+  - if: '$CI_PIPELINE_SOURCE == "schedule"'
+  - if: '$RUN_TSAN == "true"'
+  - when: manual
+    allow_failure: true
+
+.tsan-base:
+  extends: .zig-host-base
+  stage: test
+  rules: *tsan-rules
+
+tsan-stress-soak:
+  extends: .tsan-base
+  script:
+    # Run each suite under TSan three times; a single pass takes ~15s so
+    # three back-to-back passes give longer interleaving coverage.
+    - for i in 1 2 3; do echo "--- soak pass $i ---"; zig build test -Dtsan --summary all; done
+    - for i in 1 2 3; do echo "--- integration soak pass $i ---"; zig build test-integration -Dtsan --summary all; done
+    - for i in 1 2 3; do echo "--- stress soak pass $i ---"; zig build test-stress -Dtsan --summary all; done
+  timeout: 30m
+
+tsan-fuzz:
+  extends: .tsan-base
+  variables:
+    FUZZ_SEED: "1"
+    FUZZ_ITERATIONS: "5000"
+  script:
+    - zig build fuzz -Dtsan
+    - FUZZ_SEED=2 zig build fuzz -Dtsan
+    - FUZZ_SEED=3 zig build fuzz -Dtsan
+  timeout: 30m
