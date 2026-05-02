@@ -1,12 +1,12 @@
 .{
     .name = .yaml,
-    .version = "0.1.3",
+    .version = "0.1.4",
     .fingerprint = 0xea31a98484bec595,
     .minimum_zig_version = "0.15.1",
     .dependencies = .{
         .thread_pool = .{
-            .url = "git+https://gitlab.com/devnw/zig/thread-pool.git#v0.2.3",
-            .hash = "thread_pool-0.2.3-11B1BsqSdgDpwTmKiey1z7_5E2fV-8F6O1SJOKY6-gJw",
+            .url = "git+https://gitlab.com/devnw/zig/thread-pool.git#v0.2.4",
+            .hash = "thread_pool-0.2.4-11B1BsqSdgD2ZmPGiEwbjSR30K8xwBlWsiLt2NKWqpUl",
         },
     },
     .paths = .{
