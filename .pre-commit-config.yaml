@@ -1,4 +1,4 @@
-# Pre-commit configuration for Zig project
+# Pre-commit configuration for yaml project
 # https://pre-commit.com/
 #
 # Install: pip install pre-commit && pre-commit install
@@ -13,7 +13,7 @@ repos:
   # Standard pre-commit hooks (best practices)
   # =============================================================================
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v5.0.0
+  rev: v6.0.0
   hooks:
       # Formatting
   - id: trailing-whitespace
@@ -30,12 +30,14 @@ repos:
     args: [--unsafe]      # Allow custom tags
     exclude: ^(vendor/|dist/)
   - id: check-json
-    exclude: ^(vendor/|dist/|zig-out/)
+    exclude: ^(vendor/|dist/|zig-out/|\.devcontainer/)
   - id: check-toml
+  - id: check-xml
+    exclude: ^(vendor/|dist/)
 
       # Security
   - id: detect-private-key
-    exclude: ^(certs/test_.*\.pem$|tests/fixtures/.*\.(pem|key)$|tests/data/mock_.*\.pem$|\.gitleaks\.toml$)
+    exclude: ^(certs/|test.*certs/|.*test.*\.pem$|tests/|src/tests/|docker/zig-packages/)
   - id: check-added-large-files
     args: [--maxkb=1024]
     exclude: ^(vendor/|dist/)
@@ -56,11 +58,23 @@ repos:
   # Shell script linting
   # =============================================================================
 - repo: https://github.com/shellcheck-py/shellcheck-py
-  rev: v0.10.0.1
+  rev: v0.11.0.1
   hooks:
   - id: shellcheck
     args: [--severity=error, --shell=bash]
     exclude: ^(vendor/|dist/|tests/)
+
+  # =============================================================================
+  # Python linting (for test scripts and tools)
+  # =============================================================================
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.14.14
+  hooks:
+  - id: ruff
+    args: [--fix, --exit-non-zero-on-fix]
+    exclude: ^(vendor/|dist/)
+  - id: ruff-format
+    exclude: ^(vendor/|dist/)
 
   # =============================================================================
   # Markdown linting
@@ -69,14 +83,14 @@ repos:
   rev: v0.43.0
   hooks:
   - id: markdownlint
-    args: [--fix, --disable, MD013, MD033, MD041, MD024, --]
+    args: [--fix, --disable, MD013, MD033, MD041, MD024, MD060, MD036, MD051, MD052, MD055, --]
     exclude: ^(vendor/|dist/|CHANGELOG\.md|specs/)
 
   # =============================================================================
   # YAML formatting
   # =============================================================================
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.14.0
+  rev: v2.16.0
   hooks:
   - id: pretty-format-yaml
     args: [--autofix, --indent, '2']
@@ -86,7 +100,7 @@ repos:
   # Commit message validation (Conventional Commits)
   # =============================================================================
 - repo: https://github.com/commitizen-tools/commitizen
-  rev: v4.1.0
+  rev: v4.12.1
   hooks:
   - id: commitizen
     stages: [commit-msg]
@@ -96,7 +110,8 @@ repos:
   # =============================================================================
 - repo: local
   hooks:
-      # Zig formatting check
+      # Zig formatting check — runs at BOTH pre-commit and pre-push so a
+      # --no-verify on commit is still caught on push.
   - id: zig-fmt
     name: zig fmt (check)
     entry: zig fmt --check
@@ -104,9 +119,10 @@ repos:
     files: \.zig$
     exclude: ^(vendor/|dist/|zig-out/|\.zig-cache/)
     pass_filenames: false
-    args: [src/, build.zig]
+    args: [src/, build.zig, tests/, examples/]
+    stages: [pre-commit, pre-push]
 
-      # Zig build check (compilation)
+      # Zig build check (compilation) — moved to pre-push per #471 to reduce commit friction
   - id: zig-build
     name: zig build (compilation check)
     entry: zig build
@@ -114,7 +130,7 @@ repos:
     files: \.(zig|zon)$
     exclude: ^(vendor/|dist/|zig-out/|\.zig-cache/)
     pass_filenames: false
-    stages: [pre-commit]
+    stages: [pre-push]
 
       # Quick unit tests
   - id: zig-test
@@ -137,10 +153,6 @@ repos:
     language: system
     pass_filenames: false
     verbose: true
-
-# =============================================================================
-# CI configuration
-# =============================================================================
 
 - repo: local
   hooks:
@@ -165,6 +177,9 @@ repos:
     files: ^build\.zig\.zon$
     pass_filenames: false
 
+# =============================================================================
+# CI configuration
+# =============================================================================
 ci:
   autofix_prs: true
   autofix_commit_msg: |
@@ -174,5 +189,5 @@ ci:
   autoupdate_branch: ''
   autoupdate_commit_msg: '[pre-commit.ci] pre-commit autoupdate'
   autoupdate_schedule: weekly
-  skip: [zig-fmt, zig-build, zig-test]
+  skip: [zig-fmt, zig-build, zig-test, detect-diamond-deps]
   submodules: false
