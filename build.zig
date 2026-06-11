@@ -9,6 +9,12 @@ pub fn build(b: *std.Build) void {
 
     const enable_tp = b.option(bool, "thread-pool", "Enable thread-pool-based parallelism") orelse true;
 
+    // Single-source the library version from build.zig.zon so the package
+    // manifest and the public `yaml.version` constant can never drift.
+    const build_info = b.addOptions();
+    build_info.addOption([]const u8, "version", @import("build.zig.zon").version);
+    const build_info_mod = build_info.createModule();
+
     // Get thread_pool dependency if enabled
     const tp_mod: ?*std.Build.Module = if (enable_tp) blk: {
         const tp_dep = b.dependency("thread_pool", .{
@@ -39,6 +45,7 @@ pub fn build(b: *std.Build) void {
         .imports = &.{},
     });
     if (tp_mod) |tm| yaml_mod.addImport("thread_pool", tm);
+    yaml_mod.addImport("build_info", build_info_mod);
 
     // Unit tests (tests in src/yaml.zig)
     const unit_tests = b.addTest(.{
@@ -49,6 +56,7 @@ pub fn build(b: *std.Build) void {
         }),
     });
     if (tp_mod) |tm| unit_tests.root_module.addImport("thread_pool", tm);
+    unit_tests.root_module.addImport("build_info", build_info_mod);
 
     const run_unit_tests = b.addRunArtifact(unit_tests);
 
@@ -164,6 +172,7 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
     });
     if (tp_mod) |tm| check_mod.addImport("thread_pool", tm);
+    check_mod.addImport("build_info", build_info_mod);
     const check = b.addTest(.{
         .root_module = check_mod,
     });

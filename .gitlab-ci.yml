@@ -6,6 +6,11 @@ default:
   tags:
     - company
 
+# Supply-chain note (appsec F-07): components below are pinned to immutable
+# semantic-version tags from the first-party, access-controlled
+# gitlab.com/devnw/ci-catalog project. For defense-in-depth, pin to the release
+# commit SHA (e.g. `...security-sast@<sha>`) once the catalog publishes per-
+# release SHAs; SHAs are immutable where tags can be re-pointed.
 include:
   # Security scanning
   - component: gitlab.com/devnw/ci-catalog/security-sast@v1.7.1
@@ -132,6 +137,31 @@ test-release-small:
     - *install-zig
   script:
     - zig build test -Doptimize=ReleaseSmall --summary all
+  needs:
+    - build
+
+# Official YAML test suite (yaml-test-suite). The corpus is an external test
+# fixture, not vendored; this job fetches it and runs the suite runner, which
+# compares each case's emitted event tree against the expected tree. Marked
+# allow_failure because upstream coverage is still being driven to 100% and the
+# event format has known normalization gaps (document markers); it is a
+# tracking signal, not a hard gate. The runner skips gracefully if the corpus
+# cannot be fetched.
+test-suite:
+  stage: test
+  image: debian:bookworm-slim
+  before_script:
+    - *install-zig
+    - apt-get install -y git
+  script:
+    - |
+      if [ ! -d testdata/yaml-test-suite/src ]; then
+        rm -rf testdata/yaml-test-suite
+        git clone --depth 1 https://github.com/yaml/yaml-test-suite.git testdata/yaml-test-suite \
+          || echo "corpus unavailable; suite runner will skip"
+      fi
+    - zig build test-suite
+  allow_failure: true
   needs:
     - build
 

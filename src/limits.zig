@@ -15,6 +15,21 @@ pub const defaults = struct {
     pub const max_scalar_bytes: usize = 1024 * 1024; // 1 MiB
 };
 
+/// Absolute upper bound on nesting depth, independent of the configurable
+/// `max_depth`. Parsing, composing, resolving, and emitting all recurse on the
+/// native stack; without a hard ceiling, a consumer that raises `max_depth`
+/// above what the stack can hold turns deeply nested input into a stack
+/// overflow (SIGSEGV) instead of a graceful error. Effective depth is always
+/// `min(max_depth, hard_max_depth)`. 1024 is far beyond any legitimate YAML
+/// nesting (the default is 200) while leaving generous native-stack headroom.
+pub const hard_max_depth: u16 = 1024;
+
+/// The depth limit actually enforced: the configured limit clamped to the
+/// stack-safe ceiling so recursion can never overflow the native stack.
+pub fn effectiveMaxDepth(configured: u16) u16 {
+    return @min(configured, hard_max_depth);
+}
+
 /// Limit checker for tracking resource usage during parsing
 pub const LimitChecker = struct {
     max_bytes: usize,
@@ -73,7 +88,7 @@ pub const LimitChecker = struct {
     }
 
     pub fn pushDepth(self: *LimitChecker) LimitError!void {
-        if (self.current_depth >= self.max_depth) return error.MaxDepthExceeded;
+        if (self.current_depth >= effectiveMaxDepth(self.max_depth)) return error.MaxDepthExceeded;
         self.current_depth += 1;
     }
 

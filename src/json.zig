@@ -20,6 +20,10 @@ pub const JsonError = error{
     OutOfMemory,
     /// NaN and Infinity cannot be represented in JSON
     InvalidFloat,
+    /// A non-scalar (sequence/mapping) or non-finite map key cannot be
+    /// represented as a JSON object key. Returned instead of silently
+    /// collapsing distinct complex keys onto one placeholder key.
+    UnsupportedKey,
 };
 
 /// Convert a YAML value to JSON string
@@ -224,7 +228,11 @@ const JsonWriter = struct {
                 try self.writeFloat(f);
                 try self.output.append(self.allocator, '"');
             },
-            else => try self.writeString("<complex>"),
+            // A big integer is still a scalar with a unique textual form.
+            .big_int => |s| try self.writeString(s),
+            // Sequence/mapping keys and non-finite floats have no faithful JSON
+            // key representation; refuse rather than collide distinct keys.
+            else => return error.UnsupportedKey,
         }
     }
 

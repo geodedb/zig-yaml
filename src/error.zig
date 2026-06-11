@@ -25,6 +25,7 @@ pub const ErrorCode = enum {
     alias_cycle,
     invalid_anchor_name,
     invalid_directive,
+    unsupported_yaml_version,
     invalid_block_scalar,
     internal_error,
 
@@ -48,6 +49,7 @@ pub const ErrorCode = enum {
             .alias_cycle => "alias creates a circular reference",
             .invalid_anchor_name => "invalid anchor name",
             .invalid_directive => "invalid YAML directive",
+            .unsupported_yaml_version => "unsupported %YAML version (this processor implements YAML 1.x)",
             .invalid_block_scalar => "invalid block scalar header",
             .internal_error => "internal parser error",
         };
@@ -111,6 +113,7 @@ pub const ScanError = error{
     InvalidAnchorName,
     InvalidTagHandle,
     InvalidDirective,
+    UnsupportedYamlVersion,
     TabInIndentation,
     InvalidBlockScalarHeader,
     InvalidUtf8,
@@ -138,6 +141,8 @@ pub const ComposerError = error{
 pub const ResolveError = error{
     UndefinedAnchor,
     AliasCycle,
+    MaxDepthExceeded,
+    MaxNodesExceeded,
     OutOfMemory,
 };
 
@@ -159,6 +164,7 @@ pub fn scanErrorToCode(err: ScanError) ErrorCode {
         error.InvalidAnchorName => .invalid_anchor_name,
         error.InvalidTagHandle => .invalid_tag,
         error.InvalidDirective => .invalid_directive,
+        error.UnsupportedYamlVersion => .unsupported_yaml_version,
         error.TabInIndentation => .tab_in_indentation,
         error.InvalidBlockScalarHeader => .invalid_block_scalar,
         error.InvalidUtf8 => .invalid_utf8,

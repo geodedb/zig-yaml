@@ -12,13 +12,19 @@ A complete YAML 1.2.2 parser and emitter library for Zig.
 
 ## Features
 
-- Full YAML 1.2.2 specification support
+- Broad YAML 1.2.2 support: block/flow collections, anchors & aliases (with
+  cycle detection), tags, multi-document streams, block scalars, and the
+  failsafe/json/core/yaml11 schemas. Conformance against the official
+  yaml-test-suite is wired into CI (`zig build test-suite`) and is being driven
+  toward full coverage; see `docs/GAP_ANALYSIS.md` for the tracked exceptions.
 - Streaming event-based parser (O(n) complexity)
-- Document graph representation with anchor/alias preservation
-- Schema-based value resolution (failsafe, json, core)
+- Document graph representation with anchor/alias preservation at the graph
+  layer (note: `resolveToValue` → `dumpAll` expands/inlines aliases)
+- Schema-based value resolution (failsafe, json, core, yaml11)
 - Canonical emitter with deterministic output
 - Zero external dependencies (stdlib only)
-- Resource limits for safety against DoS attacks
+- Resource limits for safety against DoS attacks (bounded depth, node count,
+  alias expansion, scalar and input size)
 
 ## Installation
 

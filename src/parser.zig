@@ -79,7 +79,7 @@ pub const ScalarStyle = enum {
 };
 
 pub const NodeMeta = struct {
-    tag: []const u8 = "!",
+    tag: []const u8 = "?",
     anchor: ?[]const u8 = null,
 };
 
@@ -246,11 +246,35 @@ pub const Parser = struct {
 
     pub fn nextEvent(self: *Self) ParserError!Event {
         // Return queued events first
-        if (self.event_queue.items.len > 0) {
-            return self.event_queue.orderedRemove(0);
+        const event = if (self.event_queue.items.len > 0)
+            self.event_queue.orderedRemove(0)
+        else
+            try self.parseNextEvent();
+
+        // Enforce nesting depth on the streaming path so direct consumers (not
+        // just the composer) are protected against deeply nested input driving
+        // unbounded native recursion / state-stack growth. Effective depth is
+        // clamped to a stack-safe ceiling inside the limit checker.
+        switch (event) {
+            .seq_start, .map_start => self.limit_checker.pushDepth() catch {
+                return self.setDepthError();
+            },
+            .seq_end, .map_end => self.limit_checker.popDepth(),
+            else => {},
         }
 
-        return try self.parseNextEvent();
+        return event;
+    }
+
+    fn setDepthError(self: *Self) ParserError {
+        const tok = self.current_token;
+        self.last_error = ParseError{
+            .code = .max_depth_exceeded,
+            .line = if (tok) |t| @max(1, t.start_line) else 1,
+            .col = if (tok) |t| @max(1, t.start_col) else 1,
+            .offset = if (tok) |t| t.start_offset else 0,
+        };
+        return error.ParseFailed;
     }
 
     pub fn getLastError(self: *const Self) ?ParseError {
@@ -1197,6 +1221,7 @@ pub const Parser = struct {
             error.InvalidAnchorName => .invalid_anchor_name,
             error.InvalidTagHandle => .invalid_tag,
             error.InvalidDirective => .invalid_directive,
+            error.UnsupportedYamlVersion => .unsupported_yaml_version,
             error.TabInIndentation => .tab_in_indentation,
             error.InvalidBlockScalarHeader => .invalid_block_scalar,
             error.InvalidUtf8 => .invalid_utf8,

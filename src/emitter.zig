@@ -181,7 +181,7 @@ const Emitter = struct {
 
         // Use flow style if requested and appropriate
         if (self.shouldUseFlowStyle(items)) {
-            try self.emitFlowSeq(items);
+            try self.emitFlowSeq(items, indent);
             return;
         }
 
@@ -222,10 +222,41 @@ const Emitter = struct {
         };
     }
 
-    fn emitFlowSeq(self: *Emitter, items: []const resolver.Value) EmitError!void {
+    /// Whether the current (last) output line already exceeds `limit`. Scans
+    /// back from the buffer end but stops as soon as the limit is passed, so the
+    /// cost is O(min(line_length, limit)) — bounded by max_line_width rather than
+    /// the full (unwrapped) line length.
+    fn lineExceeds(self: *const Emitter, limit: usize) bool {
+        var col: usize = 0;
+        var i = self.buffer.items.len;
+        while (i > 0) {
+            i -= 1;
+            if (self.buffer.items[i] == '\n') return false;
+            col += 1;
+            if (col > limit) return true;
+        }
+        return col > limit;
+    }
+
+    /// After a flow-item separator, emit a wrapping newline + continuation
+    /// indent when the line has exceeded max_line_width, else a single space.
+    fn flowSeparatorBreak(self: *Emitter, cont_indent: usize) EmitError!void {
+        if (self.opts.max_line_width > 0 and self.lineExceeds(self.opts.max_line_width)) {
+            try self.write("\n");
+            try self.writeIndent(cont_indent);
+        } else {
+            try self.write(" ");
+        }
+    }
+
+    fn emitFlowSeq(self: *Emitter, items: []const resolver.Value, indent: usize) EmitError!void {
         try self.write("[");
+        const cont_indent = indent + self.opts.indent;
         for (items, 0..) |item, i| {
-            if (i > 0) try self.write(", ");
+            if (i > 0) {
+                try self.write(",");
+                try self.flowSeparatorBreak(cont_indent);
+            }
             try self.emitValue(item, 0, true);
         }
         try self.write("]");
@@ -239,7 +270,7 @@ const Emitter = struct {
 
         // Use flow style if requested and appropriate
         if (self.shouldUseFlowStyleMap(items)) {
-            try self.emitFlowMap(items);
+            try self.emitFlowMap(items, indent);
             return;
         }
 
@@ -288,10 +319,14 @@ const Emitter = struct {
         };
     }
 
-    fn emitFlowMap(self: *Emitter, items: []const resolver.ValueKVPair) EmitError!void {
+    fn emitFlowMap(self: *Emitter, items: []const resolver.ValueKVPair, indent: usize) EmitError!void {
         try self.write("{");
+        const cont_indent = indent + self.opts.indent;
         for (items, 0..) |item, i| {
-            if (i > 0) try self.write(", ");
+            if (i > 0) {
+                try self.write(",");
+                try self.flowSeparatorBreak(cont_indent);
+            }
             try self.emitValue(item.k, 0, true);
             try self.write(": ");
             try self.emitValue(item.v, 0, true);

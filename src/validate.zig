@@ -203,7 +203,15 @@ pub const Validator = struct {
                         any_valid = true;
                         break;
                     }
-                    // Reset errors for this schema attempt
+                    // Free the owned strings of the errors this failed attempt
+                    // produced before dropping them, then reset for the next
+                    // alternative (shrinkRetainingCapacity alone would leak them).
+                    for (self.errors.items[initial_errors..]) |err| {
+                        self.allocator.free(err.path);
+                        self.allocator.free(err.message);
+                        self.allocator.free(err.expected);
+                        self.allocator.free(err.actual);
+                    }
                     self.errors.shrinkRetainingCapacity(initial_errors);
                 }
                 if (!any_valid) {
@@ -233,28 +241,45 @@ pub const Validator = struct {
                 }
             },
             .int_range => |range| {
-                if (value != .int) {
-                    try self.addError("expected integer for range check", "int", self.valueTypeName(value));
-                    return;
-                }
-                if (range.min) |min| {
-                    if (value.int < min) {
-                        const msg = try std.fmt.allocPrint(self.allocator, "value {d} below minimum {d}", .{ value.int, min });
-                        try self.addErrorOwned(msg, ">=min", "<min");
-                    }
-                }
-                if (range.max) |max| {
-                    if (value.int > max) {
-                        const msg = try std.fmt.allocPrint(self.allocator, "value {d} above maximum {d}", .{ value.int, max });
-                        try self.addErrorOwned(msg, "<=max", ">max");
-                    }
+                switch (value) {
+                    .int => |iv| {
+                        if (range.min) |min| {
+                            if (iv < min) {
+                                const msg = try std.fmt.allocPrint(self.allocator, "value {d} below minimum {d}", .{ iv, min });
+                                try self.addErrorOwned(msg, ">=min", "<min");
+                            }
+                        }
+                        if (range.max) |max| {
+                            if (iv > max) {
+                                const msg = try std.fmt.allocPrint(self.allocator, "value {d} above maximum {d}", .{ iv, max });
+                                try self.addErrorOwned(msg, "<=max", ">max");
+                            }
+                        }
+                    },
+                    .big_int => |bv| {
+                        // A big_int's magnitude exceeds i64 by construction, so a
+                        // positive one is above any i64 max and a negative one is
+                        // below any i64 min.
+                        const negative = bv.len > 0 and bv[0] == '-';
+                        if (negative and range.min != null) {
+                            const msg = try std.fmt.allocPrint(self.allocator, "value {s} below minimum {d}", .{ bv, range.min.? });
+                            try self.addErrorOwned(msg, ">=min", "<min");
+                        } else if (!negative and range.max != null) {
+                            const msg = try std.fmt.allocPrint(self.allocator, "value {s} above maximum {d}", .{ bv, range.max.? });
+                            try self.addErrorOwned(msg, "<=max", ">max");
+                        }
+                    },
+                    else => try self.addError("expected integer for range check", "int", self.valueTypeName(value)),
                 }
             },
-            .pattern => {
-                // Pattern matching would require regex support
-                // For now, just validate it's a string
+            .pattern => |pat| {
                 if (value != .str) {
                     try self.addError("expected string for pattern", "string", self.valueTypeName(value));
+                    return;
+                }
+                if (!globMatch(pat, value.str)) {
+                    const msg = try std.fmt.allocPrint(self.allocator, "value '{s}' does not match pattern '{s}'", .{ value.str, pat });
+                    try self.addErrorOwned(msg, pat, value.str);
                 }
             },
         }
@@ -359,4 +384,57 @@ pub fn mapOf(comptime key: Schema, comptime value_schema: Schema) Schema {
         const v = value_schema;
     };
     return .{ .map = .{ .key = &static.k, .value = &static.v } };
+}
+
+/// Create a string pattern schema. The pattern is glob-style:
+/// `*` matches any (possibly empty) run of characters and `?` matches exactly
+/// one character; all other characters match literally.
+pub fn pattern(p: []const u8) Schema {
+    return .{ .pattern = p };
+}
+
+/// Create a one-of (union) schema from a list of alternative schemas.
+pub fn oneOf(schemas: []const *const Schema) Schema {
+    return .{ .one_of = schemas };
+}
+
+/// Glob matcher: `*` = any run (incl. empty), `?` = exactly one char, else
+/// literal. Iterative with backtracking — O(len(pat) * len(str)) worst case,
+/// no allocation, no recursion.
+pub fn globMatch(pat: []const u8, str: []const u8) bool {
+    var p: usize = 0;
+    var s: usize = 0;
+    var star: ?usize = null; // index in pat just after the last '*'
+    var star_s: usize = 0; // position in str when that '*' was taken
+    while (s < str.len) {
+        if (p < pat.len and (pat[p] == '?' or pat[p] == str[s])) {
+            p += 1;
+            s += 1;
+        } else if (p < pat.len and pat[p] == '*') {
+            star = p + 1;
+            star_s = s;
+            p += 1;
+        } else if (star) |sp| {
+            // Backtrack: let the last '*' absorb one more character.
+            p = sp;
+            star_s += 1;
+            s = star_s;
+        } else {
+            return false;
+        }
+    }
+    while (p < pat.len and pat[p] == '*') p += 1;
+    return p == pat.len;
+}
+
+test "validate: globMatch basics" {
+    try std.testing.expect(globMatch("*", "anything"));
+    try std.testing.expect(globMatch("a*c", "abc"));
+    try std.testing.expect(globMatch("a*c", "ac"));
+    try std.testing.expect(globMatch("a?c", "abc"));
+    try std.testing.expect(!globMatch("a?c", "ac"));
+    try std.testing.expect(globMatch("*.txt", "file.txt"));
+    try std.testing.expect(!globMatch("*.txt", "file.md"));
+    try std.testing.expect(globMatch("v?.?.?", "v1.2.3"));
+    try std.testing.expect(!globMatch("abc", "abcd"));
 }

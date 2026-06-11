@@ -40,22 +40,19 @@
 //! Configure resource limits via `ParseOptions` to prevent DoS attacks.
 
 const std = @import("std");
+const build_info = @import("build_info");
 
 // ============================================================================
 // Version Information
 // ============================================================================
 
-/// Library version
-pub const version = std.SemanticVersion{
-    .major = 0,
-    .minor = 2,
-    .patch = 0,
-    .pre = null,
-    .build = null,
-};
+/// Library version as string. Single-sourced from build.zig.zon via build
+/// options so the manifest version and this constant can never drift.
+pub const version_string: []const u8 = build_info.version;
 
-/// Library version as string
-pub const version_string = "0.2.0";
+/// Library version, parsed from the single-sourced `version_string`.
+pub const version = std.SemanticVersion.parse(version_string) catch
+    @compileError("build.zig.zon version is not valid semver: " ++ version_string);
 
 // Re-export submodules
 pub const scanner = @import("scanner.zig");
@@ -103,7 +100,14 @@ pub const Schema = enum {
 pub const ParseOptions = struct {
     /// Schema for resolving scalar types (default: core)
     schema: Schema = .core,
-    /// Whether to reject duplicate keys in mappings (default: true)
+    /// Whether to reject duplicate keys in mappings (default: true).
+    ///
+    /// Duplicate detection compares scalar key *content*, so plain and quoted
+    /// spellings of the same key (`a` and "a") are caught. Two limitations:
+    /// non-scalar keys (e.g. `[a]` used as a complex key) are not deduplicated,
+    /// and scalars that are textually different but resolve to the same value
+    /// under the active schema (e.g. `0x1` and `1`, or yaml11 `yes` and `true`)
+    /// are treated as distinct. Returns error.DuplicateKey on a repeated key.
     unique_keys: bool = true,
     /// Maximum input size in bytes (default: 8MB)
     max_bytes: usize = 8 * 1024 * 1024,
@@ -123,7 +127,7 @@ pub const ParseError = err_mod.ParseError;
 // Note: formatError and writeError are defined locally below with yaml-specific handling
 
 pub const NodeMeta = struct {
-    tag: []const u8 = "!",
+    tag: []const u8 = "?",
     anchor: ?[]const u8 = null,
 };
 
@@ -378,20 +382,24 @@ pub fn loadAllWithDetails(a: std.mem.Allocator, input: []const u8, o: ParseOptio
                 .documents = &.{},
                 .parse_error = ParseError{
                     .code = convertErrorCode(pe.code),
-                    .line = pe.line,
-                    .col = pe.col,
+                    // Locations are 1-based; clamp so the documented "line/col
+                    // are >= 1" contract holds even if a source left them unset.
+                    .line = @max(1, pe.line),
+                    .col = @max(1, pe.col),
                     .offset = pe.offset,
                     .context = pe.name,
                 },
             };
         }
-        // Fall back to composer error info
+        // Fall back to composer error info. Composer-only errors (duplicate
+        // key, undefined anchor, resource limits) may not carry a location, so
+        // clamp to >= 1 rather than emitting 0,0.
         return .{
             .documents = &.{},
             .parse_error = ParseError{
                 .code = mapComposerErrorToCode(err),
-                .line = comp.getErrorLine(),
-                .col = comp.getErrorCol(),
+                .line = @max(1, comp.getErrorLine()),
+                .col = @max(1, comp.getErrorCol()),
                 .offset = 0,
                 .context = comp.getErrorName(),
             },
@@ -403,8 +411,8 @@ pub fn loadAllWithDetails(a: std.mem.Allocator, input: []const u8, o: ParseOptio
             .documents = &.{},
             .parse_error = ParseError{
                 .code = .internal_error,
-                .line = 0,
-                .col = 0,
+                .line = 1,
+                .col = 1,
                 .offset = 0,
             },
         };
@@ -542,6 +550,15 @@ pub const Value = union(enum) {
 ///
 /// ## Returns
 /// A Value tree. Call `freeValue` to release when done.
+///
+/// ## Aliases and resource limits
+/// Each alias is expanded into an independent copy of its target subtree, so
+/// the returned Value is a true tree that `freeValue` owns and releases exactly
+/// once (no shared pointers). Because expansion re-materializes the target, an
+/// anchor referenced N times costs N copies; total expansion is bounded by
+/// `o.max_nodes` (returns error.MaxNodesExceeded) and nesting by `o.max_depth`
+/// (returns error.MaxDepthExceeded), which together defeat alias-amplification
+/// (billion-laughs) attacks.
 pub fn resolveToValue(a: std.mem.Allocator, doc: *const Document, o: ParseOptions) !Value {
     const inner_opts = parser_mod.ParseOptions{
         .schema = convertSchema(o.schema),
@@ -596,6 +613,16 @@ pub const EmitOptions = struct {
 ///
 /// Converts Value trees back to YAML text format with configurable
 /// formatting options.
+///
+/// ## Anchors / aliases
+/// `dumpAll` serializes a resolved `Value` tree, in which aliases have already
+/// been expanded into independent subtrees (see `resolveToValue`). It therefore
+/// **inlines** what were anchor/alias references rather than re-emitting
+/// `&name`/`*name`, and shared structure is duplicated. Anchor/alias
+/// *preservation* is available only at the document-graph layer (`Document` /
+/// `Node.a` / `Document.anchors`), not through the `resolveToValue` → `dumpAll`
+/// value pipeline. A cyclic graph cannot be represented as a `Value` at all
+/// (resolution rejects it with `error.AliasCycle`).
 ///
 /// ## Example
 /// ```zig
@@ -737,6 +764,18 @@ pub const ComptimeValue = comptime_mod.Value;
 /// Returns the root value of the document.
 /// This enables embedding YAML configuration directly in the binary.
 ///
+/// ## Supported subset
+/// The comptime parser is intentionally a **subset** of the runtime parser,
+/// sized for embedding small, trusted configuration (`@embedFile`/literals),
+/// not arbitrary untrusted input. It supports block and flow mappings and
+/// sequences, plain and quoted scalars, and nested structures. It does NOT
+/// implement anchors/aliases, tags, multi-document streams, directives, block
+/// scalars (`|`/`>`), or schema-based typing, and it has fixed comptime
+/// capacity limits (block sequence ≤ 256 items, block mapping ≤ 128 keys, flow
+/// collections ≤ 64 entries, nesting ≤ 64) that fail the build with a clear
+/// `@compileError` when exceeded. For anything beyond small embedded config,
+/// use the runtime `loadAll` / `resolveToValue` API.
+///
 /// Example:
 /// ```zig
 /// const config = comptime yaml.comptimeParse(@embedFile("config.yaml"));
@@ -782,6 +821,16 @@ pub const schema = struct {
 
     pub fn object(fields: []const ValidationSchema.Field) ValidationSchema {
         return .{ .object = fields };
+    }
+
+    /// Glob-style string pattern: `*` matches any run, `?` matches one char.
+    pub fn pattern(p: []const u8) ValidationSchema {
+        return validate_mod.pattern(p);
+    }
+
+    /// Union schema: the value must match one of the alternatives.
+    pub fn oneOf(schemas: []const *const ValidationSchema) ValidationSchema {
+        return validate_mod.oneOf(schemas);
     }
 };
 
@@ -868,6 +917,48 @@ fn convertValueToInner(v: Value) resolver_mod.Value {
         .seq => |items| .{ .seq = @ptrCast(items) },
         .map => |items| .{ .map = @ptrCast(items) },
     };
+}
+
+// ============================================================================
+// Layout compatibility guards
+//
+// The public Value/Node/ValueKVPair types are intentionally bit-identical
+// re-declarations of the inner resolver_mod/composer_mod types. The conversion
+// helpers above pun between them with @ptrCast on the seq/map payloads and
+// Document.node() pun-casts the whole node, which is only sound while the
+// layouts match exactly. These comptime assertions fail the build the moment
+// a tag is reordered/added or a field changes in only one of the pair, turning
+// silent undefined behavior into a compile error.
+// ============================================================================
+
+fn assertSameSizeAlign(comptime A: type, comptime B: type) void {
+    if (@sizeOf(A) != @sizeOf(B)) {
+        @compileError("yaml: layout drift — @sizeOf(" ++ @typeName(A) ++ ") != @sizeOf(" ++ @typeName(B) ++ ")");
+    }
+    if (@alignOf(A) != @alignOf(B)) {
+        @compileError("yaml: layout drift — @alignOf(" ++ @typeName(A) ++ ") != @alignOf(" ++ @typeName(B) ++ ")");
+    }
+}
+
+fn assertSameUnionTags(comptime A: type, comptime B: type) void {
+    const ta = @typeInfo(@typeInfo(A).@"union".tag_type.?).@"enum";
+    const tb = @typeInfo(@typeInfo(B).@"union".tag_type.?).@"enum";
+    if (ta.fields.len != tb.fields.len) {
+        @compileError("yaml: layout drift — tag count differs between " ++ @typeName(A) ++ " and " ++ @typeName(B));
+    }
+    inline for (ta.fields, tb.fields) |fa, fb| {
+        if (!std.mem.eql(u8, fa.name, fb.name) or fa.value != fb.value) {
+            @compileError("yaml: layout drift — tag mismatch between " ++ @typeName(A) ++ " and " ++ @typeName(B) ++ " at '" ++ fa.name ++ "'");
+        }
+    }
+}
+
+comptime {
+    assertSameSizeAlign(Value, resolver_mod.Value);
+    assertSameUnionTags(Value, resolver_mod.Value);
+    assertSameSizeAlign(ValueKVPair, resolver_mod.ValueKVPair);
+    assertSameSizeAlign(Node, composer_mod.Node);
+    assertSameUnionTags(Node, composer_mod.Node);
 }
 
 // ============================================================================
@@ -1004,6 +1095,30 @@ test "yaml: loadAllWithDetails syntax error" {
         var r = result;
         r.deinit(allocator);
     }
+}
+
+test "yaml: loadAllWithDetails composer error has location >= 1" {
+    const allocator = std.testing.allocator;
+
+    // Duplicate key is a composer-only error that historically left the
+    // location unset (line=0). The location must still satisfy the >= 1
+    // contract documented for ParseError. The error result carries an empty
+    // (non-heap) documents slice, so it must not be deinit'd.
+    const result = loadAllWithDetails(allocator, "{a: 1, a: 2}", .{});
+
+    try std.testing.expect(result.parse_error != null);
+    try std.testing.expectEqual(@as(usize, 0), result.documents.len);
+    if (result.parse_error) |err| {
+        try std.testing.expectEqual(ErrorCode.duplicate_key, err.code);
+        try std.testing.expect(err.line >= 1);
+        try std.testing.expect(err.col >= 1);
+    }
+}
+
+test "yaml: version is single-sourced from build.zig.zon" {
+    // version_string is injected from the manifest; version is parsed from it.
+    try std.testing.expect(version_string.len > 0);
+    try std.testing.expectEqual(version.major, (std.SemanticVersion.parse(version_string) catch unreachable).major);
 }
 
 test "parallel re-export is reachable" {

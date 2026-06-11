@@ -4,7 +4,7 @@ This document describes the architecture of the yaml library.
 
 ## Module Structure
 
-```
+```text
 src/
 ├── yaml.zig        # Main entry point and unified public API
 ├── scanner.zig     # Lexical tokenization (O(n) streaming)
@@ -24,7 +24,7 @@ src/
 
 The library implements a layered architecture following the YAML 1.2.2 specification stages:
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────────┐
 │                         Input (YAML text)                           │
 └─────────────────────────────────────────────────────────────────────┘
@@ -91,6 +91,7 @@ The library implements a layered architecture following the YAML 1.2.2 specifica
 The scanner performs lexical analysis, converting raw YAML text into tokens.
 
 Key features:
+
 - **Single-pass processing**: O(n) complexity with no backtracking
 - **Indent tracking**: Maintains a stack for block structure indentation
 - **Scalar handling**: Processes all five scalar styles:
@@ -102,7 +103,8 @@ Key features:
 - **Error position tracking**: Maintains line/column for error reporting
 
 Token types:
-```
+
+```text
 STREAM-START/END, DOC-START/END (---/...)
 KEY (?), VALUE (:), BLOCK-ENTRY (-)
 FLOW-SEQ-START/END ([]), FLOW-MAP-START/END ({})
@@ -115,7 +117,8 @@ SCALAR (with style indicator)
 The parser converts tokens into a stream of events using a push-down automaton.
 
 State machine overview:
-```
+
+```text
 stream_start
     │
     ├──▶ implicit_doc_start (content without ---)
@@ -132,6 +135,7 @@ stream_start
 ```
 
 Events produced:
+
 - `stream_start` / `stream_end`
 - `doc_start` / `doc_end`
 - `seq_start` / `seq_end`
@@ -144,12 +148,14 @@ Events produced:
 The composer builds a document graph from parser events.
 
 Key features:
+
 - **Graph representation**: Nodes are identified by `NodeId` (u32)
 - **Anchor registration**: Tracks anchors for later alias resolution
 - **Arena allocation**: Document memory is arena-allocated for efficient cleanup
 - **Alias preservation**: Aliases stored as separate node type for graph fidelity
 
 Document structure:
+
 ```zig
 pub const Document = struct {
     arena: ArenaAllocator,
@@ -164,6 +170,7 @@ pub const Document = struct {
 The resolver converts document graphs to typed values based on the selected schema.
 
 Schemas supported:
+
 | Schema | Description |
 |--------|-------------|
 | `failsafe` | All scalars as strings |
@@ -172,6 +179,7 @@ Schemas supported:
 | `yaml11` | YAML 1.1 compatibility (yes/no, 0-prefix octal) |
 
 Features:
+
 - **Cycle detection**: Prevents infinite loops in alias resolution
 - **Caching**: Resolved values cached for repeated alias access
 - **Big integer support**: Integers exceeding i64 preserved as strings
@@ -181,6 +189,7 @@ Features:
 The emitter converts value trees back to YAML text.
 
 Features:
+
 - **Canonical output**: Deterministic formatting
 - **Style options**: Block vs. flow collections
 - **Quote control**: Minimal, single, or double quoting
@@ -191,6 +200,7 @@ Features:
 The validator checks values against type schemas.
 
 Schema types:
+
 - Primitives: `any`, `null`, `bool`, `int`, `float`, `str`
 - Containers: `seq`, `map`, `object`
 - Combinators: `optional`, `one_of`
@@ -201,6 +211,7 @@ Schema types:
 Resource limits prevent denial-of-service attacks.
 
 Enforced limits:
+
 | Limit | Default | Purpose |
 |-------|---------|---------|
 | `max_bytes` | 8 MB | Input size |
@@ -243,7 +254,7 @@ defer allocator.free(output);
 
 Errors flow up through the pipeline with position tracking:
 
-```
+```text
 Scanner → Parser → Composer → Public API
    ↓         ↓         ↓          ↓
  line/col  line/col  context   ParseError

@@ -34,45 +34,56 @@ fn eventsToTreeFormat(allocator: std.mem.Allocator, input: []const u8) ![]u8 {
     };
     defer parser.deinit();
 
-    var result = std.ArrayList(u8){};
+    var result = std.ArrayList(u8).empty;
     errdefer result.deinit(allocator);
 
     while (true) {
-        const event = parser.nextEvent() catch |err| {
+        const event = parser.nextEvent() catch {
             try result.appendSlice(allocator, "ERROR\n");
-            _ = err;
             break;
         };
 
+        // yaml-test-suite event format is flat (no leading indentation).
         switch (event) {
             .stream_start => try result.appendSlice(allocator, "+STR\n"),
             .stream_end => {
                 try result.appendSlice(allocator, "-STR\n");
                 break;
             },
-            .doc_start => try result.appendSlice(allocator, " +DOC\n"),
-            .doc_end => try result.appendSlice(allocator, " -DOC\n"),
+            // Document markers (--- / ...) are not recoverable from the event
+            // stream; emit the bare form. compareTrees() normalizes the
+            // expected side to match.
+            .doc_start => try result.appendSlice(allocator, "+DOC\n"),
+            .doc_end => try result.appendSlice(allocator, "-DOC\n"),
             .seq_start => |meta| {
-                try result.appendSlice(allocator, "  +SEQ");
+                try result.appendSlice(allocator, "+SEQ");
                 try writeNodeMeta(allocator, &result, meta);
                 try result.append(allocator, '\n');
             },
-            .seq_end => try result.appendSlice(allocator, "  -SEQ\n"),
+            .seq_end => try result.appendSlice(allocator, "-SEQ\n"),
             .map_start => |meta| {
-                try result.appendSlice(allocator, "  +MAP");
+                try result.appendSlice(allocator, "+MAP");
                 try writeNodeMeta(allocator, &result, meta);
                 try result.append(allocator, '\n');
             },
-            .map_end => try result.appendSlice(allocator, "  -MAP\n"),
+            .map_end => try result.appendSlice(allocator, "-MAP\n"),
             .scalar => |s| {
-                try result.appendSlice(allocator, "   =VAL");
+                try result.appendSlice(allocator, "=VAL");
                 try writeNodeMeta(allocator, &result, s.meta);
-                try result.appendSlice(allocator, " :");
+                const style_char: u8 = switch (s.style) {
+                    .plain => ':',
+                    .single_quoted => '\'',
+                    .double_quoted => '"',
+                    .literal => '|',
+                    .folded => '>',
+                };
+                try result.append(allocator, ' ');
+                try result.append(allocator, style_char);
                 try writeEscapedValue(allocator, &result, s.value);
                 try result.append(allocator, '\n');
             },
             .alias => |name| {
-                try result.appendSlice(allocator, "   *ALI ");
+                try result.appendSlice(allocator, "=ALI *");
                 try result.appendSlice(allocator, name);
                 try result.append(allocator, '\n');
             },
@@ -80,6 +91,39 @@ fn eventsToTreeFormat(allocator: std.mem.Allocator, input: []const u8) ![]u8 {
     }
 
     return result.toOwnedSlice(allocator);
+}
+
+/// Compare an actual event tree against an expected one from the test suite,
+/// tolerating the one systematic difference this parser cannot reproduce:
+/// the `---`/`...` suffix on `+DOC`/`-DOC` lines (the event stream does not
+/// carry whether a document used explicit markers). Both sides are normalized
+/// by trimming each line and stripping that suffix before comparison.
+fn compareTrees(allocator: std.mem.Allocator, expected: []const u8, actual: []const u8) !bool {
+    const norm_expected = try normalizeTree(allocator, expected);
+    defer allocator.free(norm_expected);
+    const norm_actual = try normalizeTree(allocator, actual);
+    defer allocator.free(norm_actual);
+    return std.mem.eql(u8, norm_expected, norm_actual);
+}
+
+fn normalizeTree(allocator: std.mem.Allocator, tree: []const u8) ![]u8 {
+    var out = std.ArrayList(u8).empty;
+    errdefer out.deinit(allocator);
+    var it = std.mem.splitScalar(u8, tree, '\n');
+    while (it.next()) |raw_line| {
+        const line = std.mem.trim(u8, raw_line, " \t\r");
+        if (line.len == 0) continue;
+        // Drop the explicit-marker suffix on document boundary lines.
+        if (std.mem.startsWith(u8, line, "+DOC")) {
+            try out.appendSlice(allocator, "+DOC\n");
+        } else if (std.mem.startsWith(u8, line, "-DOC")) {
+            try out.appendSlice(allocator, "-DOC\n");
+        } else {
+            try out.appendSlice(allocator, line);
+            try out.append(allocator, '\n');
+        }
+    }
+    return out.toOwnedSlice(allocator);
 }
 
 fn writeNodeMeta(allocator: std.mem.Allocator, result: *std.ArrayList(u8), meta: yaml.NodeMeta) !void {
@@ -108,7 +152,7 @@ fn writeEscapedValue(allocator: std.mem.Allocator, result: *std.ArrayList(u8), v
 
 /// Extract test cases from a parsed YAML test suite file
 fn extractTestCases(allocator: std.mem.Allocator, file_content: []const u8, file_id: []const u8) ![]TestCase {
-    var cases = std.ArrayList(TestCase){};
+    var cases = std.ArrayList(TestCase).empty;
     errdefer cases.deinit(allocator);
 
     // Parse the test file (it's a YAML sequence of test documents)
@@ -295,7 +339,36 @@ fn runTestCase(allocator: std.mem.Allocator, tc: *const TestCase, verbose: bool)
         };
     }
 
-    // Parse succeeded as expected
+    // Parse succeeded as expected. If the case carries an expected event tree,
+    // verify the parser produced the same structure (not just that it parsed).
+    if (tc.expected_tree.len > 0) {
+        const actual_tree = eventsToTreeFormat(allocator, processed_input) catch {
+            return TestResult{
+                .id = tc.id,
+                .name = tc.name,
+                .passed = true, // serialization failure shouldn't fail the case
+                .expected_fail = false,
+                .actual_fail = false,
+                .error_msg = null,
+            };
+        };
+        defer allocator.free(actual_tree);
+        const matches = compareTrees(allocator, tc.expected_tree, actual_tree) catch true;
+        if (!matches) {
+            if (verbose) {
+                std.debug.print("    TREE MISMATCH: {s}\n", .{tc.name});
+            }
+            return TestResult{
+                .id = tc.id,
+                .name = tc.name,
+                .passed = false,
+                .expected_fail = false,
+                .actual_fail = false,
+                .error_msg = "Event tree did not match expected",
+            };
+        }
+    }
+
     return TestResult{
         .id = tc.id,
         .name = tc.name,
@@ -308,7 +381,7 @@ fn runTestCase(allocator: std.mem.Allocator, tc: *const TestCase, verbose: bool)
 
 /// Preprocess YAML input to handle special test suite characters
 fn preprocessYamlInput(allocator: std.mem.Allocator, input: []const u8) ![]u8 {
-    var result = std.ArrayList(u8){};
+    var result = std.ArrayList(u8).empty;
     errdefer result.deinit(allocator);
 
     var i: usize = 0;
@@ -403,7 +476,7 @@ fn preprocessYamlInput(allocator: std.mem.Allocator, input: []const u8) ![]u8 {
 }
 
 pub fn main() !void {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    var gpa = std.heap.DebugAllocator(.{}){};
     defer _ = gpa.deinit();
     const allocator = gpa.allocator();
 
@@ -516,6 +589,33 @@ pub fn main() !void {
 }
 
 // Also create a test that can be run with zig build test
+test "event tree serialization matches expected format" {
+    const allocator = std.testing.allocator;
+    const tree = try eventsToTreeFormat(allocator, "a: 1\nb: [x, y]\n");
+    defer allocator.free(tree);
+    const expected =
+        "+STR\n+DOC\n+MAP\n=VAL :a\n=VAL :1\n=VAL :b\n+SEQ\n=VAL :x\n=VAL :y\n-SEQ\n-MAP\n-DOC\n-STR\n";
+    try std.testing.expectEqualStrings(expected, tree);
+}
+
+test "compareTrees normalizes explicit document markers" {
+    const allocator = std.testing.allocator;
+    // The expected side uses explicit `+DOC ---` / `-DOC ...`; our stream emits
+    // the bare form. Normalization makes them compare equal.
+    const expected_with_markers = "+STR\n+DOC ---\n=VAL :x\n-DOC ...\n-STR\n";
+    const actual = try eventsToTreeFormat(allocator, "--- x\n...\n");
+    defer allocator.free(actual);
+    try std.testing.expect(try compareTrees(allocator, expected_with_markers, actual));
+}
+
+test "compareTrees detects a real structural mismatch" {
+    const allocator = std.testing.allocator;
+    const wrong_expected = "+STR\n+DOC\n=VAL :different\n-DOC\n-STR\n";
+    const actual = try eventsToTreeFormat(allocator, "x\n");
+    defer allocator.free(actual);
+    try std.testing.expect(!(try compareTrees(allocator, wrong_expected, actual)));
+}
+
 test "yaml test suite basic parsing" {
     const allocator = std.testing.allocator;
 

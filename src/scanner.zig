@@ -55,6 +55,7 @@ pub const ScanError = error{
     InvalidAnchorName,
     InvalidTagHandle,
     InvalidDirective,
+    UnsupportedYamlVersion,
     TabInIndentation,
     InvalidBlockScalarHeader,
     InvalidUtf8,
@@ -743,6 +744,13 @@ pub const Scanner = struct {
                 for (version[dot_idx + 1 ..]) |c| {
                     if (!std.ascii.isDigit(c)) return error.InvalidDirective;
                 }
+                // Honor the version: this processor implements YAML 1.x, so a
+                // %YAML directive with a different major version must be refused
+                // (YAML 1.2.2 §6.8.1 — a higher major version is not processable).
+                const major = std.fmt.parseInt(u32, version[0..dot_idx], 10) catch return error.InvalidDirective;
+                if (major != 1) {
+                    return error.UnsupportedYamlVersion;
+                }
             } else {
                 return error.InvalidDirective;
             }
@@ -1014,8 +1022,24 @@ pub const Scanner = struct {
         errdefer result.deinit(self.allocator);
         var scalar_has_newline = false; // Track if scalar spans multiple lines
         var seen_space_on_continuation = false; // Track if any continuation line started with space
+        // Pending line-break run for §7.3 flow folding: a single break folds to
+        // a space, a run of k breaks (blank lines) yields k-1 newlines. The run
+        // is flushed when the next non-break character is reached.
+        var break_count: usize = 0;
         while (self.pos < self.input.len) {
             const ch = self.input[self.pos];
+            if (ch != '\n' and ch != '\r' and break_count > 0) {
+                // Leading break(s) before any content produce no separator
+                // (matches plain/block folding); only fold breaks between content.
+                if (result.items.len > 0) {
+                    if (break_count == 1) {
+                        try result.append(self.allocator, ' ');
+                    } else {
+                        for (0..break_count - 1) |_| try result.append(self.allocator, '\n');
+                    }
+                }
+                break_count = 0;
+            }
             if (ch == '"') {
                 self.advance();
                 const val = try result.toOwnedSlice(self.allocator);
@@ -1226,7 +1250,7 @@ pub const Scanner = struct {
                 }
             } else if (ch == '\n' or ch == '\r') {
                 scalar_has_newline = true;
-                try result.append(self.allocator, ' ');
+                break_count += 1;
                 self.advanceLine();
                 // Check for document markers at column 1 (forbidden inside quoted strings)
                 if (self.col == 1 and self.pos + 3 <= self.input.len) {
@@ -1291,8 +1315,22 @@ pub const Scanner = struct {
         var result: std.ArrayList(u8) = .empty;
         errdefer result.deinit(self.allocator);
         var scalar_has_newline = false; // Track if scalar spans multiple lines
+        // Pending line-break run for §7.3 flow folding (see scanDoubleQuoted).
+        var break_count: usize = 0;
         while (self.pos < self.input.len) {
             const ch = self.input[self.pos];
+            if (ch != '\n' and ch != '\r' and break_count > 0) {
+                // Leading break(s) before any content produce no separator
+                // (matches plain/block folding); only fold breaks between content.
+                if (result.items.len > 0) {
+                    if (break_count == 1) {
+                        try result.append(self.allocator, ' ');
+                    } else {
+                        for (0..break_count - 1) |_| try result.append(self.allocator, '\n');
+                    }
+                }
+                break_count = 0;
+            }
             if (ch == '\'') {
                 if (self.pos + 1 < self.input.len and self.input[self.pos + 1] == '\'') {
                     try result.append(self.allocator, '\'');
@@ -1393,7 +1431,7 @@ pub const Scanner = struct {
                 }
             } else if (ch == '\n' or ch == '\r') {
                 scalar_has_newline = true;
-                try result.append(self.allocator, ' ');
+                break_count += 1;
                 self.advanceLine();
                 // Check for document markers at column 1 (forbidden inside quoted strings)
                 if (self.col == 1 and self.pos + 3 <= self.input.len) {
@@ -1522,6 +1560,11 @@ pub const Scanner = struct {
         var result: std.ArrayList(u8) = .empty;
         errdefer result.deinit(self.allocator);
         var trailing_newlines: usize = 0;
+        // For folded scalars: whether the previous content line was
+        // "more-indented" than the block. Per YAML 1.2.2 §8.1.3, line breaks
+        // adjacent to a more-indented line are preserved (not folded to a
+        // space), and the more-indented line keeps its extra leading spaces.
+        var prev_more_indented = false;
         while (self.pos < self.input.len) {
             var line_indent: u32 = 0;
             while (self.pos < self.input.len and self.input[self.pos] == ' ') {
@@ -1540,16 +1583,25 @@ pub const Scanner = struct {
                 self.col -= line_indent;
                 break;
             }
+            const more_indented = line_indent > content_indent;
             if (result.items.len > 0) {
                 if (is_literal) {
                     for (0..trailing_newlines) |_| try result.append(self.allocator, '\n');
                     if (trailing_newlines == 0) try result.append(self.allocator, '\n');
+                } else if (trailing_newlines >= 2) {
+                    // Blank line(s): a run of N breaks yields N-1 newlines.
+                    for (0..trailing_newlines - 1) |_| try result.append(self.allocator, '\n');
+                } else if (prev_more_indented or more_indented) {
+                    // Break adjacent to a more-indented line is preserved.
+                    try result.append(self.allocator, '\n');
                 } else {
-                    if (trailing_newlines <= 1) try result.append(self.allocator, ' ') else for (0..trailing_newlines - 1) |_| try result.append(self.allocator, '\n');
+                    // Single break between two normal lines folds to a space.
+                    try result.append(self.allocator, ' ');
                 }
             }
             trailing_newlines = 0;
-            if (is_literal and line_indent > content_indent) for (0..line_indent - content_indent) |_| try result.append(self.allocator, ' ');
+            if ((is_literal or more_indented) and line_indent > content_indent) for (0..line_indent - content_indent) |_| try result.append(self.allocator, ' ');
+            prev_more_indented = more_indented;
             while (self.pos < self.input.len) {
                 const c = self.input[self.pos];
                 if (c == '\n' or c == '\r') break;
@@ -1594,7 +1646,9 @@ pub const Scanner = struct {
         const continuation_indent = self.indent;
         var result: std.ArrayList(u8) = .empty;
         errdefer result.deinit(self.allocator);
-        var pending_newline = false;
+        // Pending line-break run for §7.3 plain-scalar folding: a single break
+        // folds to a space; a run of k breaks (blank lines) yields k-1 newlines.
+        var pending_breaks: usize = 0;
         var ended_at_newline = false; // Track if scalar ended at reduced indentation
         var ended_with_comment = false; // Track if scalar ended due to comment on content line
         var was_multiline = false; // Track if scalar spanned multiple lines
@@ -1608,7 +1662,7 @@ pub const Scanner = struct {
             }
             if (ch == '\n' or ch == '\r') {
                 if (self.flow_level > 0) {
-                    pending_newline = true;
+                    pending_breaks += 1;
                     self.advanceLine();
                     // Skip whitespace
                     while (self.pos < self.input.len and (self.input[self.pos] == ' ' or self.input[self.pos] == '\t')) self.advance();
@@ -1646,8 +1700,12 @@ pub const Scanner = struct {
                     }
                     continue;
                 } else {
+                    var breaks: usize = 1;
                     self.advanceLine();
-                    while (self.pos < self.input.len and (self.input[self.pos] == '\n' or self.input[self.pos] == '\r')) self.advanceLine();
+                    while (self.pos < self.input.len and (self.input[self.pos] == '\n' or self.input[self.pos] == '\r')) {
+                        breaks += 1;
+                        self.advanceLine();
+                    }
                     var next_indent: i32 = 0;
                     const check_pos = self.pos;
                     while (self.pos < self.input.len and self.input[self.pos] == ' ') {
@@ -1694,7 +1752,7 @@ pub const Scanner = struct {
                                 return error.UnexpectedCharacter;
                             }
                         }
-                        pending_newline = true;
+                        pending_breaks += breaks;
                         was_multiline = true;
                         continue;
                     } else {
@@ -1705,9 +1763,15 @@ pub const Scanner = struct {
                     }
                 }
             }
-            if (pending_newline) {
-                if (result.items.len > 0) try result.append(self.allocator, ' ');
-                pending_newline = false;
+            if (pending_breaks > 0) {
+                if (result.items.len > 0) {
+                    if (pending_breaks == 1) {
+                        try result.append(self.allocator, ' ');
+                    } else {
+                        for (0..pending_breaks - 1) |_| try result.append(self.allocator, '\n');
+                    }
+                }
+                pending_breaks = 0;
             }
             try result.append(self.allocator, ch);
             self.advance();

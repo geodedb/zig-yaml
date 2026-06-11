@@ -182,6 +182,8 @@ const Parser = struct {
             const item_indent = if (self.peek() == '\n') seq_indent + 2 else self.col;
             self.skipSpaces();
 
+            if (count >= items.len) @compileError("yaml comptime: block sequence exceeds 256 items; split the document or use the runtime parser");
+
             if (self.peek() == '\n') {
                 self.skipToNextLine();
                 items[count] = self.parseValue(item_indent);
@@ -232,6 +234,7 @@ const Parser = struct {
                 self.skipToNextLine();
             }
 
+            if (count >= items.len) @compileError("yaml comptime: block mapping exceeds 128 keys; split the document or use the runtime parser");
             items[count] = .{ .key = key, .value = value };
             count += 1;
         }
@@ -342,6 +345,7 @@ const Parser = struct {
 
             if (self.peek() == ']') break;
 
+            if (count >= items.len) @compileError("yaml comptime: flow sequence exceeds 64 items; split the document or use the runtime parser");
             items[count] = self.parseFlowValue();
             count += 1;
 
@@ -383,6 +387,7 @@ const Parser = struct {
 
             const value = self.parseFlowValue();
 
+            if (count >= items.len) @compileError("yaml comptime: flow mapping exceeds 64 keys; split the document or use the runtime parser");
             items[count] = .{ .key = key, .value = value };
             count += 1;
 

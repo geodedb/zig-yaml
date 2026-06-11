@@ -11,7 +11,7 @@ const limits = @import("limits.zig");
 pub const NodeId = u32;
 
 pub const NodeMeta = struct {
-    tag: []const u8 = "!",
+    tag: []const u8 = "?",
     anchor: ?[]const u8 = null,
 };
 
@@ -94,7 +94,17 @@ pub const Composer = struct {
     options: parser.ParseOptions,
     limit_checker: limits.LimitChecker,
     documents: std.ArrayList(Document),
-    current_doc: ?*Document,
+    // Index (not pointer) into `documents`: the ArrayList reallocates as more
+    // documents are appended in a multi-document stream, which would dangle a
+    // stored pointer. An index stays valid across growth.
+    current_doc: ?usize,
+
+    // Reusable duplicate-key sets, one per nesting depth, for unique_keys
+    // enforcement. Indexed by structural depth so sibling mappings reuse (and
+    // clear) a set while a nested mapping uses its own — avoiding one heap
+    // allocation per mapping. Sets are heap-boxed so the pointer handed to a
+    // mapping stays valid while deeper mappings grow this pool.
+    key_set_pool: std.ArrayList(*std.StringHashMap(void)),
 
     // Error tracking
     last_error_line: u32,
@@ -111,6 +121,7 @@ pub const Composer = struct {
             .limit_checker = limits.LimitChecker.initFromParseOptions(opts),
             .documents = .empty,
             .current_doc = null,
+            .key_set_pool = .empty,
             .last_error_line = 0,
             .last_error_col = 0,
             .last_error_name = "",
@@ -119,6 +130,11 @@ pub const Composer = struct {
 
     pub fn deinit(self: *Self) void {
         self.parse.deinit();
+        for (self.key_set_pool.items) |set| {
+            set.deinit();
+            self.allocator.destroy(set);
+        }
+        self.key_set_pool.deinit(self.allocator);
         for (self.documents.items) |*doc| {
             doc.deinit();
         }
@@ -148,13 +164,14 @@ pub const Composer = struct {
                 .doc_start => {
                     const doc = Document.init(self.allocator);
                     try self.documents.append(self.allocator, doc);
-                    self.current_doc = &self.documents.items[self.documents.items.len - 1];
+                    self.current_doc = self.documents.items.len - 1;
                 },
                 .doc_end => {
                     self.current_doc = null;
                 },
                 else => {
-                    if (self.current_doc) |doc| {
+                    if (self.current_doc) |idx| {
+                        const doc = &self.documents.items[idx];
                         const root_id = try self.composeNode(event, doc);
                         doc.root = root_id;
                     }
@@ -227,6 +244,15 @@ pub const Composer = struct {
                 var items: std.ArrayList(KVPair) = .empty;
                 defer items.deinit(self.allocator);
 
+                // Tracks scalar key contents within this mapping to enforce
+                // ParseOptions.unique_keys. The set is drawn from a per-depth
+                // pool (cleared, not reallocated, between sibling mappings) so a
+                // nested mapping gets its own set while this one stays valid.
+                const seen_keys: ?*std.StringHashMap(void) = if (self.options.unique_keys)
+                    try self.keySetForDepth(self.limit_checker.current_depth)
+                else
+                    null;
+
                 while (true) {
                     const key_event = self.parse.nextEvent() catch |err| {
                         return self.mapParserError(err);
@@ -235,6 +261,10 @@ pub const Composer = struct {
                     if (key_event == .map_end) break;
 
                     const key_id = try self.composeNode(key_event, doc);
+
+                    if (seen_keys) |set| {
+                        try self.checkDuplicateKey(doc, key_id, set);
+                    }
 
                     const val_event = self.parse.nextEvent() catch |err| {
                         return self.mapParserError(err);
@@ -262,7 +292,7 @@ pub const Composer = struct {
             else => {
                 // Empty scalar fallback
                 return try doc.addNode(.{ .s = .{
-                    .meta = .{ .tag = "!", .anchor = null },
+                    .meta = .{ .tag = "?", .anchor = null },
                     .style = .plain,
                     .v = "",
                 } });
@@ -273,6 +303,39 @@ pub const Composer = struct {
     fn dupeInArena(self: *Self, doc: *Document, s: []const u8) ![]const u8 {
         _ = self;
         return doc.arena.allocator().dupe(u8, s);
+    }
+
+    /// Return a cleared duplicate-key set for the given structural depth,
+    /// growing the per-depth pool as needed. Sets are heap-boxed, so the
+    /// returned pointer stays valid even when a deeper mapping grows the pool.
+    /// Reusing one set per depth turns "one allocation per mapping" into "one
+    /// allocation per distinct nesting depth" (bounded by max_depth).
+    fn keySetForDepth(self: *Self, depth: u16) ComposerError!*std.StringHashMap(void) {
+        while (self.key_set_pool.items.len <= depth) {
+            const set = try self.allocator.create(std.StringHashMap(void));
+            set.* = std.StringHashMap(void).init(self.allocator);
+            try self.key_set_pool.append(self.allocator, set);
+        }
+        const set = self.key_set_pool.items[depth];
+        set.clearRetainingCapacity();
+        return set;
+    }
+
+    /// Enforce ParseOptions.unique_keys for scalar mapping keys. Duplicate
+    /// detection compares scalar key *content* (covering plain vs quoted forms
+    /// of the same key, e.g. `a` and "a"). Non-scalar (collection/alias) keys
+    /// are not deduplicated. Returns error.DuplicateKey on a repeated key.
+    fn checkDuplicateKey(self: *Self, doc: *Document, key_id: NodeId, seen: *std.StringHashMap(void)) ComposerError!void {
+        const key_node = doc.node(key_id);
+        const key_str = switch (key_node.*) {
+            .s => |s| s.v,
+            else => return, // only scalar keys are deduplicated
+        };
+        const gop = try seen.getOrPut(key_str);
+        if (gop.found_existing) {
+            self.last_error_name = "duplicate key";
+            return error.DuplicateKey;
+        }
     }
 
     pub fn getErrorLine(self: *const Self) u32 {
