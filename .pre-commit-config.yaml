@@ -154,32 +154,10 @@ repos:
     pass_filenames: false
     verbose: true
 
-- repo: local
+- repo: https://gitlab.com/devnw/zig/zig-tool
+  rev: v0.1.0
   hooks:
-      # Diamond-dep detector — fail loud when build.zig.zon transitively
-      # pins the same package name to two different content hashes.
-      # Soft-fails when the zig package cache hasn't been populated yet
-      # (run `zig build --fetch` first).
   - id: detect-diamond-deps
-    name: detect diamond deps in build.zig.zon
-    entry: bash
-    args:
-    - -c
-    - |
-      python3 scripts/detect_diamond_deps.py
-      rc=$?
-      if [ $rc -eq 2 ]; then
-        echo "detect-diamond-deps: cache not populated; skipping (run 'zig build --fetch')"
-        exit 0
-      fi
-      exit $rc
-    language: system
-    files: ^build\.zig\.zon$
-    pass_filenames: false
-
-# =============================================================================
-# CI configuration
-# =============================================================================
 ci:
   autofix_prs: true
   autofix_commit_msg: |
