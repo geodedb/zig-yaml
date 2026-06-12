@@ -154,10 +154,14 @@ repos:
     pass_filenames: false
     verbose: true
 
-- repo: https://gitlab.com/devnw/zig/zig-tool
-  rev: v0.1.0
+- repo: local
   hooks:
   - id: detect-diamond-deps
+    name: detect diamond deps in build.zig.zon
+    entry: uvx --refresh --from git+https://gitlab.com/devnw/zig/zig-tool detect-diamond-deps
+    language: system
+    files: ^build\.zig\.zon$
+    pass_filenames: false
 ci:
   autofix_prs: true
   autofix_commit_msg: |
