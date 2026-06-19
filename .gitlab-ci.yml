@@ -27,6 +27,7 @@ include:
 
   # Release
   - component: gitlab.com/devnw/ci-catalog/release-semantic@v1.7.1
+  - component: gitlab.com/devnw/ci-catalog/zig-version-tag-check@v1.27.0
 
 variables:
   ZIG_VERSION: "0.16.0"

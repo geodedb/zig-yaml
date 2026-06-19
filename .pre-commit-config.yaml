@@ -162,6 +162,13 @@ repos:
     language: system
     files: ^build\.zig\.zon$
     pass_filenames: false
+  - id: check-version-tag
+    name: release tag matches build.zig.zon version
+    entry: uvx --refresh --from git+https://gitlab.com/devnw/zig/zig-tool zig-tool check-version-tag
+    language: system
+    stages: [pre-push]
+    pass_filenames: false
+    always_run: true
 ci:
   autofix_prs: true
   autofix_commit_msg: |
@@ -171,5 +178,5 @@ ci:
   autoupdate_branch: ''
   autoupdate_commit_msg: '[pre-commit.ci] pre-commit autoupdate'
   autoupdate_schedule: weekly
-  skip: [zig-fmt, zig-build, zig-test, detect-diamond-deps]
+  skip: [zig-fmt, zig-build, zig-test, detect-diamond-deps, check-version-tag]
   submodules: false
