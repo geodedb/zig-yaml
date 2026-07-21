@@ -13,21 +13,21 @@ default:
 # release SHAs; SHAs are immutable where tags can be re-pointed.
 include:
   # Security scanning
-  - component: gitlab.com/devnw/ci-catalog/security-sast@v1.45.5
-  - component: gitlab.com/devnw/ci-catalog/security-dependency-scanning@v1.45.5
-  - component: gitlab.com/devnw/ci-catalog/security-secrets@v1.45.5
-  - component: gitlab.com/devnw/ci-catalog/security-gitleaks@v1.45.5
+  - component: gitlab.com/devnw/ci-catalog/security-sast@v1.46.0
+  - component: gitlab.com/devnw/ci-catalog/security-dependency-scanning@v1.46.0
+  - component: gitlab.com/devnw/ci-catalog/security-secrets@v1.46.0
+  - component: gitlab.com/devnw/ci-catalog/security-gitleaks@v1.46.0
 
   # Code quality
-  - component: gitlab.com/devnw/ci-catalog/zig-format@v1.45.5
+  - component: gitlab.com/devnw/ci-catalog/zig-format@v1.46.0
 
   # SBOM
-  - component: gitlab.com/devnw/ci-catalog/sbom-generate@v1.45.5
-  - component: gitlab.com/devnw/ci-catalog/sbom-scan@v1.45.5
+  - component: gitlab.com/devnw/ci-catalog/sbom-generate@v1.46.0
+  - component: gitlab.com/devnw/ci-catalog/sbom-scan@v1.46.0
 
   # Release
-  - component: gitlab.com/devnw/ci-catalog/release-semantic@v1.45.5
-  - component: gitlab.com/devnw/ci-catalog/zig-version-tag-check@v1.45.5
+  - component: gitlab.com/devnw/ci-catalog/release-semantic@v1.46.0
+  - component: gitlab.com/devnw/ci-catalog/zig-version-tag-check@v1.46.0
 
 variables:
   ZIG_VERSION: "0.16.0"
