@@ -68,7 +68,7 @@ repos:
   # Python linting (for test scripts and tools)
   # =============================================================================
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.14.14
+  rev: v0.16.7
   hooks:
   - id: ruff
     args: [--fix, --exit-non-zero-on-fix]
@@ -80,7 +80,7 @@ repos:
   # Markdown linting
   # =============================================================================
 - repo: https://github.com/igorshubovych/markdownlint-cli
-  rev: v0.43.0
+  rev: v0.49.1
   hooks:
   - id: markdownlint
     args: [--fix, --disable, MD013, MD033, MD041, MD024, MD060, MD036, MD051, MD052, MD055, --]
@@ -100,7 +100,7 @@ repos:
   # Commit message validation (Conventional Commits)
   # =============================================================================
 - repo: https://github.com/commitizen-tools/commitizen
-  rev: v4.12.1
+  rev: v4.18.0
   hooks:
   - id: commitizen
     stages: [commit-msg]
