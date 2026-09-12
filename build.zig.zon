@@ -1,6 +1,6 @@
 .{
     .name = .yaml,
-    .version = "0.1.6",
+    .version = "0.1.8",
     .fingerprint = 0xea31a98484bec595,
     .minimum_zig_version = "0.15.1",
     .dependencies = .{
