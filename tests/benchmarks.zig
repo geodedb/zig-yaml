@@ -9,6 +9,25 @@ const yaml = @import("yaml");
 
 const Allocator = std.mem.Allocator;
 
+/// Monotonic stopwatch. Zig 0.16 removed `std.time.Timer`; read the awake
+/// (monotonic) clock through `std.Io` instead.
+const Timer = struct {
+    start_ns: i96,
+
+    fn start() Timer {
+        return .{ .start_ns = now() };
+    }
+
+    fn read(self: Timer) u64 {
+        return @intCast(@max(now() - self.start_ns, 0));
+    }
+
+    fn now() i96 {
+        const io = std.Io.Threaded.global_single_threaded.io();
+        return std.Io.Clock.awake.now(io).nanoseconds;
+    }
+};
+
 // ============================================================================
 // Benchmark Infrastructure
 // ============================================================================
@@ -38,7 +57,7 @@ fn runBenchmark(
 
     var i: u64 = 0;
     while (i < iterations) : (i += 1) {
-        var timer = std.time.Timer.start() catch unreachable;
+        const timer = Timer.start();
         func(allocator) catch {};
         const elapsed = timer.read();
         total_ns += elapsed;
