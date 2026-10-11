@@ -5,6 +5,7 @@
 default:
   tags:
     - company
+    - linux
 
 # Supply-chain note (appsec F-07): components below are pinned to immutable
 # semantic-version tags from the first-party, access-controlled
@@ -27,6 +28,10 @@ include:
 
   # Release
   - component: gitlab.com/devnw/ci-catalog/release-semantic@v1.55.6
+    inputs:
+      # Create the GitLab Release with CI_JOB_TOKEN: the group GITLAB_TOKEN
+      # lacks api scope, so the default glab path fails with 403 (SONNY-2447).
+      release_auth: job_token
   - component: gitlab.com/devnw/ci-catalog/zig-version-tag-check@v1.55.6
 
 variables:
