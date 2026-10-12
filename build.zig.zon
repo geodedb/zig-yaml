@@ -1,17 +1,23 @@
 .{
     .name = .yaml,
-    .version = "0.1.9",
+    .version = "0.1.10",
     .fingerprint = 0xea31a98484bec595,
     .minimum_zig_version = "0.15.1",
     .dependencies = .{
         .thread_pool = .{
-            .url = "git+https://gitlab.com/devnw/zig/thread-pool.git?ref=v0.2.8#2161d8e77beb6f9d6d8664b4406c739ef3a6cc81",
-            .hash = "thread_pool-0.2.8-11B1BrrSeQD3WHNJ-oyNkrfcHLp5AOW1Zgr4QTGu7pb4",
+            .url = "git+https://gitlab.com/devnw/zig/thread-pool.git?ref=v0.2.9#1d7275da020a43588c4f1885f7f725d5e8ce079e",
+            .hash = "thread_pool-0.2.9-11B1Bqf7eQDfHhrQAkHk0e2ABigRBFNkFEAmc8t9raZe",
         },
     },
     .paths = .{
         "build.zig",
         "build.zig.zon",
         "src",
+        "tests",
+        "bench",
+        "examples",
+        "testdata",
+        "LICENSE",
+        "README.md",
     },
 }
