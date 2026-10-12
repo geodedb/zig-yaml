@@ -246,3 +246,16 @@ hook-env-regression:
     - apt-get update -qq && apt-get install -y --no-install-recommends git
   script:
     - python3 scripts/test_hook_env.py
+
+# SONNY-4837: verify Zig's filtered release package, including test inputs.
+test-source-package:
+  stage: test
+  image: debian:bookworm-slim
+  tags: ["company", "linux", "x86"]
+  before_script:
+    - *install-zig
+    - apt-get install -y git
+  script:
+    - python3 scripts/check_source_package.py --jobs 4
+  needs: []
+  allow_failure: false
