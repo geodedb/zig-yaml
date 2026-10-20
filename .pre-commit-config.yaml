@@ -1,182 +1,52 @@
-# Pre-commit configuration for yaml project
-# https://pre-commit.com/
-#
-# Install: pip install pre-commit && pre-commit install
-# Run manually: pre-commit run --all-files
-# Update hooks: pre-commit autoupdate
-
+minimum_pre_commit_version: '4.6.0'
+default_install_hook_types: [pre-commit, commit-msg, pre-push]
 default_stages: [pre-commit]
 fail_fast: false
+exclude: |
+  (?x)^(
+    vendor/|
+    legacy/|
+    dist/|
+    build/|
+    node_modules/|
+    .*/.terraform/|
+    .*/zig-cache/|
+    .*/zig-out/
+  )
 
 repos:
-  # =============================================================================
-  # Standard pre-commit hooks (best practices)
-  # =============================================================================
-- repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v6.0.0
-  hooks:
-      # Formatting
-  - id: trailing-whitespace
-    args: [--markdown-linebreak-ext=md]
-    exclude: ^(vendor/|dist/|zig-out/|\.zig-cache/)
-  - id: end-of-file-fixer
-    exclude: ^(vendor/|dist/|zig-out/|\.zig-cache/|.*\.bin$|.*\.der$|.*\.pem$)
-  - id: mixed-line-ending
-    args: [--fix=lf]
-    exclude: ^(vendor/|dist/|zig-out/)
-
-      # Syntax validation
-  - id: check-yaml
-    args: [--unsafe]      # Allow custom tags
-    exclude: ^(vendor/|dist/)
-  - id: check-json
-    exclude: ^(vendor/|dist/|zig-out/|\.devcontainer/)
-  - id: check-toml
-  - id: check-xml
-    exclude: ^(vendor/|dist/)
-
-      # Security
-  - id: detect-private-key
-    exclude: ^(certs/|test.*certs/|.*test.*\.pem$|tests/|src/tests/|docker/zig-packages/)
-  - id: check-added-large-files
-    args: [--maxkb=1024]
-    exclude: ^(vendor/|dist/)
-
-      # Git hygiene
-  - id: check-merge-conflict
-  - id: check-case-conflict
-  - id: check-symlinks
-  - id: destroyed-symlinks
-
-      # Code quality
-  - id: check-executables-have-shebangs
-    exclude: ^(vendor/|dist/|zig-out/)
-  - id: check-shebang-scripts-are-executable
-    exclude: ^(vendor/|dist/|\.envrc)
-
-  # =============================================================================
-  # Shell script linting
-  # =============================================================================
-- repo: https://github.com/shellcheck-py/shellcheck-py
-  rev: v0.11.0.1
-  hooks:
-  - id: shellcheck
-    args: [--severity=error, --shell=bash]
-    exclude: ^(vendor/|dist/|tests/)
-
-  # =============================================================================
-  # Python linting (for test scripts and tools)
-  # =============================================================================
-- repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.14.14
-  hooks:
-  - id: ruff
-    args: [--fix, --exit-non-zero-on-fix]
-    exclude: ^(vendor/|dist/)
-  - id: ruff-format
-    exclude: ^(vendor/|dist/)
-
-  # =============================================================================
-  # Markdown linting
-  # =============================================================================
-- repo: https://github.com/igorshubovych/markdownlint-cli
-  rev: v0.43.0
-  hooks:
-  - id: markdownlint
-    args: [--fix, --disable, MD013, MD033, MD041, MD024, MD060, MD036, MD051, MD052, MD055, --]
-    exclude: ^(vendor/|dist/|CHANGELOG\.md|specs/)
-
-  # =============================================================================
-  # YAML formatting
-  # =============================================================================
-- repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.16.0
-  hooks:
-  - id: pretty-format-yaml
-    args: [--autofix, --indent, '2']
-    exclude: ^(vendor/|dist/|\.gitlab-ci\.yml)
-
-  # =============================================================================
-  # Commit message validation (Conventional Commits)
-  # =============================================================================
-- repo: https://github.com/commitizen-tools/commitizen
-  rev: v4.12.1
-  hooks:
-  - id: commitizen
-    stages: [commit-msg]
-
-  # =============================================================================
-  # Local/Custom hooks for Zig
-  # =============================================================================
-- repo: local
-  hooks:
-      # Zig formatting check — runs at BOTH pre-commit and pre-push so a
-      # --no-verify on commit is still caught on push.
-  - id: zig-fmt
-    name: zig fmt (check)
-    entry: zig fmt --check
-    language: system
-    files: \.zig$
-    exclude: ^(vendor/|dist/|zig-out/|\.zig-cache/)
-    pass_filenames: false
-    args: [src/, build.zig, tests/, examples/]
-    stages: [pre-commit, pre-push]
-
-      # Zig build check (compilation) — moved to pre-push per #471 to reduce commit friction
-  - id: zig-build
-    name: zig build (compilation check)
-    entry: zig build
-    language: system
-    files: \.(zig|zon)$
-    exclude: ^(vendor/|dist/|zig-out/|\.zig-cache/)
-    pass_filenames: false
-    stages: [pre-push]
-
-      # Quick unit tests
-  - id: zig-test
-    name: zig build test
-    entry: zig build test
-    language: system
-    files: \.(zig|zon)$
-    exclude: ^(vendor/|dist/|zig-out/|\.zig-cache/)
-    pass_filenames: false
-    stages: [pre-push]      # Only on push, may be slow
-
-      # Check for TODO/FIXME in committed code (warning only)
-  - id: check-todos
-    name: check for TODOs/FIXMEs
-    entry: bash
-    args:
-    - -c
-    - |
-      git diff --cached --name-only | xargs grep -l -E "(TODO|FIXME|XXX|HACK)" 2>/dev/null && echo "Warning: Found TODO/FIXME markers in staged files" && exit 0 || exit 0
-    language: system
-    pass_filenames: false
-    verbose: true
-
-- repo: local
-  hooks:
-  - id: detect-diamond-deps
-    name: detect diamond deps in build.zig.zon
-    entry: uvx --refresh --from git+https://gitlab.com/devnw/zig/zig-tool detect-diamond-deps
-    language: system
-    files: ^build\.zig\.zon$
-    pass_filenames: false
-  - id: check-version-tag
-    name: release tag matches build.zig.zon version
-    entry: uvx --refresh --from git+https://gitlab.com/devnw/zig/zig-tool zig-tool check-version-tag
-    language: system
-    stages: [pre-push]
-    pass_filenames: false
-    always_run: true
-ci:
-  autofix_prs: true
-  autofix_commit_msg: |
-    [pre-commit.ci] auto fixes from pre-commit hooks
-
-    For more info see https://pre-commit.ci
-  autoupdate_branch: ''
-  autoupdate_commit_msg: '[pre-commit.ci] pre-commit autoupdate'
-  autoupdate_schedule: weekly
-  skip: [zig-fmt, zig-build, zig-test, detect-diamond-deps, check-version-tag]
-  submodules: false
+  - repo: git@gitlab.com:devnw/utility-projects/org-pre-commit-hooks
+    rev: v0.1.5
+    hooks:
+      - id: org-trailing-whitespace
+      - id: org-end-of-file-fixer
+      - id: org-mixed-line-ending
+        args: ["--fix=lf"]
+      - id: org-check-yaml
+      - id: org-check-json
+      - id: org-check-toml
+      - id: org-check-xml
+      - id: org-check-merge-conflict
+      - id: org-check-case-conflict
+      - id: org-check-symlinks
+      - id: org-check-shebang-scripts-are-executable
+      - id: org-check-executables-have-shebangs
+      - id: org-check-added-large-files
+        args: ["--maxkb=1024"]
+      - id: org-detect-private-key
+      - id: org-check-todos
+      - id: org-conventional-commit
+      - id: org-conventional-branch
+      - id: org-shellcheck
+      - id: org-shfmt
+      - id: org-markdownlint-cli2
+      - id: org-make-pre-commit
+      - id: org-ruff
+      - id: org-ruff-format
+      - id: org-zig-fmt
+      - id: org-zig-build
+      - id: org-zig-test
+      - id: org-zig-detect-diamond-deps
+      - id: org-zig-check-version-tag
+      - id: org-zig-zon-no-path-deps
+      - id: org-gitlab-ci-lint
