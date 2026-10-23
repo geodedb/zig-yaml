@@ -16,40 +16,31 @@ default:
 # release SHAs; SHAs are immutable where tags can be re-pointed.
 include:
   # Security scanning
-  - component: gitlab.com/devnw/ci-catalog/security-sast@v1.57.0
-    inputs:
-      tags: ["company", "linux", "x86"]
-  - component: gitlab.com/devnw/ci-catalog/security-dependency-scanning@v1.57.0
-    inputs:
-      tags: ["company", "linux", "x86"]
-  - component: gitlab.com/devnw/ci-catalog/security-secrets@v1.57.0
-    inputs:
-      tags: ["company", "linux", "x86"]
-  - component: gitlab.com/devnw/ci-catalog/security-gitleaks@v1.57.0
+  - component: gitlab.com/devnw/ci-catalog/security-gitleaks@aad997d40e358eeef7ec943f761498341c37c724
     inputs:
       tags: ["company", "linux", "x86"]
 
   # Code quality
-  - component: gitlab.com/devnw/ci-catalog/zig-format@v1.57.0
+  - component: gitlab.com/devnw/ci-catalog/zig-format@aad997d40e358eeef7ec943f761498341c37c724
     inputs:
       tags: ["company", "linux", "x86"]
 
   # SBOM
-  - component: gitlab.com/devnw/ci-catalog/sbom-generate@v1.57.0
+  - component: gitlab.com/devnw/ci-catalog/sbom-generate@aad997d40e358eeef7ec943f761498341c37c724
     inputs:
       tags: ["company", "linux", "x86"]
-  - component: gitlab.com/devnw/ci-catalog/sbom-scan@v1.57.0
+  - component: gitlab.com/devnw/ci-catalog/sbom-scan@aad997d40e358eeef7ec943f761498341c37c724
     inputs:
       tags: ["company", "linux", "x86"]
 
   # Release
-  - component: gitlab.com/devnw/ci-catalog/release-semantic@v1.57.0
+  - component: gitlab.com/devnw/ci-catalog/release-semantic@aad997d40e358eeef7ec943f761498341c37c724
     inputs:
       tags: ["company", "linux", "x86"]
       # Create the GitLab Release with CI_JOB_TOKEN: the group GITLAB_TOKEN
       # lacks api scope, so the default glab path fails with 403 (SONNY-2447).
       release_auth: job_token
-  - component: gitlab.com/devnw/ci-catalog/zig-version-tag-check@v1.57.0
+  - component: gitlab.com/devnw/ci-catalog/zig-version-tag-check@aad997d40e358eeef7ec943f761498341c37c724
     inputs:
       tags: ["company", "linux", "x86"]
 
