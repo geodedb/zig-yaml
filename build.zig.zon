@@ -5,8 +5,8 @@
     .minimum_zig_version = "0.15.1",
     .dependencies = .{
         .thread_pool = .{
-            .url = "git+https://gitlab.com/devnw/zig/thread-pool.git?ref=v0.2.9#1d7275da020a43588c4f1885f7f725d5e8ce079e",
-            .hash = "thread_pool-0.2.9-11B1Bqf7eQDfHhrQAkHk0e2ABigRBFNkFEAmc8t9raZe",
+            .url = "git+https://gitlab.com/devnw/zig/thread-pool.git?ref=v0.2.11#666b7ac0cc8b92d5773df5e79ea4fd421bd77e99",
+            .hash = "thread_pool-0.2.11-11B1Bk2GegC5mn18xNrkmF0lMrgrWqijO7PXmftrkuSe",
         },
     },
     .paths = .{
