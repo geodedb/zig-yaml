@@ -1,0 +1,69 @@
+# Managed by devnw/infra/org components/devnw-github-mirrors -- edit there.
+# Zig CI for the read-only GitHub mirror of https://gitlab.devnw.com/zig/yaml.
+# The result is reported back to that project as the commit status
+# "github-actions/zig", so GitLab merge requests can gate on it.
+name: zig
+
+on:
+  push:
+    branches: ["**"]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: zig-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GITLAB_API: https://gitlab.devnw.com/api/v4
+  GITLAB_PROJECT: "92"
+  STATUS_NAME: github-actions/zig
+  RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+jobs:
+  zig:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Report running to GitLab
+        env:
+          TOKEN: ${{ secrets.GITLAB_STATUS_TOKEN }}
+        run: |
+          curl -fsS -o /dev/null -X POST -H "PRIVATE-TOKEN: $TOKEN" \
+            --data-urlencode "state=running" --data-urlencode "name=$STATUS_NAME" \
+            --data-urlencode "ref=$GITHUB_REF_NAME" --data-urlencode "target_url=$RUN_URL" \
+            "$GITLAB_API/projects/$GITLAB_PROJECT/statuses/$GITHUB_SHA"
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29 # v2.2.1
+        with:
+          version: 0.15.1
+
+      - name: Tools the test suites call
+        run: |
+          sudo apt-get update -qq
+          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends strace openssl python3
+
+      - name: zig fmt --check
+        run: zig fmt --check .
+
+      - name: zig build test
+        run: zig build test --summary all
+
+      - name: Report result to GitLab
+        if: always()
+        env:
+          TOKEN: ${{ secrets.GITLAB_STATUS_TOKEN }}
+          RESULT: ${{ job.status }}
+        run: |
+          case "$RESULT" in success) state=success ;; cancelled) state=canceled ;; *) state=failed ;; esac
+          curl -fsS -o /dev/null -X POST -H "PRIVATE-TOKEN: $TOKEN" \
+            --data-urlencode "state=$state" --data-urlencode "name=$STATUS_NAME" \
+            --data-urlencode "ref=$GITHUB_REF_NAME" --data-urlencode "target_url=$RUN_URL" \
+            --data-urlencode "description=zig fmt + zig build test on GitHub Actions" \
+            "$GITLAB_API/projects/$GITLAB_PROJECT/statuses/$GITHUB_SHA"
