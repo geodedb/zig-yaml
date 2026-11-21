@@ -36,6 +36,17 @@ jobs:
             --data-urlencode "ref=$GITHUB_REF_NAME" --data-urlencode "target_url=$RUN_URL" \
             "$GITLAB_API/projects/$GITLAB_PROJECT/statuses/$GITHUB_SHA"
 
+      # Standard runners start with ~14 GB free; geode's test build needs more
+      # (2026-11-21: "No space left on device" 100 min into zig build test).
+      # Drop preinstalled toolchains the Zig jobs never use (~30 GB).
+      - name: Free disk space
+        run: |
+          df -h /
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/.ghcup \
+            /opt/hostedtoolcache/CodeQL /usr/share/swift /usr/local/share/boost /usr/local/julia* || true
+          sudo docker image prune --all --force >/dev/null 2>&1 || true
+          df -h /
+
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
