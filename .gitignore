@@ -22,3 +22,6 @@ Thumbs.db
 # Test artifacts
 *.log
 coverage/
+
+# Official YAML test suite: fetched by CI at test time (see .gitlab-ci.yml), never committed.
+testdata/yaml-test-suite/
