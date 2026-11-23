@@ -1,7 +1,7 @@
 # Managed by devnw/infra/org components/devnw-github-mirrors -- edit there.
 # Zig CI for the read-only GitHub mirror of https://gitlab.devnw.com/zig/yaml.
-# The result is reported back to that project as the commit status
-# "github-actions/zig", so GitLab merge requests can gate on it.
+# The result is reported back to that project as ONE commit status
+# "github-actions/zig" (report job), so GitLab merge requests can gate on it.
 name: zig
 
 on:
@@ -23,9 +23,9 @@ env:
   RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
 jobs:
-  zig:
+  start:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 5
     steps:
       - name: Report running to GitLab
         env:
@@ -36,6 +36,23 @@ jobs:
             --data-urlencode "ref=$GITHUB_REF_NAME" --data-urlencode "target_url=$RUN_URL" \
             "$GITLAB_API/projects/$GITLAB_PROJECT/statuses/$GITHUB_SHA"
 
+  fmt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29 # v2.2.1
+        with:
+          version: 0.15.1
+      - name: zig fmt --check
+        run: zig fmt --check .
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
       # Standard runners start with ~14 GB free; geode's test build needs more
       # (2026-11-21: "No space left on device" 100 min into zig build test).
       # Drop preinstalled toolchains the Zig jobs never use (~30 GB).
@@ -50,6 +67,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
+          submodules: recursive
 
       - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29 # v2.2.1
         with:
@@ -60,21 +78,61 @@ jobs:
           sudo apt-get update -qq
           sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends strace openssl python3
 
-      - name: zig fmt --check
-        run: zig fmt --check .
-
+      # Full output goes to a file (some suites log every Raft apply; streaming
+      # it filled the runner and the log store); only a summary and, on failure,
+      # the tail are printed, and the whole log is kept as an artifact. The
+      # repository's fail-fast wrapper is used when it has one (stops the build
+      # after the first failed step, as its GitLab CI does).
       - name: zig build test
-        run: zig build test --summary all
+        env:
+          SHARD_ARGS: ""
+          JOBS_ARG: ""
+        run: |
+          mkdir -p reports
+          log=reports/zig-test.log
+          cmd="zig build $JOBS_ARG test $SHARD_ARGS --summary all --error-style verbose"
+          echo "+ $cmd"
+          set +e
+          if [ -f scripts/ci/zig_fail_fast.py ]; then
+            python3 scripts/ci/zig_fail_fast.py -- $cmd > "$log" 2>&1
+          else
+            $cmd > "$log" 2>&1
+          fi
+          rc=$?
+          set -e
+          echo "exit $rc; $(wc -l < "$log") log lines"
+          grep -E "^Build Summary|steps succeeded|tests passed|failed|error:" "$log" | tail -40 || true
+          if [ "$rc" -ne 0 ]; then
+            echo "::group::last 400 lines"; tail -400 "$log"; echo "::endgroup::"
+          fi
+          gzip -f "$log"
+          exit "$rc"
 
+      - name: Keep the full test log
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: zig-test-log
+          path: reports/zig-test.log.gz
+          retention-days: 7
+
+  report:
+    needs: [start, fmt, test]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
       - name: Report result to GitLab
-        if: always()
         env:
           TOKEN: ${{ secrets.GITLAB_STATUS_TOKEN }}
-          RESULT: ${{ job.status }}
+          FMT: ${{ needs.fmt.result }}
+          TEST: ${{ needs.test.result }}
         run: |
-          case "$RESULT" in success) state=success ;; cancelled) state=canceled ;; *) state=failed ;; esac
+          if [ "$FMT" = success ] && [ "$TEST" = success ]; then state=success
+          elif [ "$FMT" = cancelled ] || [ "$TEST" = cancelled ]; then state=canceled
+          else state=failed; fi
           curl -fsS -o /dev/null -X POST -H "PRIVATE-TOKEN: $TOKEN" \
             --data-urlencode "state=$state" --data-urlencode "name=$STATUS_NAME" \
             --data-urlencode "ref=$GITHUB_REF_NAME" --data-urlencode "target_url=$RUN_URL" \
-            --data-urlencode "description=zig fmt + zig build test on GitHub Actions" \
+            --data-urlencode "description=zig fmt ($FMT) + zig build test ($TEST) on GitHub Actions" \
             "$GITLAB_API/projects/$GITLAB_PROJECT/statuses/$GITHUB_SHA"
