@@ -67,7 +67,6 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-          submodules: recursive
 
       - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29 # v2.2.1
         with:
@@ -90,7 +89,7 @@ jobs:
         run: |
           mkdir -p reports
           log=reports/zig-test.log
-          cmd="zig build $JOBS_ARG test $SHARD_ARGS --summary all --error-style verbose"
+          cmd="zig build $JOBS_ARG test $SHARD_ARGS --summary all"
           echo "+ $cmd"
           set +e
           if [ -f scripts/ci/zig_fail_fast.py ]; then
