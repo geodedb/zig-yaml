@@ -81,9 +81,11 @@ jobs:
       # GitHub release download (protoc, HttpConnectionClosing) failed a geode
       # shard on 2026-11-23 before any test ran.
       - name: Fetch dependencies
+        env:
+          TEST_ARGS: ""
         run: |
           for i in 1 2 3 4; do
-            zig build --fetch && exit 0
+            zig build --fetch $TEST_ARGS && exit 0
             echo "fetch attempt $i failed; retrying"
             sleep $((i * 20))
           done
@@ -98,10 +100,11 @@ jobs:
         env:
           SHARD_ARGS: ""
           JOBS_ARG: ""
+          TEST_ARGS: ""
         run: |
           mkdir -p reports
           log=reports/zig-test.log
-          cmd="zig build $JOBS_ARG test $SHARD_ARGS --summary all"
+          cmd="zig build $JOBS_ARG test $SHARD_ARGS $TEST_ARGS --summary all"
           echo "+ $cmd"
           set +e
           if [ -f scripts/ci/zig_fail_fast.py ]; then
