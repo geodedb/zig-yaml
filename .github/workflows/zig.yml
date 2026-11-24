@@ -1,0 +1,156 @@
+# Zig CI on GitHub Actions for https://gitlab.com/devnw/zig/yaml
+# (runs on the read-only mirror github.com/geodedb/zig-yaml).
+# Generated from devnw/infra/org components/devnw-github-mirrors
+# (templates/zig-ci.yml.tftpl, `tofu output -json workflows`); change it there
+# and bring the result here by merge request.
+# The result is reported to the gitlab.com project as ONE commit status
+# "github-actions/zig" (report job), so merge requests can gate on it.
+name: zig
+
+on:
+  push:
+    branches: ['**']
+    tags: ['**']
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: zig-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GITLAB_API: https://gitlab.com/api/v4
+  GITLAB_PROJECT: ${{ vars.GITLAB_COM_PROJECT_ID }}
+  STATUS_NAME: github-actions/zig
+  RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+jobs:
+  start:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+    - name: Report running to GitLab
+      env:
+        TOKEN: ${{ secrets.GITLAB_COM_STATUS_TOKEN }}
+      run: |
+        curl -fsS -o /dev/null -X POST -H "PRIVATE-TOKEN: $TOKEN" \
+          --data-urlencode "state=running" --data-urlencode "name=$STATUS_NAME" \
+          --data-urlencode "ref=$GITHUB_REF_NAME" --data-urlencode "target_url=$RUN_URL" \
+          "$GITLAB_API/projects/$GITLAB_PROJECT/statuses/$GITHUB_SHA"
+
+  fmt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
+      with:
+        persist-credentials: false
+    - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29   # v2.2.1
+      with:
+        version: 0.16.0
+    - name: zig fmt --check
+      run: zig fmt --check .
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      # Standard runners start with ~14 GB free; geode's test build needs more
+      # (2026-11-21: "No space left on device" 100 min into zig build test).
+      # Drop preinstalled toolchains the Zig jobs never use (~30 GB).
+    - name: Free disk space
+      run: |
+        df -h /
+        sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /usr/local/.ghcup \
+          /opt/hostedtoolcache/CodeQL /usr/share/swift /usr/local/share/boost /usr/local/julia* || true
+        sudo docker image prune --all --force >/dev/null 2>&1 || true
+        df -h /
+
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1   # v7.0.1
+      with:
+        persist-credentials: false
+
+    - uses: mlugg/setup-zig@d1434d08867e3ee9daa34448df10607b98908d29   # v2.2.1
+      with:
+        version: 0.16.0
+
+    - name: Tools the test suites call
+      run: |
+        sudo apt-get update -qq
+        sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends strace openssl python3
+
+      # Download build.zig.zon dependencies first, with retries: a dropped
+      # GitHub release download (protoc, HttpConnectionClosing) failed a geode
+      # shard on 2026-11-23 before any test ran.
+    - name: Fetch dependencies
+      env:
+        TEST_ARGS: ''
+      run: |
+        for i in 1 2 3 4; do
+          zig build --fetch $TEST_ARGS && exit 0
+          echo "fetch attempt $i failed; retrying"
+          sleep $((i * 20))
+        done
+        exit 1
+
+      # Full output goes to a file (some suites log every Raft apply; streaming
+      # it filled the runner and the log store); only a summary and, on failure,
+      # the tail are printed, and the whole log is kept as an artifact. The
+      # repository's fail-fast wrapper is used when it has one (stops the build
+      # after the first failed step, as its GitLab CI does).
+    - name: zig build test
+      env:
+        SHARD_ARGS: ''
+        JOBS_ARG: ''
+        TEST_ARGS: ''
+      run: |
+        mkdir -p reports
+        log=reports/zig-test.log
+        cmd="zig build $JOBS_ARG test $SHARD_ARGS $TEST_ARGS --summary all"
+        echo "+ $cmd"
+        set +e
+        if [ -f scripts/ci/zig_fail_fast.py ]; then
+          python3 scripts/ci/zig_fail_fast.py -- $cmd > "$log" 2>&1
+        else
+          $cmd > "$log" 2>&1
+        fi
+        rc=$?
+        set -e
+        echo "exit $rc; $(wc -l < "$log") log lines"
+        grep -E "^Build Summary|steps succeeded|tests passed|failed|error:" "$log" | tail -40 || true
+        if [ "$rc" -ne 0 ]; then
+          echo "::group::last 400 lines"; tail -400 "$log"; echo "::endgroup::"
+        fi
+        gzip -f "$log"
+        exit "$rc"
+
+    - name: Keep the full test log
+      if: failure()
+      uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9   # v7.0.2
+      with:
+        name: zig-test-log
+        path: reports/zig-test.log.gz
+        retention-days: 7
+
+  report:
+    needs: [start, fmt, test]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+    - name: Report result to GitLab
+      env:
+        TOKEN: ${{ secrets.GITLAB_COM_STATUS_TOKEN }}
+        FMT: ${{ needs.fmt.result }}
+        TEST: ${{ needs.test.result }}
+      run: |
+        if [ "$FMT" = success ] && [ "$TEST" = success ]; then state=success
+        elif [ "$FMT" = cancelled ] || [ "$TEST" = cancelled ]; then state=canceled
+        else state=failed; fi
+        curl -fsS -o /dev/null -X POST -H "PRIVATE-TOKEN: $TOKEN" \
+          --data-urlencode "state=$state" --data-urlencode "name=$STATUS_NAME" \
+          --data-urlencode "ref=$GITHUB_REF_NAME" --data-urlencode "target_url=$RUN_URL" \
+          --data-urlencode "description=zig fmt ($FMT) + zig build test ($TEST) on GitHub Actions" \
+          "$GITLAB_API/projects/$GITLAB_PROJECT/statuses/$GITHUB_SHA"
